@@ -34,8 +34,7 @@
                         <a th:href="@{/submissions}" class="nav-link px-2 link-dark">Bài nộp</a>
                     </li>
                     <li>
-                        <!-- TODO: add controller -->
-                        <a href="#" class="nav-link px-2 link-dark">Bảng xếp hạng</a>
+                        <a th:href="@{/ranking}" class="nav-link px-2 link-dark">Bảng xếp hạng</a>
                     </li>
                 </ul>
                 <a href="#" class="me-2 text-decoration-none" th:text="${session.user.username}"></a>
@@ -69,6 +68,7 @@
                     <th>Trạng thái</th>
                     <th>Bài tập</th>
                     <th>Thời gian</th>
+                    <th>Bộ nhớ</th>
                     <th>Ngôn ngữ</th>
                     <th>ID</th>
                 </tr>
@@ -100,6 +100,7 @@
                         <a th:href="@{'/problem/' + ${submission.problemId}}" th:text="${submission.problemId}" class="text-decoration-none"></a>
                     </td>
                     <td th:text="${submission.timeExecute} + 'ms'"></td>
+                    <td th:text="${submission.memoryUsed} + 'MB'"></td>
                     <td th:text="${submission.language}"></td>
                     <td>
                         <a th:if="${submission.username} eq ${session.user.username}" th:href="@{'/submission/' + ${submission.codeId}}" th:text="${submission.codeId}" class="text-decoration-none"></a>

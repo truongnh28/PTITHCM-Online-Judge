@@ -29,8 +29,7 @@
                         <a th:href="@{/submissions}" class="nav-link px-2 link-dark">Bài nộp</a>
                     </li>
                     <li>
-                        <!-- TODO: add controller -->
-                        <a href="#" class="nav-link px-2 link-dark">Bảng xếp hạng</a>
+                        <a th:href="@{/ranking}" class="nav-link px-2 link-dark">Bảng xếp hạng</a>
                     </li>
                 </ul>
                 <a href="#" class="me-2 text-decoration-none" th:text="${session.user.username}"></a>
@@ -77,7 +76,7 @@
                     <td>
                         <a th:href="@{'/problem/' + ${problem.id}}" th:text="${problem.title}" class="text-decoration-none"></a>
                     </td>
-                    <td th:text="${problem.solved}"></td>
+                    <td th:text="${problem.totalSubmit}"></td>
                     <td th:text="${problem.percent} + '%'"></td>
                 </tr>
                 </tbody>
