@@ -2,7 +2,6 @@ package com.onlinejudge.springthymleaf.controller;
 
 import com.onlinejudge.springthymleaf.data.Data;
 import com.onlinejudge.springthymleaf.dto.UserLogin;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +13,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class LoginController {
     @GetMapping("/")
-    public String toPageLogin(@NotNull Model model) {
+    public String toPageLogin(Model model) {
         UserLogin userLogin = new UserLogin();
         model.addAttribute("user", userLogin);
         return "login";
