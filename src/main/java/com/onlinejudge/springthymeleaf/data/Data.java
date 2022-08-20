@@ -21,8 +21,8 @@ public class Data {
     public static List<ProblemInfoDTO> problemList = new ArrayList<>();
 
     static {
-        problemList.add(new ProblemInfoDTO("A", "A cộng B", 2, 50.00, true));
-        problemList.add(new ProblemInfoDTO("B", "Tìm số nguyên tố", 0, 0.00, false));
+        problemList.add(new ProblemInfoDTO("A", "A cộng B", true));
+        problemList.add(new ProblemInfoDTO("B", "Tìm số nguyên tố", false));
     };
 
     public static List<SubmissionCodeDTO> submissionCodeList = new ArrayList<>();

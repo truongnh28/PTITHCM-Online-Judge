@@ -10,7 +10,5 @@ import lombok.NoArgsConstructor;
 public class ProblemInfoDTO {
     private String id;
     private String title;
-    private int totalSubmit;
-    private double percent;
     private boolean solved;
 }
