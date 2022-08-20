@@ -1,13 +1,9 @@
-package com.onlinejudge.springthymleaf.controller;
+package com.onlinejudge.springthymeleaf.controller;
 
-import com.onlinejudge.springthymleaf.data.Data;
-import com.onlinejudge.springthymleaf.dto.SubmissionDTO;
+import com.onlinejudge.springthymeleaf.data.Data;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 public class SubmissionController {

@@ -1,4 +1,4 @@
-package com.onlinejudge.springthymleaf.dto;
+package com.onlinejudge.springthymeleaf.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,12 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubmissionDTO {
+public class SubmitDTO {
     private String username;
-    private String timeSubmit;
-    private String status;
     private String problemId;
-    private int timeExecute;
+    private String sourceCode;
     private String language;
-    private String codeId;
 }

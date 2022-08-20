@@ -1,13 +1,13 @@
-package com.onlinejudge.springthymleaf;
+package com.onlinejudge.springthymeleaf;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringThymleafApplication {
+public class SpringThymeleafApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringThymleafApplication.class, args);
+        SpringApplication.run(SpringThymeleafApplication.class, args);
     }
 
 }

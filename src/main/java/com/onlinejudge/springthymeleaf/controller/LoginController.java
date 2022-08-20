@@ -1,7 +1,6 @@
-package com.onlinejudge.springthymleaf.controller;
+package com.onlinejudge.springthymeleaf.controller;
 
-import com.onlinejudge.springthymleaf.data.Data;
-import com.onlinejudge.springthymleaf.dto.UserLogin;
+import com.onlinejudge.springthymeleaf.dto.UserLogin;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

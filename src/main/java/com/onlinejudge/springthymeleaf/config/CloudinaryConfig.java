@@ -1,4 +1,4 @@
-package com.onlinejudge.springthymleaf.config;
+package com.onlinejudge.springthymeleaf.config;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.SingletonManager;

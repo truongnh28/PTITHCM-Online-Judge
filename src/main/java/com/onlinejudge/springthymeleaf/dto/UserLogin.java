@@ -1,4 +1,4 @@
-package com.onlinejudge.springthymleaf.dto;
+package com.onlinejudge.springthymeleaf.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

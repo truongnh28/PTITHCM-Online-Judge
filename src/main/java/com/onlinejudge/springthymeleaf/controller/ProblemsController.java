@@ -1,6 +1,6 @@
-package com.onlinejudge.springthymleaf.controller;
+package com.onlinejudge.springthymeleaf.controller;
 
-import com.onlinejudge.springthymleaf.data.Data;
+import com.onlinejudge.springthymeleaf.data.Data;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class ProblemsController{
     @GetMapping("/problems")
     public String getProblems(Model model) {
-        model.addAttribute("problems", Data.problems);
+        model.addAttribute("problems", Data.problemList);
         return "problems";
     }
 }

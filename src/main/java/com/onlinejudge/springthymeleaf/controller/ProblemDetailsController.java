@@ -1,14 +1,11 @@
-package com.onlinejudge.springthymleaf.controller;
+package com.onlinejudge.springthymeleaf.controller;
 
-import com.onlinejudge.springthymleaf.data.Data;
-import com.onlinejudge.springthymleaf.dto.ProblemDetailsDTO;
+import com.onlinejudge.springthymeleaf.data.Data;
+import com.onlinejudge.springthymeleaf.dto.ProblemDetailsDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 public class ProblemDetailsController {

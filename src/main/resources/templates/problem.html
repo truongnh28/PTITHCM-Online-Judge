@@ -29,8 +29,7 @@
                         <a th:href="@{/submissions}" class="nav-link px-2 link-dark">Bài nộp</a>
                     </li>
                     <li>
-                        <!-- TODO: add controller -->
-                        <a href="#" class="nav-link px-2 link-dark">Bảng xếp hạng</a>
+                        <a th:href="@{/ranking}" class="nav-link px-2 link-dark">Bảng xếp hạng</a>
                     </li>
                 </ul>
                 <a href="#" class="me-2 text-decoration-none" th:text="${session.user.username}"></a>
@@ -67,7 +66,6 @@
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item bg-light">
                                 <div class="d-grid gap-2 my-2">
-                                    <!-- TODO: add controller -->
                                     <a class="btn btn-primary" th:href="@{'/submit/' + ${problemDetails.id}}" role="button">Nộp bài</a>
                                 </div>
                             </li>
@@ -91,7 +89,7 @@
                                 <div class="my-2">
                                     <span><img class="pb-1" th:src="@{/images/memory.svg}" alt="clock.svg"></span>
                                     <span class="fw-bold">Giới hạn bộ nhớ: </span>
-                                    <span th:text="${problemDetails.timeLimit} + 'MB'"></span>
+                                    <span th:text="${problemDetails.memoryLimit} + 'MB'"></span>
                                 </div>
                             </li>
                         </ul>
