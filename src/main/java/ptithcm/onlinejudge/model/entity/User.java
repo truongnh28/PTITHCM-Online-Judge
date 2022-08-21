@@ -18,9 +18,6 @@ public class User {
     @Column(name = "password", length = 100)
     private String password;
 
-    @Column(name = "language", length = 10)
-    private String language;
-
     public String getId() {
         return id;
     }
@@ -43,14 +40,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
     }
 
 }
