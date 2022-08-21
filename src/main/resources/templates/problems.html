@@ -61,8 +61,6 @@
                     <th></th>
                     <th>#</th>
                     <th>Tiêu đề</th>
-                    <th>Đã nộp</th>
-                    <th>Tỉ lệ đạt</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -76,8 +74,6 @@
                     <td>
                         <a th:href="@{'/problem/' + ${problem.id}}" th:text="${problem.title}" class="text-decoration-none"></a>
                     </td>
-                    <td th:text="${problem.totalSubmit}"></td>
-                    <td th:text="${problem.percent} + '%'"></td>
                 </tr>
                 </tbody>
             </table>

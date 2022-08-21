@@ -59,14 +59,16 @@
         <div class="card text-start">
             <div class="m-3">
                 <h2 class="card-title" th:text="${problemDetails.title}"></h2>
-                <label class="form-label">Paste đoạn code của bạn vào đây</label>
-                <form th:action="@{'/submit-code/'+ ${problemDetails.id}}" method="post" th:object="${submit}">
-                    <textarea
-                            class="form-control font-monospace"
-                            rows="3"
-                            style="height: 400px; width: 100%"
-                            th:field="*{sourceCode}"
-                    ></textarea>
+                <label class="form-label">Mời bạn upload code</label>
+                <form th:action="@{'/submit-code/'+ ${problemDetails.id}}" method="post" th:object="${submit}" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <input
+                                type="file"
+                                class="form-control"
+                                name="file"
+                                placeholder="Chọn một file để nộp"
+                        />
+                    </div>
                     <div class="mb-3">
                         <label class="form-label">Ngôn ngữ</label>
                         <select class="form-control" th:field="*{language}">
