@@ -1,4 +1,4 @@
-package ptithcm.onlinejudge.controller;
+package ptithcm.onlinejudge.controller.frontend;
 
 import ptithcm.onlinejudge.data.Data;
 import ptithcm.onlinejudge.dto.*;

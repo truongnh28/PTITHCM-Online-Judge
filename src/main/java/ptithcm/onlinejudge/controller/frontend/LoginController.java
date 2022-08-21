@@ -1,4 +1,4 @@
-package ptithcm.onlinejudge.controller;
+package ptithcm.onlinejudge.controller.frontend;
 
 import ptithcm.onlinejudge.dto.UserLogin;
 import org.springframework.stereotype.Controller;
