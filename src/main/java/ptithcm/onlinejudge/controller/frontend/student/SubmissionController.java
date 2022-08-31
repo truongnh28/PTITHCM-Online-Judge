@@ -1,4 +1,4 @@
-package ptithcm.onlinejudge.controller.frontend;
+package ptithcm.onlinejudge.controller.frontend.student;
 
 import ptithcm.onlinejudge.data.Data;
 import org.springframework.stereotype.Controller;
@@ -10,6 +10,6 @@ public class SubmissionController {
     @GetMapping("submissions")
     public String getSubmissions(Model model) {
         model.addAttribute("submissionList", Data.submissionList);
-        return "submissions";
+        return "/student/submissions";
     }
 }

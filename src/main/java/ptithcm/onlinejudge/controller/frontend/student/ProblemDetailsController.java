@@ -1,7 +1,7 @@
-package ptithcm.onlinejudge.controller.frontend;
+package ptithcm.onlinejudge.controller.frontend.student;
 
 import ptithcm.onlinejudge.data.Data;
-import ptithcm.onlinejudge.dto.ProblemDetailsDTO;
+import ptithcm.onlinejudge.dto.ProblemDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class ProblemDetailsController {
     @GetMapping("/problem/{problemId}")
     public String getProblemDetails(@PathVariable("problemId") String problemId, Model model) {
-        ProblemDetailsDTO problemDetails = new ProblemDetailsDTO();
-        for (ProblemDetailsDTO problem: Data.problemDetailsList) {
+        ProblemDTO problemDetails = new ProblemDTO();
+        for (ProblemDTO problem: Data.problemList) {
             if (problem.getId().equals(problemId)) {
                 problemDetails = problem;
                 break;
             }
         }
         model.addAttribute("problemDetails", problemDetails);
-        return "problem";
+        return "/student/problem";
     }
 }

@@ -1,4 +1,4 @@
-package ptithcm.onlinejudge.controller.frontend;
+package ptithcm.onlinejudge.controller.frontend.student;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -27,17 +27,17 @@ public class SubmitController{
     private StorageService storageService;
     @GetMapping("/submit/{problemId}")
     public String gotoSubmit(@PathVariable("problemId") String problemId, Model model) {
-        ProblemDetailsDTO problemDetails = new ProblemDetailsDTO();
-        for (ProblemDetailsDTO problemDetailsDTO: Data.problemDetailsList) {
-            if (problemDetailsDTO.getId().equals(problemId)) {
-                problemDetails = problemDetailsDTO;
+        ProblemDTO problemDetails = new ProblemDTO();
+        for (ProblemDTO problemDTO : Data.problemList) {
+            if (problemDTO.getId().equals(problemId)) {
+                problemDetails = problemDTO;
                 break;
             }
         }
         SubmitDTO submit = new SubmitDTO();
         model.addAttribute("problemDetails", problemDetails);
         model.addAttribute("submit", submit);
-        return "submit";
+        return "/student/submit";
     }
 
     @PostMapping("/submit-code/{problemId}")
@@ -77,30 +77,30 @@ public class SubmitController{
                 String jobId = jsonObject.getString("job_id");
                 // set các dữ liệu cho submission và submissioncode
                 SubmissionDTO submissionDTO = new SubmissionDTO();
-                submissionDTO.setCodeId(jobId);
+                submissionDTO.setSourceCodeId(jobId);
                 submissionDTO.setProblemId(problemId);
                 submissionDTO.setStatus("Accepted");
                 submissionDTO.setTimeSubmit(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss")));
                 submissionDTO.setTimeExecute(15); // cái này là giả
                 submissionDTO.setLanguage(submitDTO.getLanguage());
-                submissionDTO.setUsername(userLogin.getUsername());
-                SubmissionCodeDTO submissionCodeDTO = new SubmissionCodeDTO();
-                submissionCodeDTO.setCodeId(submissionDTO.getCodeId());
-                submissionCodeDTO.setStatus(submissionDTO.getStatus());
-                submissionCodeDTO.setLanguage(submissionDTO.getLanguage());
-                submissionCodeDTO.setSourceCode(sourceCode);
-                submissionCodeDTO.setTimeExec(submissionDTO.getTimeExecute());
-                submissionCodeDTO.setUsername(submissionDTO.getUsername());
-                submissionCodeDTO.setMemoryUsed(10); // cái này cũng là giả
+                submissionDTO.setStudentId(userLogin.getUsername());
+                SubmissionDetailDTO submissionDetailDTO = new SubmissionDetailDTO();
+                submissionDetailDTO.setSourceCodeId(submissionDTO.getSourceCodeId());
+                submissionDetailDTO.setStatus(submissionDTO.getStatus());
+                submissionDetailDTO.setLanguage(submissionDTO.getLanguage());
+                submissionDetailDTO.setSourceCode(sourceCode);
+                submissionDetailDTO.setTimeExec(submissionDTO.getTimeExecute());
+                submissionDetailDTO.setStudentId(submissionDTO.getStudentId());
+                submissionDetailDTO.setMemoryUsed(10); // cái này cũng là giả
                 Data.submissionList.add(0, submissionDTO);
-                Data.submissionCodeList.add(0, submissionCodeDTO);
-                return "redirect:/submissions";
+                Data.submissionCodeList.add(0, submissionDetailDTO);
+                return "redirect:/student/submissions";
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         } catch (IOException | UnirestException e) {
             throw new RuntimeException(e);
         }
-        return "redirect:/submissions";
+        return "redirect:/student/submissions";
     }
 }

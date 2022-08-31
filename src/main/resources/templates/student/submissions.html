@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Trang chủ</title>
+    <title>Bài nộp</title>
     <!-- Required meta tags -->
     <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
     <!-- Bootstrap CSS v5.2.0-beta1 -->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
-          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
-          crossorigin="anonymous"/>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+            integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+            crossorigin="anonymous"
+    />
 </head>
 <body class="bg-light">
 <main class="container">
@@ -28,9 +33,6 @@
                     <li>
                         <a th:href="@{/submissions}" class="nav-link px-2 link-dark">Bài nộp</a>
                     </li>
-                    <li>
-                        <a th:href="@{/ranking}" class="nav-link px-2 link-dark">Bảng xếp hạng</a>
-                    </li>
                 </ul>
                 <a href="#" class="me-2 text-decoration-none" th:text="${session.user.username}"></a>
                 <div class="dropdown text-end">
@@ -44,7 +46,7 @@
                         <li>
                             <hr class="dropdown-divider"/>
                         </li>
-                        <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
+                        <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
                     </ul>
                 </div>
             </div>
@@ -54,30 +56,53 @@
         <div class="card table-responsive">
             <table class="table table-hover caption-top">
                 <caption class="bg-secondary bg-opacity-10 ps-4">
-                    <h2>Bảng xếp hạng</h2>
+                    <h2>Danh sách các bài nộp</h2>
                 </caption>
                 <thead class="thead-inverse text-center">
                 <tr>
                     <th>#</th>
                     <th>Tài khoản</th>
-                    <th>Tổng điểm</th>
-                    <div th:each="problem: ${problems}">
-                        <th>
-                            <a th:href="@{'/problem/' + ${problem.id}}" th:text="${problem.id}" class="text-decoration-none"></a>
-                        </th>
-                    </div>
+                    <th>Trạng thái</th>
+                    <th>Bài tập</th>
+                    <th>Thời gian</th>
+                    <th>Bộ nhớ</th>
+                    <th>Ngôn ngữ</th>
+                    <th>ID</th>
                 </tr>
                 </thead>
                 <tbody class="text-center">
-                <tr th:each="ranking, iterationStatus: ${rankingList}">
-                    <td scope="row" th:text="${iterationStatus.count}"></td>
+                <tr th:each="submission: ${submissionList}">
+                    <td scope="row" th:text="${submission.timeSubmit}"></td>
                     <td>
-                        <a href="#" class="text-decoration-none" th:text="${ranking.username}"></a>
+                        <a href="#" class="text-decoration-none" th:text="${submission.getStudentId}"></a>
                     </td>
-                    <td th:text="${ranking.sum}"></td>
-                    <div th:each="subScore: ${ranking.score}">
-                        <th th:text="${subScore}"></th>
-                    </div>
+                    <td th:switch="${submission.status}">
+                        <div th:case="'Accepted'"
+                             class="d-inline-flex rounded-1 border bg-success border-success text-light p-1">Accepted
+                        </div>
+                        <div th:case="'Compile Error'"
+                             class="d-inline-flex rounded-1 border bg-warning border-warning text-light p-1">Compile
+                            Error
+                        </div>
+                        <div th:case="'Time Limit Exceeded'"
+                             class="d-inline-flex rounded-1 border bg-danger border-danger text-light p-1">
+                            Time Limit Exceeded
+                        </div>
+                        <div th:case="'Wrong Answer'"
+                             class="d-inline-flex rounded-1 border bg-danger border-danger text-light p-1">
+                            Wrong Answer
+                        </div>
+                    </td>
+                    <td>
+                        <a th:href="@{'/problem/' + ${submission.problemId}}" th:text="${submission.problemId}" class="text-decoration-none"></a>
+                    </td>
+                    <td th:text="${submission.timeExecute} + 'ms'"></td>
+                    <td th:text="${submission.memoryUsed} + 'MB'"></td>
+                    <td th:text="${submission.language}"></td>
+                    <td>
+                        <a th:if="${submission.getStudentId} eq ${session.user.username}" th:href="@{'/submission/' + ${submission.getSourceCodeId}}" th:text="${submission.getSourceCodeId}" class="text-decoration-none"></a>
+                        <a th:unless="${submission.getStudentId} eq ${session.user.username}" th:text="${submission.getSourceCodeId}"></a>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -102,18 +127,25 @@
             </ul>
         </nav>
     </section>
-    <footer class="d-flex px-4 flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+    <footer
+            class="d-flex px-4 flex-wrap justify-content-between align-items-center py-3 my-4 border-top"
+    >
         <div class="col-md-4 d-flex align-items-center">
-            <span class="mb-3 mb-md-0 text-muted">&copy; 2022 All rights reserved</span>
+          <span class="mb-3 mb-md-0 text-muted"
+          >&copy; 2022 All rights reserved</span
+          >
         </div>
     </footer>
 </main>
 <!-- Bootstrap JavaScript Libraries -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+<script
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
         integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous"
+></script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
         integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
         crossorigin="anonymous"
 ></script>

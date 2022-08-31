@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Bài nộp</title>
+    <title>Admin</title>
     <!-- Required meta tags -->
     <meta charset="utf-8"/>
     <meta
@@ -21,30 +21,53 @@
 <main class="container">
     <header class="p-3 mb-3 border-bottom">
         <div class="container">
-            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                <a th:href="@{/problems}" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
-                    <img src="/images/ptit-logo.png" width="40" height="43" alt="ptit-logo.png"/>
+            <div
+                    class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"
+            >
+                <a
+                        th:href="@{/admin/problems}"
+                        class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none"
+                >
+                    <img
+                            th:src="@{/images/ptit-logo.png}"
+                            width="40"
+                            height="43"
+                            alt="ptit-logo.png"
+                    />
                 </a>
 
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                     <li>
-                        <a th:href="@{/problems}" class="nav-link px-2 link-dark">Bài tập</a>
+                        <a th:href="@{/admin/problems}" class="nav-link px-2 link-dark">Bài tập</a>
                     </li>
                     <li>
-                        <a th:href="@{/submissions}" class="nav-link px-2 link-dark">Bài nộp</a>
+                        <a href="#" class="nav-link px-2 link-dark">Cuộc thi</a>
                     </li>
                     <li>
-                        <a th:href="@{/ranking}" class="nav-link px-2 link-dark">Bảng xếp hạng</a>
+                        <a th:href="@{/admin/students}" class="nav-link px-2 link-dark">Sinh viên</a>
+                    </li>
+                    <li>
+                        <a th:href="@{/admin/teachers}" class="nav-link px-2 link-dark">Giáo viên</a>
                     </li>
                 </ul>
                 <a href="#" class="me-2 text-decoration-none" th:text="${session.user.username}"></a>
                 <div class="dropdown text-end">
-                    <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
-                       aria-expanded="false">
-                        <img th:src="@{/images/person.svg}" alt="mdo" width="32" height="32"
-                             class="rounded-circle border border-dark"/>
+                    <a
+                            href="#"
+                            class="d-block link-dark text-decoration-none dropdown-toggle"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        <img
+                                th:src="@{/images/person.svg}"
+                                alt="mdo"
+                                width="32"
+                                height="32"
+                                class="rounded-circle border border-dark"
+                        />
                     </a>
                     <ul class="dropdown-menu text-small">
+                        <li><a class="dropdown-item" href="#">Cài đặt</a></li>
                         <li><a class="dropdown-item" href="#">Thông tin</a></li>
                         <li>
                             <hr class="dropdown-divider"/>
@@ -56,55 +79,52 @@
         </div>
     </header>
     <section>
+        <div class="d-flex flex-wrap justify-content-center mb-3">
+            <a
+                    th:href="@{/add-problem}"
+                    class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-decoration-none btn btn-primary"
+                    role="button"
+            >
+                Thêm mới +
+            </a>
+            <form class="col-12 col-lg-auto mb-3 mb-lg-0" role="search">
+                <input
+                        type="search"
+                        class="form-control"
+                        placeholder="Tìm kiếm tên bài tập..."
+                        aria-label="Search"
+                />
+            </form>
+        </div>
         <div class="card table-responsive">
-            <table class="table table-hover caption-top">
+            <table class="table table-hover caption-top text-center">
                 <caption class="bg-secondary bg-opacity-10 ps-4">
-                    <h2>Danh sách các bài nộp</h2>
+                    <h2>Danh sách các bài tập</h2>
                 </caption>
-                <thead class="thead-inverse text-center">
+                <thead class="thead-inverse">
                 <tr>
+                    <th></th>
                     <th>#</th>
-                    <th>Tài khoản</th>
-                    <th>Trạng thái</th>
-                    <th>Bài tập</th>
-                    <th>Thời gian</th>
-                    <th>Bộ nhớ</th>
-                    <th>Ngôn ngữ</th>
-                    <th>ID</th>
+                    <th>Tiêu đề</th>
+                    <th>Tác giả</th>
+                    <th>Điểm</th>
+                    <th>Hành động</th>
                 </tr>
                 </thead>
-                <tbody class="text-center">
-                <tr th:each="submission: ${submissionList}">
-                    <td scope="row" th:text="${submission.timeSubmit}"></td>
+                <tbody>
+                <tr th:each="problem: ${problems}">
+                    <td></td>
+                    <td th:text="${problem.id}"></td>
+                    <td th:text="${problem.title}"></td>
+                    <td th:text="${problem.author.teacherId}"></td>
+                    <td th:text="${problem.score}"></td>
                     <td>
-                        <a href="#" class="text-decoration-none" th:text="${submission.username}"></a>
-                    </td>
-                    <td th:switch="${submission.status}">
-                        <div th:case="'Accepted'"
-                             class="d-inline-flex rounded-1 border bg-success border-success text-light p-1">Accepted
-                        </div>
-                        <div th:case="'Compile Error'"
-                             class="d-inline-flex rounded-1 border bg-warning border-warning text-light p-1">Compile
-                            Error
-                        </div>
-                        <div th:case="'Time Limit Exceeded'"
-                             class="d-inline-flex rounded-1 border bg-danger border-danger text-light p-1">
-                            Time Limit Exceeded
-                        </div>
-                        <div th:case="'Wrong Answer'"
-                             class="d-inline-flex rounded-1 border bg-danger border-danger text-light p-1">
-                            Wrong Answer
-                        </div>
-                    </td>
-                    <td>
-                        <a th:href="@{'/problem/' + ${submission.problemId}}" th:text="${submission.problemId}" class="text-decoration-none"></a>
-                    </td>
-                    <td th:text="${submission.timeExecute} + 'ms'"></td>
-                    <td th:text="${submission.memoryUsed} + 'MB'"></td>
-                    <td th:text="${submission.language}"></td>
-                    <td>
-                        <a th:if="${submission.username} eq ${session.user.username}" th:href="@{'/submission/' + ${submission.codeId}}" th:text="${submission.codeId}" class="text-decoration-none"></a>
-                        <a th:unless="${submission.username} eq ${session.user.username}" th:text="${submission.codeId}"></a>
+                        <button type="button" class="btn btn-primary btn-sm me-2">
+                            Chỉnh sửa
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm">
+                            Xóa
+                        </button>
                     </td>
                 </tr>
                 </tbody>

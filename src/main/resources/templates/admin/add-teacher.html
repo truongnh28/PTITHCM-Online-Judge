@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thêm sinh viên</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8"/>
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS v5.2.0-beta1 -->
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+            integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+            crossorigin="anonymous"
+    />
+</head>
+<body class="bg-light">
+<main class="container">
+    <header class="p-3 mb-3 border-bottom">
+        <div class="container">
+            <div
+                    class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"
+            >
+                <a
+                        th:href="@{/admin/problems}"
+                        class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none"
+                >
+                    <img
+                            th:src="@{/images/ptit-logo.png}"
+                            width="40"
+                            height="43"
+                            alt="ptit-logo.png"
+                    />
+                </a>
+
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li>
+                        <a th:href="@{/admin/problems}" class="nav-link px-2 link-dark">Bài tập</a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link px-2 link-dark">Cuộc thi</a>
+                    </li>
+                    <li>
+                        <a th:href="@{/admin/students}" class="nav-link px-2 link-dark">Sinh viên</a>
+                    </li>
+                    <li>
+                        <a th:href="@{/admin/teachers}" class="nav-link px-2 link-dark">Giáo viên</a>
+                    </li>
+                </ul>
+                <a href="#" class="me-2 text-decoration-none" th:text="${session.user.username}"></a>
+                <div class="dropdown text-end">
+                    <a
+                            href="#"
+                            class="d-block link-dark text-decoration-none dropdown-toggle"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        <img
+                                th:src="@{/images/person.svg}"
+                                alt="mdo"
+                                width="32"
+                                height="32"
+                                class="rounded-circle border border-dark"
+                        />
+                    </a>
+                    <ul class="dropdown-menu text-small">
+                        <li><a class="dropdown-item" href="#">Cài đặt</a></li>
+                        <li><a class="dropdown-item" href="#">Thông tin</a></li>
+                        <li>
+                            <hr class="dropdown-divider"/>
+                        </li>
+                        <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section>
+        <div class="card text-start bg-light">
+            <div class="card-body">
+                <h2 class="card-title text-center">Thêm mới sinh viên</h2>
+                <form th:action="@{/admin/teacher/add}" method="post" th:object="${teacher}">
+                    <div class="mb-3">
+                        <label for="studentId" class="form-label">
+                            <span class="fw-bold">Mã giáo viên</span>
+                            <span class="fw-bold text-danger">*</span>
+                        </label>
+                        <input
+                                type="text"
+                                th:field="*{teacherId}"
+                                class="form-control"
+                                name="studentId"
+                                id="studentId"
+                                aria-describedby="helpId"
+                                placeholder="Ví dụ: N19DCCN190, N19DCCN221"
+                        />
+                    </div>
+                    <div class="mb-3">
+                        <label for="studentPassword" class="form-label">
+                            <span class="fw-bold">Mật khẩu giáo viên</span>
+                            <span class="fw-bold text-danger">*</span>
+                        </label>
+                        <input
+                                type="password"
+                                th:field="*{teacherPassword}"
+                                class="form-control"
+                                name="studentPassword"
+                                id="studentPassword"
+                                placeholder=""
+                        />
+                    </div>
+                    <div class="mb-3">
+                        <label for="studentLastName" class="form-label">
+                            <span class="fw-bold">Họ giáo viên</span>
+                            <span class="fw-bold text-danger">*</span>
+                        </label>
+                        <input
+                                type="text"
+                                th:field="*{teacherLastName}"
+                                class="form-control"
+                                name="studentLastName"
+                                id="studentLastName"
+                                aria-describedby="helpId"
+                                placeholder=""
+                        />
+                    </div>
+                    <div class="mb-3">
+                        <label for="studentFirstName" class="form-label">
+                            <span class="fw-bold">Tên giáo viên</span>
+                            <span class="fw-bold text-danger">*</span>
+                        </label>
+                        <input
+                                type="text"
+                                th:field="*{teacherFirstName}"
+                                class="form-control"
+                                name="studentFirstName"
+                                id="studentFirstName"
+                                aria-describedby="helpId"
+                                placeholder=""
+                        />
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        Thêm sinh viên
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+    <footer
+            class="d-flex px-4 flex-wrap justify-content-between align-items-center py-3 my-4 border-top"
+    >
+        <div class="col-md-4 d-flex align-items-center">
+          <span class="mb-3 mb-md-0 text-muted"
+          >&copy; 2022 All rights reserved</span
+          >
+        </div>
+    </footer>
+</main>
+<!-- Bootstrap JavaScript Libraries -->
+<script
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+        integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+        crossorigin="anonymous"
+></script>
+
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
+        integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+        crossorigin="anonymous"
+></script>
+</body>
+</html>

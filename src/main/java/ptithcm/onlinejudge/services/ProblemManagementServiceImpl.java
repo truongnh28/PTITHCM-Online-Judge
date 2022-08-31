@@ -42,12 +42,11 @@ public class ProblemManagementServiceImpl implements ProblemManagementService{
         String problemId = problemRequest.getProblemId();
         String problemName = problemRequest.getProblemName();
         int score = problemRequest.getScore();
-        Optional<Contest> contest = contestRepository.findById(problemRequest.getContestId());
         ObjectMapper objectMapper = new ObjectMapper();
         Map uploadInfo = objectMapper.convertValue(responseUpload.getData(), Map.class);
         String problemCloudinaryId = uploadInfo.get("public_id").toString();
         String url = uploadInfo.get("url").toString();
-        Problem problem = new Problem(problemId, problemName, score, contest.get(), problemCloudinaryId, url);
+        Problem problem = new Problem(problemId, problemName, score, null, problemCloudinaryId, url);
         problemRepository.save(problem);
         return new ResponseObject(HttpStatus.OK, "Success", problem);
     }
@@ -70,7 +69,6 @@ public class ProblemManagementServiceImpl implements ProblemManagementService{
         String problemId = problemRequest.getProblemId();
         String problemName = problemRequest.getProblemName();
         int score = problemRequest.getScore();
-        Optional<Contest> contest = contestRepository.findById(problemRequest.getContestId());
         ObjectMapper objectMapper = new ObjectMapper();
         Map uploadInfo = objectMapper.convertValue(responseUpload.getData(), Map.class);
         String problemCloudinaryId = uploadInfo.get("public_id").toString();
@@ -78,7 +76,6 @@ public class ProblemManagementServiceImpl implements ProblemManagementService{
         Optional<Problem> problem = problemRepository.findById(problemId);
         problem.get().setProblemName(problemName);
         problem.get().setScore(score);
-        problem.get().setContest(contest.get());
         problem.get().setProblemCloudinaryId(problemCloudinaryId);
         problem.get().setProblemUrl(url);
         ResponseObject responseDelete = uploadFileService.deleteFile(problemCloudinaryId);
@@ -106,7 +103,6 @@ public class ProblemManagementServiceImpl implements ProblemManagementService{
         boolean problemId = problemRepository.existsById(problem.getProblemId());
         boolean problemName = problem.getProblemName().length() > 0;
         boolean score = problem.getScore() > 0 && problem.getScore() <= 10;
-        boolean contestId = contestRepository.existsById(problem.getContestId());
-        return problemId && problemName && score && contestId;
+        return problemId && problemName && score;
     }
 }

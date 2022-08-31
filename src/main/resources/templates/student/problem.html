@@ -28,9 +28,6 @@
                     <li>
                         <a th:href="@{/submissions}" class="nav-link px-2 link-dark">Bài nộp</a>
                     </li>
-                    <li>
-                        <a th:href="@{/ranking}" class="nav-link px-2 link-dark">Bảng xếp hạng</a>
-                    </li>
                 </ul>
                 <a href="#" class="me-2 text-decoration-none" th:text="${session.user.username}"></a>
                 <div class="dropdown text-end">
@@ -44,7 +41,7 @@
                         <li>
                             <hr class="dropdown-divider"/>
                         </li>
-                        <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
+                        <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
                     </ul>
                 </div>
             </div>

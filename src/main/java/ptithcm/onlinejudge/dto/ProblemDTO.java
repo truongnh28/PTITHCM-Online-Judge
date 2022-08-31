@@ -7,11 +7,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProblemDetailsDTO {
+public class ProblemDTO {
     private String id;
     private String title;
     private String description;
-    private double timeLimit;
+    private int timeLimit;
     private int memoryLimit;
     private int score;
+    private TeacherDTO author;
+    private boolean hide;
+    private boolean solved;
 }

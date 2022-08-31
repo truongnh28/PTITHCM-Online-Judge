@@ -1,4 +1,4 @@
-package ptithcm.onlinejudge.controller.frontend;
+package ptithcm.onlinejudge.controller.frontend.student;
 
 import ptithcm.onlinejudge.data.Data;
 import org.springframework.stereotype.Controller;
@@ -10,6 +10,6 @@ public class ProblemsController{
     @GetMapping("/problems")
     public String getProblems(Model model) {
         model.addAttribute("problems", Data.problemList);
-        return "problems";
+        return "/student/problems";
     }
 }

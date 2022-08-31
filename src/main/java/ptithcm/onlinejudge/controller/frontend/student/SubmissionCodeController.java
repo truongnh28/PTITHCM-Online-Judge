@@ -1,7 +1,7 @@
-package ptithcm.onlinejudge.controller.frontend;
+package ptithcm.onlinejudge.controller.frontend.student;
 
 import ptithcm.onlinejudge.data.Data;
-import ptithcm.onlinejudge.dto.SubmissionCodeDTO;
+import ptithcm.onlinejudge.dto.SubmissionDetailDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class SubmissionCodeController{
     @GetMapping("/submission/{codeId}")
     public String getSubmissionCode(@PathVariable("codeId") String codeId, Model model) {
-        SubmissionCodeDTO submissionCode = new SubmissionCodeDTO();
-        for (SubmissionCodeDTO submissionCodeDTO: Data.submissionCodeList) {
-            if (submissionCodeDTO.getCodeId().equals(codeId)) {
-                submissionCode = submissionCodeDTO;
+        SubmissionDetailDTO submissionCode = new SubmissionDetailDTO();
+        for (SubmissionDetailDTO submissionDetailDTO : Data.submissionCodeList) {
+            if (submissionDetailDTO.getSourceCodeId().equals(codeId)) {
+                submissionCode = submissionDetailDTO;
                 break;
             }
         }
         model.addAttribute("submissionCode", submissionCode);
-        return "submission-code";
+        return "/student/submission-code";
     }
 }

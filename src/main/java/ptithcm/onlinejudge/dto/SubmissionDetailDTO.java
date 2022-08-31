@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubmissionCodeDTO {
-    private String codeId;
+public class SubmissionDetailDTO {
+    private String sourceCodeId;
     private String sourceCode;
     private int timeExec;
     private int memoryUsed;
-    private String username;
+    private String studentId;
     private String language;
     private String status;
 }

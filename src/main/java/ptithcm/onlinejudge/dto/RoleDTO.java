@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProblemInfoDTO {
-    private String id;
-    private String title;
-    private boolean solved;
+public class RoleDTO {
+    private int roleId;
+    private String roleName;
 }

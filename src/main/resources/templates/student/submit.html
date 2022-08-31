@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Thông tin bài nộp</title>
+    <title>Bài nộp</title>
     <!-- Required meta tags -->
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta
             name="viewport"
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
@@ -17,7 +17,7 @@
             crossorigin="anonymous"
     />
 </head>
-<body>
+<body class="bg-light">
 <main class="container">
     <header class="p-3 mb-3 border-bottom">
         <div class="container">
@@ -33,9 +33,6 @@
                     <li>
                         <a th:href="@{/submissions}" class="nav-link px-2 link-dark">Bài nộp</a>
                     </li>
-                    <li>
-                        <a th:href="@{/ranking}" class="nav-link px-2 link-dark">Bảng xếp hạng</a>
-                    </li>
                 </ul>
                 <a href="#" class="me-2 text-decoration-none" th:text="${session.user.username}"></a>
                 <div class="dropdown text-end">
@@ -49,7 +46,7 @@
                         <li>
                             <hr class="dropdown-divider"/>
                         </li>
-                        <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
+                        <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
                     </ul>
                 </div>
             </div>
@@ -57,25 +54,30 @@
     </header>
     <section>
         <div class="card text-start">
-            <div class="card-body">
-                <h4 class="card-title" th:text="${submissionCode.status}">Accepted</h4>
-                <span th:text="'Thời gian: ' + ${submissionCode.timeExec} + 's &NonBreakingSpace;'"></span>
-                <span th:text="'Bộ nhớ: ' + ${submissionCode.memoryUsed} + 'MB &NonBreakingSpace;'"></span>
-                <span th:text="'Ngôn ngữ: ' + ${submissionCode.language} + '&NonBreakingSpace;'"></span>
-                <span th:text="'Tài khoản: ' + ${submissionCode.username} + '&NonBreakingSpace;'"></span>
-                <div class="mb-3">
-                    <label for="code" class="form-label"></label>
-                    <textarea
-                            class="form-control bg-light font-monospace ps-1"
-                            name="code"
-                            id="code"
-                            rows="3"
-                            style="width: 100%; height: 400px"
-                            th:text="${submissionCode.sourceCode}"
-                            readonly
-                    >
-              </textarea>
-                </div>
+            <div class="m-3">
+                <h2 class="card-title" th:text="${problemDetails.title}"></h2>
+                <label class="form-label">Mời bạn upload code</label>
+                <form th:action="@{'/submit-code/'+ ${problemDetails.id}}" method="post" th:object="${submit}" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <input
+                                type="file"
+                                class="form-control"
+                                name="file"
+                                placeholder="Chọn một file để nộp"
+                        />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ngôn ngữ</label>
+                        <select class="form-control" th:field="*{language}">
+                            <option value="C++">C++</option>
+                            <option value="Java">Java</option>
+                            <option value="Python">Python</option>
+                        </select>
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-primary">Nộp code</button>
+                    </div>
+                </form>
             </div>
         </div>
     </section>

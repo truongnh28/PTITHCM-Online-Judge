@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubmitDTO {
-    private String username;
+    private String studentId;
     private String problemId;
     private String sourceCode;
     private String language;
