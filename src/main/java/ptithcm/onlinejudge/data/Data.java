@@ -9,7 +9,7 @@ public class Data {
     public static List<RoleDTO> roleList = new ArrayList<>();
 
     static {
-        roleList.add(new RoleDTO(1, "ROLE_Admin"));
+        roleList.add(new RoleDTO(1, "ROLE_Teacher"));
         roleList.add(new RoleDTO(2, "ROLE_Student"));
     }
 
@@ -18,18 +18,72 @@ public class Data {
     static {
         studentList.add(new StudentDTO("N19DCCN190", "26102001", "Thanh", "Nguyễn Nhật", true, roleList.get(1)));
         studentList.add(new StudentDTO("N19DCCN221", "28022001", "Trưởng", "Nguyễn Hữu", true, roleList.get(1)));
+        studentList.add(new StudentDTO("N19DCCN132", "01012001", "Nhơn", "Trần Quốc", true, roleList.get(1)));
+        studentList.add(new StudentDTO("N19DCCN031", "02012001", "Hân", "Trần Thái", true, roleList.get(1)));
     }
 
     public static List<TeacherDTO> teacherList = new ArrayList<>();
+
     static {
-        teacherList.add(new TeacherDTO("admin", "ptithcm", "Admin", "Admin", true, roleList.get(1)));
+        teacherList.add(new TeacherDTO("admin", "admin", "Kỳ Thư", "Lưu Nguyễn Kỳ Thư", true, roleList.get(0)));
+    }
+
+    public static List<ProblemTypeDTO> problemTypeList = new ArrayList<>();
+
+    static {
+        problemTypeList.add(new ProblemTypeDTO("array", "Array"));
+        problemTypeList.add(new ProblemTypeDTO("basic", "Basic"));
+        problemTypeList.add(new ProblemTypeDTO("greedy", "Greedy"));
+        problemTypeList.add(new ProblemTypeDTO("binarysearch", "Binary Search"));
+        problemTypeList.add(new ProblemTypeDTO("sorting", "Sorting"));
+        problemTypeList.add(new ProblemTypeDTO("math", "Math"));
+        problemTypeList.add(new ProblemTypeDTO("matrix", "Matrix"));
+    }
+
+    public static List<ProblemHasTypeDTO> problemHasTypeList = new ArrayList<>();
+
+    static {
+        problemHasTypeList.add(new ProblemHasTypeDTO("aplusb", "basic"));
+        problemHasTypeList.add(new ProblemHasTypeDTO("findprime", "array"));
+        problemHasTypeList.add(new ProblemHasTypeDTO("findprime", "math"));
+    }
+
+    public static List<LevelDTO> levelList = new ArrayList<>();
+
+    static {
+        levelList.add(new LevelDTO(1, "Dễ"));
+        levelList.add(new LevelDTO(2, "Trung bình"));
+        levelList.add(new LevelDTO(3, "Khó"));
+    }
+
+    public static List<SubjectDTO> subjectList = new ArrayList<>();
+
+    static {
+        subjectList.add(new SubjectDTO("INT13162", "Lập trình với python"));
+        subjectList.add(new SubjectDTO("INT1332", "Lập trình hướng đối tượng"));
+    }
+
+    public static List<SubjectClassDTO> subjectClassList = new ArrayList<>();
+
+    static {
+        subjectClassList.add(new SubjectClassDTO("INT13162-CN1", "D19CQCN01-N", "INT13162"));
+        subjectClassList.add(new SubjectClassDTO("INT13162-CN2", "D19CQCN02-N", "INT13162"));
+        subjectClassList.add(new SubjectClassDTO("INT1332-CN1", "D19CQCN01-N", "INT1332"));
+    }
+
+    public static List<SubjectClassGroupDTO> subjectClassGroupList = new ArrayList<>();
+
+    static {
+        subjectClassGroupList.add(new SubjectClassGroupDTO("INT13162-CN1-1", "Nhóm 1 CN1", "INT13162-CN1"));
+        subjectClassGroupList.add(new SubjectClassGroupDTO("INT13162-CN1-2", "Nhóm 2 CN1", "INT13162-CN1"));
+        subjectClassGroupList.add(new SubjectClassGroupDTO("INT13162-CN2-1", "Nhóm 1 CN2", "INT13162-CN2"));
     }
 
     public static List<ProblemDTO> problemList = new ArrayList<>();
 
     static {
-        problemList.add(new ProblemDTO("aplusb", "A cộng B", "/problem-pdf/A cộng B.pdf", 1000, 512, 100, teacherList.get(0), false, true));
-        problemList.add(new ProblemDTO("findprime", "Tìm số nguyên tố", "/problem-pdf/Tìm số nguyên tố.pdf", 1000, 512, 100, teacherList.get(0), false, false));
+        problemList.add(new ProblemDTO("aplusb", "A cộng B", "/problem-pdf/A cộng B.pdf", 1000, 512, 100, levelList.get(0), teacherList.get(0), false, true));
+        problemList.add(new ProblemDTO("findprime", "Tìm số nguyên tố", "/problem-pdf/Tìm số nguyên tố.pdf", 1000, 512, 100, levelList.get(1), teacherList.get(0), false, false));
     }
 
     public static List<SubmissionDetailDTO> submissionCodeList = new ArrayList<>();

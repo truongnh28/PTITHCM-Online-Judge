@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${problemDetails.id}"></title>
+    <title th:text="${problemDetails.getProblemId}"></title>
     <!-- Required meta tags -->
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 
     <!-- Bootstrap CSS v5.2.0-beta1 -->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
-          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
-          crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous"/>
 </head>
 <body class="bg-light">
 <main class="container">
@@ -52,8 +50,8 @@
             <div class="col-9">
                 <div class="card bg-light">
                     <div class="card-body">
-                        <h2 class="card-title" th:text="${problemDetails.title}"></h2>
-                            <iframe th:src="@{${problemDetails.description}}" width="100%" height="600"></iframe>
+                        <h2 class="card-title" th:text="${problemDetails.getProblemTitle}"></h2>
+                        <iframe th:src="@{${problemDetails.getProblemDescription}}" width="100%" height="600"></iframe>
                     </div>
                 </div>
             </div>
@@ -63,7 +61,8 @@
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item bg-light">
                                 <div class="d-grid gap-2 my-2">
-                                    <a class="btn btn-primary" th:href="@{'/submit/' + ${problemDetails.id}}" role="button">Nộp bài</a>
+                                    <a class="btn btn-primary" th:href="@{'/submit/' + ${problemDetails.getProblemId}}"
+                                       role="button">Nộp bài</a>
                                 </div>
                             </li>
                             <li class="list-group-item bg-light">
@@ -76,17 +75,17 @@
                                 <div class="my-2">
                                     <span><img class="pb-1" th:src="@{/images/check2.svg}" alt="check2.svg"></span>
                                     <span class="fw-bold">Điểm: </span>
-                                    <span th:text="${problemDetails.score}"></span>
+                                    <span th:text="${problemDetails.getProblemScore}"></span>
                                 </div>
                                 <div class="my-2">
                                     <span><img class="pb-1" th:src="@{/images/clock.svg}" alt="clock.svg"></span>
                                     <span class="fw-bold">Giới hạn thời gian: </span>
-                                    <span th:text="${problemDetails.timeLimit} + 's'"></span>
+                                    <span th:text="${problemDetails.getProblemTimeLimit} + 's'"></span>
                                 </div>
                                 <div class="my-2">
                                     <span><img class="pb-1" th:src="@{/images/memory.svg}" alt="clock.svg"></span>
                                     <span class="fw-bold">Giới hạn bộ nhớ: </span>
-                                    <span th:text="${problemDetails.memoryLimit} + 'MB'"></span>
+                                    <span th:text="${problemDetails.getProblemMemoryLimit} + 'MB'"></span>
                                 </div>
                             </li>
                         </ul>

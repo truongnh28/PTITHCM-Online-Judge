@@ -29,7 +29,7 @@ public class SubmitController{
     public String gotoSubmit(@PathVariable("problemId") String problemId, Model model) {
         ProblemDTO problemDetails = new ProblemDTO();
         for (ProblemDTO problemDTO : Data.problemList) {
-            if (problemDTO.getId().equals(problemId)) {
+            if (problemDTO.getProblemId().equals(problemId)) {
                 problemDetails = problemDTO;
                 break;
             }

@@ -37,7 +37,7 @@ public class LoginController {
         }
         if (isTeacher) {
             session.setAttribute("user", user);
-            return "redirect:/admin/problems";
+            return "redirect:/teacher/problem";
         }
         if (isStudent) {
             session.setAttribute("user", user);

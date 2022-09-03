@@ -13,7 +13,7 @@ public class ProblemDetailsController {
     public String getProblemDetails(@PathVariable("problemId") String problemId, Model model) {
         ProblemDTO problemDetails = new ProblemDTO();
         for (ProblemDTO problem: Data.problemList) {
-            if (problem.getId().equals(problemId)) {
+            if (problem.getProblemId().equals(problemId)) {
                 problemDetails = problem;
                 break;
             }

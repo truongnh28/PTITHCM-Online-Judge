@@ -66,10 +66,10 @@
                         <img th:if="${problem.solved}" th:src="@{images/check2.svg}" alt="check2.svg"/>
                     </td>
                     <td>
-                        <a th:href="@{'/problem/' + ${problem.id}}" th:text="${problem.id}" class="text-decoration-none"></a>
+                        <a th:href="@{'/problem/' + ${problem.getProblemId}}" th:text="${problem.getProblemId}" class="text-decoration-none"></a>
                     </td>
                     <td>
-                        <a th:href="@{'/problem/' + ${problem.id}}" th:text="${problem.title}" class="text-decoration-none"></a>
+                        <a th:href="@{'/problem/' + ${problem.getProblemId}}" th:text="${problem.getProblemTitle}" class="text-decoration-none"></a>
                     </td>
                 </tr>
                 </tbody>
