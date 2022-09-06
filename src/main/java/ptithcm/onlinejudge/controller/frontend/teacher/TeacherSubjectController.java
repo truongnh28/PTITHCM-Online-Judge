@@ -8,6 +8,7 @@ import ptithcm.onlinejudge.dto.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/teacher/subject")
@@ -92,6 +93,43 @@ public class TeacherSubjectController {
         if (isExisted)
             return "redirect:/error";
         Data.subjectClassList.add(subjectClass);
+        return "redirect:/teacher/subject/{subjectId}";
+    }
+
+    private Optional<SubjectClassDTO> findSubjectClassById(String subjectClassId) {
+        SubjectClassDTO subjectClass = new SubjectClassDTO();
+        boolean isExisted = false;
+        for (SubjectClassDTO subjectClassDTO: Data.subjectClassList) {
+            if (subjectClassDTO.getSubjectClassId().equals(subjectClassId)) {
+                subjectClass = subjectClassDTO;
+                isExisted = true;
+                break;
+            }
+        }
+        return isExisted ? Optional.of(subjectClass) : Optional.empty();
+    }
+
+    @GetMapping("/{subjectId}/class/{classId}/edit")
+    public String showEditClassPage(@PathVariable("subjectId") String subjectId,
+                                    @PathVariable("classId") String classId,
+                                    Model model) {
+        model.addAttribute("pageTitle", "Chỉnh sửa lớp");
+        Optional<SubjectClassDTO> foundSubjectClass = findSubjectClassById(subjectId);
+        if (foundSubjectClass.isEmpty())
+            return "redirect:/error";
+        model.addAttribute("subjectClass", foundSubjectClass.get());
+        return "/teacher/subject-class-edit";
+    }
+
+    @PostMapping("/{subjectId}/class/{classId}/edit")
+    public String editClass(@PathVariable("subjectId") String subjectId,
+                            @PathVariable("classId") String classId,
+                            @ModelAttribute("subjectClass") SubjectClassDTO subjectClass) {
+        Optional<SubjectClassDTO> foundSubjectClass = findSubjectClassById(subjectId);
+        if (foundSubjectClass.isEmpty())
+            return "redirect:/error";
+        SubjectClassDTO newSubjectClass = foundSubjectClass.get();
+        newSubjectClass.setSubjectClassName(subjectClass.getSubjectClassName());
         return "redirect:/teacher/subject/{subjectId}";
     }
 

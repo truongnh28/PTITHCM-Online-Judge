@@ -8,37 +8,37 @@
     <section>
         <div class="card bg-light">
             <div class="card-body">
-                <form th:action="@{/teacher/student/add}" method="post" th:object="${student}">
-                    <h2 class="card-title text-center">Thêm sinh viên</h2>
+                <form th:action="@{/teacher/contest/group/{groupId}/add(groupId=${groupId})}" method="post" th:object="${contest}">
+                    <h2 class="card-title text-center">Thêm bài thực hành</h2>
                     <div class="mb-3">
                         <label class="form-label">
-                            <span class="fw-bold">Mã sinh viên (tài khoản sinh viên)</span>
+                            <span class="fw-bold">Mã bài thực hành</span>
                             <span class="fw-bold text-danger">*</span>
                         </label>
-                        <input type="text" class="form-control" th:field="*{studentId}" aria-describedby="helpId" placeholder="Ví dụ: N19DCCN190,..."/>
+                        <input type="text" class="form-control" th:field="*{contestId}" aria-describedby="helpId" placeholder="Ví dụ: THPYD19CN1-NHOM1"/>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">
-                            <span class="fw-bold">Mật khẩu</span>
+                            <span class="fw-bold">Tên bài thực hành</span>
                             <span class="fw-bold text-danger">*</span>
                         </label>
-                        <input type="password" class="form-control" th:field="*{studentPassword}" aria-describedby="helpId" placeholder=""/>
+                        <input type="text" class="form-control" th:field="*{contestName}" aria-describedby="helpId" placeholder="Ví dụ: thực hành python"/>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">
-                            <span class="fw-bold">Họ sinh viên</span>
+                            <span class="fw-bold">Thời gian bắt đầu</span>
                             <span class="fw-bold text-danger">*</span>
                         </label>
-                        <input type="text" class="form-control" th:field="*{studentLastName}" aria-describedby="helpId" placeholder="Ví dụ: Nguyễn Văn"/>
+                        <input type="datetime-local" class="form-control" th:field="*{contestStart}" aria-describedby="helpId" placeholder=""/>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">
-                            <span class="fw-bold">Tên sinh viên</span>
+                            <span class="fw-bold">Thời gian kết thúc</span>
                             <span class="fw-bold text-danger">*</span>
                         </label>
-                        <input type="text" class="form-control" th:field="*{studentFirstName}" aria-describedby="helpId" placeholder="Ví dụ: Anh"/>
+                        <input type="datetime-local" class="form-control" th:field="*{contestEnd}" aria-describedby="helpId" placeholder=""/>
                     </div>
-                    <button type="submit" class="btn btn-primary">Lưu sinh viên</button>
+                    <button type="submit" class="btn btn-primary">Lưu bài thực hành</button>
                 </form>
             </div>
         </div>

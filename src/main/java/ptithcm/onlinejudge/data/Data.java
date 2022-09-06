@@ -83,6 +83,10 @@ public class Data {
 
     public static List<StudentOfGroupDTO> studentOfGroupList = new ArrayList<>();
 
+    public static List<ContestDTO> contestList = new ArrayList<>();
+
+    public static List<GroupHasContestDTO> groupHasContestList = new ArrayList<>();
+
     public static List<ProblemDTO> problemList = new ArrayList<>();
 
     static {

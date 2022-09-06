@@ -4,6 +4,14 @@
 <body class="bg-light">
 <main class="container">
     <header th:replace="/fragments/teacher-header :: teacher-header"></header>
+    <div class="d-flex mb-3">
+        <div class="me-auto">
+            <a th:href="@{/teacher/problem}" class="btn btn-secondary">Về trang chủ</a>
+        </div>
+        <form>
+            <input type="search" class="form-control" placeholder="Tìm môn học..." aria-label="Search"/>
+        </form>
+    </div>
     <section>
         <div class="card table-responsive mb-3">
             <table class="table table-hover caption-top text-center">
@@ -26,8 +34,8 @@
                     <td th:text="${subject.subjectId}"></td>
                     <td th:text="${subject.subjectName}"></td>
                     <td>
-                        <a th:href="@{/teacher/subject/{id}(id=${subject.subjectId})}" type="button" class="btn btn-primary btn-sm me-2">
-                            Chi tiết
+                        <a th:href="@{/teacher/subject/{id}(id=${subject.subjectId})}" type="button" class="btn btn-info btn-sm me-2">
+                            Xem chi tiết
                         </a>
                     </td>
                 </tr>

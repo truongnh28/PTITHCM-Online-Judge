@@ -5,11 +5,16 @@
 <main class="container">
     <header th:replace="/fragments/teacher-header :: teacher-header"></header>
     <section>
-        <div class="d-flex flex-wrap justify-content-center mb-3">
-            <a th:href="@{/teacher/subject/{subjectId}/class/{classId}/add(subjectId=${subjectId}, classId=${classId})}" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-decoration-none btn btn-primary" role="button">Thêm mới</a>
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0" role="search">
-                <input type="search" class="form-control" placeholder="Tìm kiếm lớp môn học..." aria-label="Search"/>
-            </form>
+        <div class="d-flex mb-3">
+            <div>
+                <a th:href="@{/teacher/subject/{subjectId}/class/{classId}/add(subjectId=${subjectId}, classId=${classId})}" class="btn btn-primary" role="button">Thêm nhóm thực hành mới</a>
+                <a th:href="@{/teacher/subject/{subjectId}(subjectId=${subjectId})}" class="btn btn-secondary" role="button">Về trang lớp môn học</a>
+            </div>
+            <div class="ms-auto">
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0" role="search">
+                    <input type="search" class="form-control" placeholder="Tìm kiếm lớp môn học..." aria-label="Search"/>
+                </form>
+            </div>
         </div>
         <div class="card table-responsive mb-3">
             <table class="table table-hover caption-top text-center">
@@ -32,10 +37,9 @@
                     <td th:text="${subjectClassGroup.subjectClassGroupId}"></td>
                     <td th:text="${subjectClassGroup.subjectClassGroupName}"></td>
                     <td>
-                        <a th:href="@{'/teacher/subject/' + ${subjectId} +
-                        '/class/' + ${classId} +
-                        '/group/' + ${subjectClassGroup.subjectClassGroupId}}" type="button" class="btn btn-primary btn-sm me-2">
-                            Chi tiết
+                        <a th:href="@{/teacher/subject/{subjectId}/class/{classId}/group/{groupId}(subjectId=${subjectId},classId=${classId},groupId=${subjectClassGroup.subjectClassGroupId})}"
+                           type="button" class="btn btn-info btn-sm me-2">
+                            Xem chi tiết
                         </a>
                     </td>
                 </tr>
