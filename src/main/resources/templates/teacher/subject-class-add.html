@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head :: head">
+</head>
+<body class="bg-light">
+<main class="container">
+    <header th:replace="/fragments/teacher-header :: teacher-header"></header>
+    <section>
+        <div class="card bg-light">
+            <div class="card-body">
+                <form th:action="@{/teacher/subject/{subjectId}/add(subjectId=${subjectId})}" method="post" th:object="${subjectClass}">
+                    <h2 class="card-title text-center" th:text="'Thêm lớp cho môn học ' + ${subjectId}"></h2>
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <span class="fw-bold">Mã lớp môn học</span>
+                            <span class="fw-bold text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" th:field="*{subjectClassId}" aria-describedby="helpId" placeholder="Ví dụ: INT13162-CN1,..."/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <span class="fw-bold">Tên lớp môn học</span>
+                            <span class="fw-bold text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" th:field="*{subjectClassName}" aria-describedby="helpId" placeholder="Ví dụ: Lập trình python lớp D19CN1,..."/>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Lưu lớp môn học</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    <footer th:replace="/fragments/footer :: footer">
+    </footer>
+</main>
+<!-- Bootstrap JavaScript Libraries -->
+<script
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+        integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+        crossorigin="anonymous"
+></script>
+
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
+        integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+        crossorigin="anonymous"
+></script>
+</body>
+</html>

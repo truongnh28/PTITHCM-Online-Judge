@@ -11,5 +11,6 @@ public class TestCaseDTO {
     private String testCaseId;
     private String testCaseInput;
     private String testCaseOutput;
+    private int testCaseScore;
     private String problemId;
 }

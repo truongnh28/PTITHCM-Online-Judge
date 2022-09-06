@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head :: head">
+</head>
+<body class="bg-light">
+<main class="container">
+    <header th:replace="/fragments/teacher-header :: teacher-header"></header>
+    <section>
+        <div class="card bg-light">
+            <div class="card-body">
+                <form th:action="@{'/teacher/subject/' + ${subjectId} + '/class/' + ${classId} + '/add'}" method="post" th:object="${subjectClassGroup}">
+                    <h2 class="card-title text-center" th:text="'Thêm nhóm thực hành cho lớp ' + ${subjectId}"></h2>
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <span class="fw-bold">Mã nhóm thực hành</span>
+                            <span class="fw-bold text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" th:field="*{subjectClassGroupId}" aria-describedby="helpId" placeholder="Ví dụ: INT13162-CN1-1,..."/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <span class="fw-bold">Tên nhóm thực hành</span>
+                            <span class="fw-bold text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" th:field="*{subjectClassGroupName}" aria-describedby="helpId" placeholder="Ví dụ: Lập trình python lớp D19CN1 nhóm 1,..."/>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Lưu nhóm thực hành</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    <footer th:replace="/fragments/footer :: footer">
+    </footer>
+</main>
+<!-- Bootstrap JavaScript Libraries -->
+<script
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+        integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+        crossorigin="anonymous"
+></script>
+
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
+        integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+        crossorigin="anonymous"
+></script>
+</body>
+</html>

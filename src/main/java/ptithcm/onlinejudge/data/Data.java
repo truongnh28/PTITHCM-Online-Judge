@@ -56,6 +56,8 @@ public class Data {
         levelList.add(new LevelDTO(3, "Khó"));
     }
 
+    public static List<TestCaseDTO> testCaseList = new ArrayList<>();
+
     public static List<SubjectDTO> subjectList = new ArrayList<>();
 
     static {
@@ -66,18 +68,20 @@ public class Data {
     public static List<SubjectClassDTO> subjectClassList = new ArrayList<>();
 
     static {
-        subjectClassList.add(new SubjectClassDTO("INT13162-CN1", "D19CQCN01-N", "INT13162"));
-        subjectClassList.add(new SubjectClassDTO("INT13162-CN2", "D19CQCN02-N", "INT13162"));
-        subjectClassList.add(new SubjectClassDTO("INT1332-CN1", "D19CQCN01-N", "INT1332"));
+        subjectClassList.add(new SubjectClassDTO("INT13162-CN1", "Lập trình python lớp D19CN1", "INT13162"));
+        subjectClassList.add(new SubjectClassDTO("INT13162-CN2", "Lập trình python lớp D19CN2", "INT13162"));
+        subjectClassList.add(new SubjectClassDTO("INT1332-CN1", "Lập trình hướng đối tượng lớp D19CN1", "INT1332"));
     }
 
     public static List<SubjectClassGroupDTO> subjectClassGroupList = new ArrayList<>();
 
     static {
-        subjectClassGroupList.add(new SubjectClassGroupDTO("INT13162-CN1-1", "Nhóm 1 CN1", "INT13162-CN1"));
-        subjectClassGroupList.add(new SubjectClassGroupDTO("INT13162-CN1-2", "Nhóm 2 CN1", "INT13162-CN1"));
-        subjectClassGroupList.add(new SubjectClassGroupDTO("INT13162-CN2-1", "Nhóm 1 CN2", "INT13162-CN2"));
+        subjectClassGroupList.add(new SubjectClassGroupDTO("INT13162-CN1-1", "Lập trình python Nhóm 1 D19CN1", "INT13162-CN1"));
+        subjectClassGroupList.add(new SubjectClassGroupDTO("INT13162-CN1-2", "Lập trình python Nhóm 2 D19CN1", "INT13162-CN1"));
+        subjectClassGroupList.add(new SubjectClassGroupDTO("INT13162-CN2-1", "Lập trình python Nhóm 1 D19CN2", "INT13162-CN2"));
     }
+
+    public static List<StudentOfGroupDTO> studentOfGroupList = new ArrayList<>();
 
     public static List<ProblemDTO> problemList = new ArrayList<>();
 

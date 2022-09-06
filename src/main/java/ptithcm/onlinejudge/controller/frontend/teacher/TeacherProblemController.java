@@ -1,7 +1,6 @@
 package ptithcm.onlinejudge.controller.frontend.teacher;
 
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -21,13 +20,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/teacher/problem")
 public class TeacherProblemController {
-    @Autowired
-    private UploadFileService uploadFileService;
+    private final UploadFileService uploadFileService;
+
+    public TeacherProblemController(UploadFileService uploadFileService) {
+        this.uploadFileService = uploadFileService;
+    }
+
     @GetMapping("")
     public String showProblemList(Model model) {
         model.addAttribute("pageTitle", "Problem list");
@@ -48,7 +50,7 @@ public class TeacherProblemController {
         model.addAttribute("problemTypes", problemTypeList);
         List<LevelDTO> levelList = Data.levelList;
         model.addAttribute("levels", levelList);
-        return "/teacher/add-problem";
+        return "/teacher/problem-add";
     }
 
     private LevelDTO getLevelById(int id) {
@@ -85,7 +87,7 @@ public class TeacherProblemController {
     }
 
     private boolean checkFileIsNotUploaded(MultipartFile[] file) {
-        return Arrays.asList(file).stream().filter(f -> !f.isEmpty()).count() == 0;
+        return Arrays.stream(file).filter(f -> !f.isEmpty()).count() == 0;
     }
 
     private boolean checkTestCaseUpload(MultipartFile[] testCasesIn, MultipartFile[] testCasesOut) {
@@ -100,9 +102,9 @@ public class TeacherProblemController {
         // if upload with the same number of file of input and output
         String[] fileNameInArray = new String[testCasesIn.length];
         String[] fileNameOutArray = new String[testCasesOut.length];
-        fileNameInArray = Arrays.stream(testCasesIn).map(item -> item.getOriginalFilename()).collect(Collectors.toList()).toArray(fileNameInArray);
+        fileNameInArray = Arrays.stream(testCasesIn).map(MultipartFile::getOriginalFilename).toList().toArray(fileNameInArray);
         Arrays.sort(fileNameInArray);
-        fileNameOutArray = Arrays.stream(testCasesOut).map(item -> item.getOriginalFilename()).collect(Collectors.toList()).toArray(fileNameOutArray);
+        fileNameOutArray = Arrays.stream(testCasesOut).map(MultipartFile::getOriginalFilename).toList().toArray(fileNameOutArray);
         Arrays.sort(fileNameOutArray);
         for (int i = 0; i < testCasesIn.length; ++i) {
             String fullNameIn = FilenameUtils.getName(fileNameInArray[i]);
@@ -154,8 +156,18 @@ public class TeacherProblemController {
                              @RequestParam("problemTypeIdList") String[] problemTypeIdList,
                              HttpSession session) {
         String username = ((UserLogin) session.getAttribute("user")).getUsername();
-        System.out.println("Problem has been posted!");
-
+        // check the problemId is used or not
+        boolean isOverlap = false;
+        for (ProblemDTO problemDTO: Data.problemList) {
+            if (problemDTO.getProblemId().equals(problem.getProblemId())) {
+                isOverlap = true;
+                break;
+            }
+        }
+        // if used then return error
+        if (isOverlap) {
+            return "redirect:/error";
+        }
         // check if file is not upload
         if (fileDescription.isEmpty()) {
             return "redirect:/error";
@@ -163,16 +175,18 @@ public class TeacherProblemController {
         // upload file description
         String filePath = helperUploadToCloud(fileDescription);
         System.out.println(filePath);
-        // upload to cloud successfully
-        ResponseObject responseObject = uploadFileService.uploadFile(filePath);
-        if (!responseObject.getMessage().equals("Success")) {
+        // upload to cloud using service uploadFileService
+        ResponseObject responseObjectDescription = uploadFileService.uploadFile(filePath);
+        if (!responseObjectDescription.getMessage().equals("Success")) {
             return "redirect:/error";
         }
-        Map cloudinaryResponse = (Map) responseObject.getData();
-        String pathCloud = cloudinaryResponse.get("url").toString();
+        // mapping response when uploading file description
+        Map cloudResponseDescription = (Map) responseObjectDescription.getData();
+        String pathCloud = cloudResponseDescription.get("url").toString();
         // check if server cannot delete then return error
         if (!helperDeleteTempFile(filePath))
             return "redirect:/error";
+
         // set the problem description link
         problem.setProblemDescription(pathCloud);
 
@@ -181,11 +195,35 @@ public class TeacherProblemController {
             return "redirect:/error";
         }
 
-        // set the value from the form
+        int numberTestCase = testCasesIn.length;
+        // upload testcase from client to temp folder then upload them to cloud
+        for (int i = 0; i < numberTestCase; ++i) {
+            String testInPath = helperUploadToCloud(testCasesIn[i]);
+            String testOutPath = helperUploadToCloud(testCasesOut[i]);
+            ResponseObject responseObjectTestIn = uploadFileService.uploadFile(testInPath);
+            ResponseObject responseObjectTestOut = uploadFileService.uploadFile(testOutPath);
+            if (!responseObjectTestIn.getMessage().equals("Success") || !responseObjectTestOut.getMessage().equals("Success")) {
+                return "redirect:/error";
+            }
+            Map cloudResponseTestIn = (Map) responseObjectTestIn.getData();
+            Map cloudResponseTestOut = (Map) responseObjectTestOut.getData();
+            String pathTestInCloud = cloudResponseTestIn.get("url").toString();
+            String pathTestOutCloud = cloudResponseTestOut.get("url").toString();
+            if (!helperDeleteTempFile(testInPath) || !helperDeleteTempFile(testOutPath))
+                return "redirect:/error";
+            String randomId = UUID.randomUUID().toString().replace("-", "");
+            // add testcase of problem
+            Data.testCaseList.add(new TestCaseDTO(randomId, pathTestInCloud, pathTestOutCloud, 0, problem.getProblemId()));
+        }
+
+        // set problem type
+        for (String problemTypeId: problemTypeIdList)
+            Data.problemHasTypeList.add(new ProblemHasTypeDTO(problem.getProblemId(), problemTypeId));
+        // set level
         problem.setLevel(getLevelById(levelId));
+        // set author
         problem.setAuthor(getAuthorByUsername(username));
         problem.setHide(false);
-        System.out.println(problem.toString());
         return "redirect:/teacher/problem";
     }
 }
