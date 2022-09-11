@@ -16,6 +16,12 @@ public class SubjectClassGroup {
     @JoinColumn(name = "subject_class_id", nullable = false)
     private SubjectClass subjectClass;
 
+    public SubjectClassGroup(String id, String subjectClassGroupName, SubjectClass subjectClass) {
+        this.id = id;
+        this.subjectClassGroupName = subjectClassGroupName;
+        this.subjectClass = subjectClass;
+    }
+
     public String getId() {
         return id;
     }

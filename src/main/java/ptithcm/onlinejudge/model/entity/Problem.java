@@ -29,8 +29,7 @@ public class Problem {
     @JoinColumn(name = "teacher_id", nullable = false)
     private Teacher teacher;
 
-    public Problem(String id, String problemName, String problemCloudinaryId, String problemUrl, Integer problemScore,
-                   Byte hide, Teacher teacher) {
+    public Problem(String id, String problemName, String problemCloudinaryId, String problemUrl, Integer problemScore, Byte hide, Teacher teacher) {
         this.id = id;
         this.problemName = problemName;
         this.problemCloudinaryId = problemCloudinaryId;

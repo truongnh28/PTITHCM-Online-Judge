@@ -17,6 +17,7 @@ import ptithcm.onlinejudge.repository.TeacherRepository;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -132,6 +133,15 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
         contestHasProblem.setProblem(problem.get());
         contestHasProblemRepository.save(contestHasProblem);
         return new ResponseObject(HttpStatus.OK, "Success", "");
+    }
+
+    @Override
+    public ResponseObject getAllProblemCreateByTeacher(String teacherId) {
+        if(!teacherRepository.existsById(teacherId)) {
+            return new ResponseObject(HttpStatus.FOUND, "Teacher is not exist", "");
+        }
+        List<Problem> problems = problemRepository.getProblemsByTeacher(teacherId);
+        return new ResponseObject(HttpStatus.OK, "Success", problems);
     }
 
     private boolean problemRequestIsValid(ProblemRequest problem) {

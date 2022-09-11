@@ -10,8 +10,12 @@ public class TestCase {
     private String id;
 
     @Lob
-    @Column(name = "test_case_url", nullable = false)
-    private String testCaseUrl;
+    @Column(name = "test_case_in", nullable = false)
+    private String testCaseIn;
+
+    @Lob
+    @Column(name = "test_case_out", nullable = false)
+    private String testCaseOut;
 
     @Column(name = "test_case_score")
     private Integer testCaseScore;
@@ -28,12 +32,20 @@ public class TestCase {
         this.id = id;
     }
 
-    public String getTestCaseUrl() {
-        return testCaseUrl;
+    public String getTestCaseIn() {
+        return testCaseIn;
     }
 
-    public void setTestCaseUrl(String testCaseUrl) {
-        this.testCaseUrl = testCaseUrl;
+    public void setTestCaseIn(String testCaseIn) {
+        this.testCaseIn = testCaseIn;
+    }
+
+    public String getTestCaseOut() {
+        return testCaseOut;
+    }
+
+    public void setTestCaseOut(String testCaseOut) {
+        this.testCaseOut = testCaseOut;
     }
 
     public Integer getTestCaseScore() {

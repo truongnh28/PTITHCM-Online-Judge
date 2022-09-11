@@ -9,6 +9,6 @@ public interface ProblemManagementService {
     ResponseObject addProblem(ProblemRequest problemRequest, String filePath);
     ResponseObject editProblem(ProblemRequest problemRequest, String filePath);
     ResponseObject deleteProblem(String problemId);
-
     ResponseObject addProblemToContest(String problemId, String contestId);
+    ResponseObject getAllProblemCreateByTeacher(String teacherId);
 }

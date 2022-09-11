@@ -1,6 +1,9 @@
 package ptithcm.onlinejudge.model.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "students")
@@ -21,9 +24,13 @@ public class Student {
     @Column(name = "active")
     private Byte active;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
+    public Student(String id, String password, String studentFirstName, String studentLastName, Byte active) {
+        this.id = id;
+        this.password = password;
+        this.studentFirstName = studentFirstName;
+        this.studentLastName = studentLastName;
+        this.active = active;
+    }
 
     public String getId() {
         return id;
@@ -63,14 +70,6 @@ public class Student {
 
     public void setActive(Byte active) {
         this.active = active;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 
 }

@@ -6,12 +6,14 @@ import org.springframework.stereotype.Service;
 import ptithcm.onlinejudge.helper.TimeHelper;
 import ptithcm.onlinejudge.model.ResponseObject;
 import ptithcm.onlinejudge.model.entity.Contest;
+import ptithcm.onlinejudge.model.entity.Problem;
 import ptithcm.onlinejudge.model.entity.Teacher;
 import ptithcm.onlinejudge.model.request.ContestRequest;
 import ptithcm.onlinejudge.repository.ContestRepository;
 import ptithcm.onlinejudge.repository.TeacherRepository;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -61,6 +63,16 @@ public class ContestManagementServiceImpl implements ContestManagementService{
         contestRepository.save(contest.get());
         return new ResponseObject(HttpStatus.OK, "Success", contest);
     }
+
+    @Override
+    public ResponseObject getAllContestCreateByTeacher(String teacherId) {
+        if(!teacherRepository.existsById(teacherId)) {
+            return new ResponseObject(HttpStatus.FOUND, "Teacher is not exist", "");
+        }
+        List<Contest> contests = contestRepository.getContestsByTeacher(teacherId);
+        return new ResponseObject(HttpStatus.OK, "Success", contests);
+    }
+
     private boolean contestRequestIsValid (ContestRequest contestRequest) {
         boolean teacherIdIsValid = teacherRepository.existsById(contestRequest.getTeacherId());
         boolean problemNameIsValid = contestRequest.getContestName().length() > 0;

@@ -8,5 +8,6 @@ import ptithcm.onlinejudge.model.request.ContestRequest;
 public interface ContestManagementService {
     ResponseObject addContest(ContestRequest contestRequest);
     ResponseObject editContest(ContestRequest contestRequest);
+    ResponseObject getAllContestCreateByTeacher(String teacherId);
 
 }
