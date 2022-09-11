@@ -7,37 +7,48 @@ import java.time.Instant;
 @Table(name = "submissions")
 public class Submission {
     @Id
-    @Column(name = "submission_id", nullable = false, length = 100)
-    private String id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "problem_id")
-    private Problem problem;
-
-    @Column(name = "verdict", nullable = false)
-    private Byte verdict;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "submission_id", nullable = false)
+    private Long id;
 
     @Column(name = "submission_time")
     private Instant submissionTime;
 
-    public String getId() {
+    @Column(name = "submission_score")
+    private Integer submissionScore;
+
+    @Column(name = "verdict")
+    private Byte verdict;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "student_id", nullable = false)
+    private Student student;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "problem_id", nullable = false)
+    private Problem problem;
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Problem getProblem() {
-        return problem;
+    public Instant getSubmissionTime() {
+        return submissionTime;
     }
 
-    public void setProblem(Problem problem) {
-        this.problem = problem;
+    public void setSubmissionTime(Instant submissionTime) {
+        this.submissionTime = submissionTime;
+    }
+
+    public Integer getSubmissionScore() {
+        return submissionScore;
+    }
+
+    public void setSubmissionScore(Integer submissionScore) {
+        this.submissionScore = submissionScore;
     }
 
     public Byte getVerdict() {
@@ -48,20 +59,20 @@ public class Submission {
         this.verdict = verdict;
     }
 
-    public User getUser() {
-        return user;
+    public Student getStudent() {
+        return student;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
-    public Instant getSubmissionTime() {
-        return submissionTime;
+    public Problem getProblem() {
+        return problem;
     }
 
-    public void setSubmissionTime(Instant submissionTime) {
-        this.submissionTime = submissionTime;
+    public void setProblem(Problem problem) {
+        this.problem = problem;
     }
 
 }

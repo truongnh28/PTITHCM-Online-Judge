@@ -4,26 +4,17 @@ import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Entity;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class RankListId implements Serializable {
-    private static final long serialVersionUID = -8852400902257818174L;
-    @Column(name = "user_id", nullable = false, length = 10)
-    private String userId;
-
+public class ContestHasProblemId implements Serializable {
+    private static final long serialVersionUID = 2467483236707015568L;
     @Column(name = "contest_id", nullable = false, length = 100)
     private String contestId;
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+    @Column(name = "problem_id", nullable = false, length = 100)
+    private String problemId;
 
     public String getContestId() {
         return contestId;
@@ -33,18 +24,26 @@ public class RankListId implements Serializable {
         this.contestId = contestId;
     }
 
+    public String getProblemId() {
+        return problemId;
+    }
+
+    public void setProblemId(String problemId) {
+        this.problemId = problemId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        RankListId entity = (RankListId) o;
+        ContestHasProblemId entity = (ContestHasProblemId) o;
         return Objects.equals(this.contestId, entity.contestId) &&
-                Objects.equals(this.userId, entity.userId);
+                Objects.equals(this.problemId, entity.problemId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(contestId, userId);
+        return Objects.hash(contestId, problemId);
     }
 
 }
