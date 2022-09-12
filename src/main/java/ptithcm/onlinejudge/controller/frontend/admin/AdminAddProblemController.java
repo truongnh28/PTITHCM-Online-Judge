@@ -13,7 +13,7 @@ import ptithcm.onlinejudge.data.Data;
 import ptithcm.onlinejudge.dto.ProblemDTO;
 import ptithcm.onlinejudge.dto.TeacherDTO;
 import ptithcm.onlinejudge.dto.UserLogin;
-import ptithcm.onlinejudge.model.ResponseObject;
+import ptithcm.onlinejudge.model.response.ResponseObject;
 import ptithcm.onlinejudge.services.UploadFileService;
 
 import javax.servlet.http.HttpSession;

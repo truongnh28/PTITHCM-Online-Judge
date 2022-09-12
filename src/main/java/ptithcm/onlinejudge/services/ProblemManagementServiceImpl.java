@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import ptithcm.onlinejudge.model.entity.Contest;
 import ptithcm.onlinejudge.model.entity.ContestHasProblem;
 import ptithcm.onlinejudge.model.request.ProblemRequest;
-import ptithcm.onlinejudge.model.ResponseObject;
+import ptithcm.onlinejudge.model.response.ResponseObject;
 import ptithcm.onlinejudge.model.entity.Problem;
 import ptithcm.onlinejudge.model.entity.Teacher;
 import ptithcm.onlinejudge.repository.ContestHasProblemRepository;

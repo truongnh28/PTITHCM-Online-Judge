@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ptithcm.onlinejudge.data.Data;
 import ptithcm.onlinejudge.dto.*;
-import ptithcm.onlinejudge.model.ResponseObject;
+import ptithcm.onlinejudge.model.response.ResponseObject;
 import ptithcm.onlinejudge.services.UploadFileService;
 
 import javax.servlet.http.HttpSession;

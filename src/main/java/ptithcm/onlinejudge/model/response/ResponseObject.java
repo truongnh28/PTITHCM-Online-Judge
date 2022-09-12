@@ -1,4 +1,4 @@
-package ptithcm.onlinejudge.model;
+package ptithcm.onlinejudge.model.response;
 
 import org.springframework.http.HttpStatus;
 

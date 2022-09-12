@@ -1,4 +1,4 @@
-package ptithcm.onlinejudge.model;
+package ptithcm.onlinejudge.model.response;
 
 import java.time.Instant;
 import java.util.List;

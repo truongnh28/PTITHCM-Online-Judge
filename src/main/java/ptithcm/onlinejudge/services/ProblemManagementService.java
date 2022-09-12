@@ -2,7 +2,7 @@ package ptithcm.onlinejudge.services;
 
 import org.springframework.stereotype.Service;
 import ptithcm.onlinejudge.model.request.ProblemRequest;
-import ptithcm.onlinejudge.model.ResponseObject;
+import ptithcm.onlinejudge.model.response.ResponseObject;
 
 @Service
 public interface ProblemManagementService {

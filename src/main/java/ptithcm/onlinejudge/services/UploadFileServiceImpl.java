@@ -5,11 +5,9 @@ import com.cloudinary.Singleton;
 import com.cloudinary.utils.ObjectUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import ptithcm.onlinejudge.model.ResponseObject;
+import ptithcm.onlinejudge.model.response.ResponseObject;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
