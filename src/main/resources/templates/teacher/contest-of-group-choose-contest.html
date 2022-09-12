@@ -6,34 +6,43 @@
     <header th:replace="/fragments/teacher-header :: teacher-header"></header>
     <section>
         <div class="d-flex flex-wrap justify-content-center mb-3">
-            <a th:href="@{/teacher/problem}" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-decoration-none btn btn-secondary" role="button">Trở lại trang chủ</a>
+            <a th:href="@{/teacher/contest/group/{groupId}/add(groupId=${groupId})}" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-decoration-none btn btn-primary" role="button">Thêm bài thực hành</a>
             <form class="col-12 col-lg-auto mb-3 mb-lg-0" role="search">
-                <input type="search" class="form-control" placeholder="Tìm nhóm thực hành..." aria-label="Search"/>
+                <input type="search" class="form-control" placeholder="Tìm bài thực hành..." aria-label="Search"/>
             </form>
         </div>
         <div class="card table-responsive mb-3">
             <table class="table table-hover caption-top text-center">
                 <caption class="bg-secondary bg-opacity-10 ps-4">
-                    <h2>Danh sách các nhóm thực hành</h2>
+                    <h2>Danh sách các bài thực hành đã được tạo</h2>
                 </caption>
                 <thead class="thead-inverse">
                 <tr>
                     <th></th>
                     <th>#</th>
-                    <th>Mã nhóm thực hành</th>
-                    <th>Tên nhóm thực hành</th>
-                    <th>Chi tiết</th>
+                    <th>Mã bài thực hành</th>
+                    <th>Tên bài thực hành</th>
+                    <th>Thời gian bắt đầu</th>
+                    <th>Thời gian kết thúc</th>
+                    <th>Mã giáo viên</th>
+                    <th>Hành động</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="group, i: ${groups}">
+                <tr th:each="contest, i: ${contests}">
                     <td></td>
                     <td th:text="${i.count}"></td>
-                    <td th:text="${group.subjectClassGroupId}"></td>
-                    <td th:text="${group.subjectClassGroupName}"></td>
+                    <td th:text="${contest.contestId}"></td>
+                    <td th:text="${contest.contestName}"></td>
+                    <td th:text="${contest.contestStart}"></td>
+                    <td th:text="${contest.contestEnd}"></td>
+                    <td th:text="${contest.author.teacherId}"></td>
                     <td>
-                        <a th:href="@{/teacher/contest/group/{groupId}(groupId=${group.subjectClassGroupId})}" type="button" class="btn btn-info btn-sm me-2">
+                        <a th:href="@{/teacher/contest/{contestId}(contestId=${contest.contestId})}" type="button" class="btn btn-info btn-sm me-2">
                             Chi tiết
+                        </a>
+                        <a th:href="@{/teacher/contest/{contestId}/group/{groupId}(contestId=${contest.contestId},groupId=${groupId})}" type="button" class="btn btn-primary btn-sm">
+                            Clone
                         </a>
                     </td>
                 </tr>

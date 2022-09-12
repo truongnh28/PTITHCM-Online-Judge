@@ -177,7 +177,6 @@ public class TeacherSubjectController {
                 studentShow.setStudentLastName(student.getStudentLastName());
                 studentShow.setActive(student.isActive());
                 studentShow.setDisabledButtonAdding(Data.studentOfGroupList.contains(new StudentOfGroupDTO(student.getStudentId(), groupId)));
-                System.out.println(studentShow);
                 studentList.add(studentShow);
             }
         model.addAttribute("students", studentList);
