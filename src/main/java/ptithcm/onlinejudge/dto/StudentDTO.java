@@ -13,5 +13,4 @@ public class StudentDTO {
     private String studentFirstName;
     private String studentLastName;
     private boolean active;
-    private RoleDTO role;
 }

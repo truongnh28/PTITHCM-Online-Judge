@@ -4,16 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProblemDTO {
-    private String problemId;
-    private String problemTitle;
-    private String problemDescription;
+    private String id;
+    private String problemName;
+    private String problemUrl;
     private int problemTimeLimit;
     private int problemMemoryLimit;
     private int problemScore;

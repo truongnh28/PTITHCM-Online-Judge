@@ -21,7 +21,7 @@ public class SubjectClassGroupManagementImpl implements SubjectClassGroupManagem
     SubjectClassRepository subjectClassRepository;
     @Override
     public ResponseObject addSubjectClassGroup(SubjectClassGroupRequest subjectClassGroupRequest) {
-        if(subjectClassGroupRepository.existsById(subjectClassGroupRequest.getSubjectClassId())) {
+        if(subjectClassGroupRepository.existsById(subjectClassGroupRequest.getSubjectClassGroupId())) {
             return new ResponseObject(HttpStatus.FOUND, "Student is exist", "");
         }
         if(subjectClassGroupRequestIsValid(subjectClassGroupRequest)) {
@@ -40,7 +40,7 @@ public class SubjectClassGroupManagementImpl implements SubjectClassGroupManagem
         if(!subjectClassGroupRepository.existsById(subjectClassGroupRequest.getSubjectClassGroupId())) {
             return new ResponseObject(HttpStatus.FOUND, "Student is not exist", "");
         }
-        if(!subjectClassGroupRequestIsValid(subjectClassGroupRequest)) {
+        if(subjectClassGroupRequest.getSubjectClassGroupName().isEmpty()) {
             return new ResponseObject(HttpStatus.BAD_REQUEST, "Request data is not valid", "");
         }
         Optional<SubjectClassGroup> subjectClassGroup = subjectClassGroupRepository.findById(subjectClassGroupRequest.getSubjectClassGroupId());
@@ -62,9 +62,17 @@ public class SubjectClassGroupManagementImpl implements SubjectClassGroupManagem
         return new ResponseObject(HttpStatus.OK, "Success", SubjectClassGroups);
     }
 
+    @Override
+    public ResponseObject getSubjectClassGroupById(String subjectClassGroupId) {
+        Optional<SubjectClassGroup> foundSubjectClassGroup = subjectClassGroupRepository.findById(subjectClassGroupId);
+        if (foundSubjectClassGroup.isEmpty())
+            return new ResponseObject(HttpStatus.FOUND, "Subject class group not exist", "");
+        return new ResponseObject(HttpStatus.OK, "Success", foundSubjectClassGroup.get());
+    }
+
     private boolean subjectClassGroupRequestIsValid(SubjectClassGroupRequest subjectClassGroupRequest) {
-        boolean SubjectClassGroupNameIsValid = subjectClassGroupRequest.getSubjectClassGroupName().length() > 0;
+        boolean subjectClassGroupNameIsValid = subjectClassGroupRequest.getSubjectClassGroupName().length() > 0;
         boolean subjectIdIsValid = subjectClassRepository.existsById(subjectClassGroupRequest.getSubjectClassId());
-        return subjectIdIsValid && SubjectClassGroupNameIsValid;
+        return subjectIdIsValid && !subjectClassGroupNameIsValid;
     }
 }

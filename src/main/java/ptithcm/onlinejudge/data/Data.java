@@ -16,10 +16,10 @@ public class Data {
     public static List<StudentDTO> studentList = new ArrayList<>();
 
     static {
-        studentList.add(new StudentDTO("N19DCCN190", "26102001", "Thanh", "Nguyễn Nhật", true, roleList.get(1)));
-        studentList.add(new StudentDTO("N19DCCN221", "28022001", "Trưởng", "Nguyễn Hữu", true, roleList.get(1)));
-        studentList.add(new StudentDTO("N19DCCN132", "01012001", "Nhơn", "Trần Quốc", true, roleList.get(1)));
-        studentList.add(new StudentDTO("N19DCCN031", "02012001", "Hân", "Trần Thái", true, roleList.get(1)));
+        studentList.add(new StudentDTO("N19DCCN190", "26102001", "Thanh", "Nguyễn Nhật", true));
+        studentList.add(new StudentDTO("N19DCCN221", "28022001", "Trưởng", "Nguyễn Hữu", true));
+        studentList.add(new StudentDTO("N19DCCN132", "01012001", "Nhơn", "Trần Quốc", true));
+        studentList.add(new StudentDTO("N19DCCN031", "02012001", "Hân", "Trần Thái", true));
     }
 
     public static List<TeacherDTO> teacherList = new ArrayList<>();

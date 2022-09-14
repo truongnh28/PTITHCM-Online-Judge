@@ -55,9 +55,9 @@
     <section>
         <div class="card text-start">
             <div class="m-3">
-                <h2 class="card-title" th:text="${problemDetails.getProblemTitle}"></h2>
+                <h2 class="card-title" th:text="${problemDetails.getProblemName}"></h2>
                 <label class="form-label">Mời bạn upload code</label>
-                <form th:action="@{'/submit-code/'+ ${problemDetails.getProblemId}}" method="post" th:object="${submit}" enctype="multipart/form-data">
+                <form th:action="@{'/submit-code/'+ ${problemDetails.getId}}" method="post" th:object="${submit}" enctype="multipart/form-data">
                     <div class="mb-3">
                         <input
                                 type="file"

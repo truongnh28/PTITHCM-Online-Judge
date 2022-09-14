@@ -27,7 +27,7 @@
                     <th>#</th>
                     <th>Mã nhóm thực hành</th>
                     <th>Tên nhóm thực hành</th>
-                    <th>Chi tiết</th>
+                    <th>Hành động</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -37,9 +37,13 @@
                     <td th:text="${subjectClassGroup.subjectClassGroupId}"></td>
                     <td th:text="${subjectClassGroup.subjectClassGroupName}"></td>
                     <td>
-                        <a th:href="@{/teacher/subject/{subjectId}/class/{classId}/group/{groupId}(subjectId=${subjectId},classId=${classId},groupId=${subjectClassGroup.subjectClassGroupId})}"
+                        <a th:href="@{/teacher/subject/{subjectId}/class/{classId}/group/{groupId}/student(subjectId=${subjectId},classId=${classId},groupId=${subjectClassGroup.subjectClassGroupId})}"
                            type="button" class="btn btn-info btn-sm me-2">
                             Xem chi tiết
+                        </a>
+                        <a th:href="@{/teacher/subject/{subjectId}/class/{classId}/group/{groupId}/edit(subjectId=${subjectId},classId=${classId},groupId=${subjectClassGroup.subjectClassGroupId})}"
+                           type="button" class="btn btn-primary btn-sm me-2">
+                            Chỉnh sửa
                         </a>
                     </td>
                 </tr>

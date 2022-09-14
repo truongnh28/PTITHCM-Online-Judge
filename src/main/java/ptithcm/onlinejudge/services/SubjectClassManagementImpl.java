@@ -15,48 +15,63 @@ import java.util.Optional;
 @Service
 public class SubjectClassManagementImpl implements SubjectClassManagement{
     @Autowired
-    SubjectClassRepository SubjectClassRepository;
+    SubjectClassRepository subjectClassRepository;
     @Autowired
     SubjectRepository subjectRepository;
     @Override
     public ResponseObject addSubjectClass(SubjectClassRequest subjectClassRequest) {
-        if(SubjectClassRepository.existsById(subjectClassRequest.getSubjectClassId())) {
-            return new ResponseObject(HttpStatus.FOUND, "Student is exist", "");
+        if(subjectClassRepository.existsById(subjectClassRequest.getSubjectClassId())) {
+            return new ResponseObject(HttpStatus.FOUND, "Subject class is exist", "");
         }
-        if(subjectClassRequestIsValid(subjectClassRequest)) {
+        if(subjectClassRequestIsValidAddNew(subjectClassRequest)) {
             return new ResponseObject(HttpStatus.BAD_REQUEST, "Request data is not valid", "");
         }
         String subjectClassId = subjectClassRequest.getSubjectClassId();
         String subjectClassName = subjectClassRequest.getSubjectClassName();
         Optional<Subject> subject = subjectRepository.findById(subjectClassRequest.getSubjectId());
         SubjectClass subjectClass = new SubjectClass(subjectClassId, subjectClassName, subject.get());
-        SubjectClassRepository.save(subjectClass);
+        subjectClassRepository.save(subjectClass);
         return new ResponseObject(HttpStatus.OK, "Success", subjectClass);
     }
 
     @Override
     public ResponseObject editSubjectClass(SubjectClassRequest subjectClassRequest) {
-        if(!SubjectClassRepository.existsById(subjectClassRequest.getSubjectClassId())) {
-            return new ResponseObject(HttpStatus.FOUND, "Student is not exist", "");
+        if(!subjectClassRepository.existsById(subjectClassRequest.getSubjectClassId())) {
+            return new ResponseObject(HttpStatus.FOUND, "Subject class is not exist", "");
         }
-        if(!subjectClassRequestIsValid(subjectClassRequest)) {
+        if(subjectClassRequest.getSubjectClassName().isEmpty()) {
             return new ResponseObject(HttpStatus.BAD_REQUEST, "Request data is not valid", "");
         }
-        Optional<SubjectClass> SubjectClass = SubjectClassRepository.findById(subjectClassRequest.getSubjectClassId());
+        Optional<SubjectClass> subjectClass = subjectClassRepository.findById(subjectClassRequest.getSubjectClassId());
         String SubjectClassName = subjectClassRequest.getSubjectClassName();
-        SubjectClass.get().setSubjectClassName(SubjectClassName);
-        SubjectClassRepository.save(SubjectClass.get());
-        return new ResponseObject(HttpStatus.OK, "Success", SubjectClass);
+        subjectClass.get().setSubjectClassName(SubjectClassName);
+        subjectClassRepository.save(subjectClass.get());
+        return new ResponseObject(HttpStatus.OK, "Success", subjectClass);
     }
 
     @Override
     public ResponseObject getAllSubjectClass() {
-        List<SubjectClass> SubjectClasses = SubjectClassRepository.findAll();
+        List<SubjectClass> SubjectClasses = subjectClassRepository.findAll();
         return new ResponseObject(HttpStatus.OK, "Success", SubjectClasses);
     }
-    private boolean subjectClassRequestIsValid (SubjectClassRequest subjectClassRequest) {
+
+    @Override
+    public ResponseObject getAllSubjectClassBySubjectId(String subjectId) {
+        List<SubjectClass> subjectClasses = subjectClassRepository.getSubjectClassBySubjectId(subjectId);
+        return new ResponseObject(HttpStatus.OK, "Success", subjectClasses);
+    }
+
+    @Override
+    public ResponseObject findSubjectClassBySubjectClassId(String subjectClassId) {
+        Optional<SubjectClass> foundSubjectClass = subjectClassRepository.findById(subjectClassId);
+        if (foundSubjectClass.isEmpty())
+            return new ResponseObject(HttpStatus.FOUND, "Subject class is not exist", "");
+        return new ResponseObject(HttpStatus.OK, "Success", foundSubjectClass.get());
+    }
+
+    private boolean subjectClassRequestIsValidAddNew(SubjectClassRequest subjectClassRequest) {
         boolean subjectClassNameIsValid = subjectClassRequest.getSubjectClassName().length() > 0;
         boolean subjectIdIsValid = subjectRepository.existsById(subjectClassRequest.getSubjectId());
-        return subjectIdIsValid && subjectClassNameIsValid;
+        return !subjectIdIsValid && subjectClassNameIsValid;
     }
 }

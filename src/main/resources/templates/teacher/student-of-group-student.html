@@ -6,7 +6,7 @@
     <header th:replace="/fragments/teacher-header :: teacher-header"></header>
     <section>
         <div class="d-flex flex-wrap justify-content-center mb-3">
-            <a th:href="@{'/teacher/subject/' + ${subjectId} + '/class/' + ${classId} + '/group/' + ${groupId}}" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-decoration-none btn btn-primary" role="button">Về danh sách sinh viên thực hành</a>
+            <a th:href="@{'/teacher/subject/' + ${subjectId} + '/class/' + ${classId} + '/group/' + ${groupId} + '/student'}" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-decoration-none btn btn-primary" role="button">Về danh sách sinh viên thực hành</a>
             <form class="col-12 col-lg-auto mb-3 mb-lg-0" role="search">
                 <input type="search" class="form-control" placeholder="Tìm kiếm sinh viên..." aria-label="Search"/>
             </form>

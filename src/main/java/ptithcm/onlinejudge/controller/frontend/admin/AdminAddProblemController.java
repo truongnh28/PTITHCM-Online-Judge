@@ -81,7 +81,7 @@ public class AdminAddProblemController {
         if (!helperDeleteTempFile(pathClient)) {
             return "redirect:/error";
         }
-        problem.setProblemDescription(pathServer);
+        problem.setProblemUrl(pathServer);
         problem.setAuthor(foundTeacher);
         problem.setHide(false);
         Data.problemList.add(problem);

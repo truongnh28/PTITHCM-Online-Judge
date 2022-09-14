@@ -8,4 +8,7 @@ public interface SubjectClassManagement {
     ResponseObject addSubjectClass(SubjectClassRequest subjectClassRequest);
     ResponseObject editSubjectClass(SubjectClassRequest subjectClassRequest);
     ResponseObject getAllSubjectClass();
+    ResponseObject getAllSubjectClassBySubjectId(String subjectId);
+
+    ResponseObject findSubjectClassBySubjectClassId(String subjectClassId);
 }

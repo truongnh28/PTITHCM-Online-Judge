@@ -16,6 +16,9 @@ public class SubjectClass {
     @JoinColumn(name = "subject_id", nullable = false)
     private Subject subject;
 
+    public SubjectClass() {
+    }
+
     public SubjectClass(String id, String subjectClassName, Subject subject) {
         this.id = id;
         this.subjectClassName = subjectClassName;

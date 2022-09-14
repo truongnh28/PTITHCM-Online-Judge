@@ -1,5 +1,6 @@
 package ptithcm.onlinejudge.controller.frontend.teacher;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -112,15 +113,15 @@ public class TeacherContestController {
             if (problem.isHide())
                 continue;
             ProblemShowDTO problemShow = new ProblemShowDTO();
-            problemShow.setProblemId(problem.getProblemId());
-            problemShow.setProblemDescription(problem.getProblemDescription());
+            problemShow.setId(problem.getId());
+            problemShow.setProblemUrl(problem.getProblemUrl());
             problemShow.setProblemScore(problem.getProblemScore());
-            problemShow.setProblemTitle(problem.getProblemTitle());
+            problemShow.setProblemName(problem.getProblemName());
             problemShow.setAuthor(problem.getAuthor());
             problemShow.setLevel(problem.getLevel());
             problemShow.setProblemTimeLimit(problem.getProblemTimeLimit());
             problemShow.setProblemMemoryLimit(problem.getProblemMemoryLimit());
-            problemShow.setDisabledButtonAdding(Data.contestHasProblemList.contains(new ContestHasProblemDTO(contestId, problem.getProblemId())));
+            problemShow.setDisabledButtonAdding(Data.contestHasProblemList.contains(new ContestHasProblemDTO(contestId, problem.getId())));
             problemShowList.add(problemShow);
         }
         model.addAttribute("problems", problemShowList);
@@ -143,7 +144,7 @@ public class TeacherContestController {
         boolean foundProblem = false;
         ProblemDTO problem = new ProblemDTO();
         for (ProblemDTO problemDTO: Data.problemList) {
-            if (problemDTO.getProblemId().equals(problemId)) {
+            if (problemDTO.getId().equals(problemId)) {
                 problem = problemDTO;
                 foundProblem = true;
             }
