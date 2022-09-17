@@ -14,5 +14,8 @@ public class ProblemRequest {
     private String problemId;
     private String problemName;
     private int score;
+    private int timeLimit;
+    private int memoryLimit;
     private String teacherId;
+    private int levelId;
 }

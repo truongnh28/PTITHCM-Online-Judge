@@ -1,7 +1,20 @@
 package ptithcm.onlinejudge.model.entity;
 
-import javax.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "subject_classes")
 public class SubjectClass {
@@ -15,38 +28,5 @@ public class SubjectClass {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "subject_id", nullable = false)
     private Subject subject;
-
-    public SubjectClass() {
-    }
-
-    public SubjectClass(String id, String subjectClassName, Subject subject) {
-        this.id = id;
-        this.subjectClassName = subjectClassName;
-        this.subject = subject;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getSubjectClassName() {
-        return subjectClassName;
-    }
-
-    public void setSubjectClassName(String subjectClassName) {
-        this.subjectClassName = subjectClassName;
-    }
-
-    public Subject getSubject() {
-        return subject;
-    }
-
-    public void setSubject(Subject subject) {
-        this.subject = subject;
-    }
 
 }

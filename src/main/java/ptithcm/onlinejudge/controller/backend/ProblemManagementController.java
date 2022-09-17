@@ -12,22 +12,25 @@ import ptithcm.onlinejudge.services.ProblemManagementService;
 @RequestMapping("/api")
 @CrossOrigin
 public class ProblemManagementController {
-    @Autowired
-    ProblemManagementService problemManagementService;
+//    @Autowired
+//    ProblemManagementService problemManagementService;
 
     @PostMapping("/problem/addProblem")
     public ResponseEntity<ResponseObject> addProblem(@RequestBody ProblemRequest problem, @RequestParam String filePath) {
-        ResponseObject responseObject = problemManagementService.addProblem(problem, filePath);
-        return ResponseEntity.status(responseObject.getStatus()).body(responseObject);
+//        ResponseObject responseObject = problemManagementService.addProblem(problem, filePath);
+//        return ResponseEntity.status(responseObject.getStatus()).body(responseObject);
+        return null;
     }
     @PostMapping("/problem/editProblem")
     public ResponseEntity<ResponseObject> editProblem(@RequestBody ProblemRequest problem, @RequestParam String filePath) {
-        ResponseObject responseObject = problemManagementService.editProblem(problem, filePath);
-        return ResponseEntity.status(responseObject.getStatus()).body(responseObject);
+//        ResponseObject responseObject = problemManagementService.editProblem(problem, filePath);
+//        return ResponseEntity.status(responseObject.getStatus()).body(responseObject);
+        return null;
     }
     @DeleteMapping("/problem/deleteProblem")
     public ResponseEntity<ResponseObject> deleteProblem(@RequestParam String problemId) {
-        ResponseObject responseObject = problemManagementService.deleteProblem(problemId);
-        return ResponseEntity.status(responseObject.getStatus()).body(responseObject);
+//        ResponseObject responseObject = problemManagementService.deleteProblem(problemId);
+//        return ResponseEntity.status(responseObject.getStatus()).body(responseObject);
+        return null;
     }
 }

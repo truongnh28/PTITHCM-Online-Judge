@@ -72,6 +72,17 @@ public class ContestManagementServiceImpl implements ContestManagementService{
         return new ResponseObject(HttpStatus.OK, "Success", contests);
     }
 
+    @Override
+    public ResponseObject getAllContestActiveCreatedByTeacher(String teacherId) {
+        List<Contest> contests = contestRepository.getContestsActiveByTeacherId(teacherId);
+        return new ResponseObject(HttpStatus.OK, "Success", contests);
+    }
+
+    @Override
+    public ResponseObject getAllContestActiveCreatedByTeacherOfGroupId(String teacherId, String groupId) {
+        return null;
+    }
+
     private boolean contestRequestIsValid (ContestRequest contestRequest) {
         boolean teacherIdIsValid = teacherRepository.existsById(contestRequest.getTeacherId());
         boolean problemNameIsValid = contestRequest.getContestName().length() > 0;

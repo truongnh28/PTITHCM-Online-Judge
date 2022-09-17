@@ -1,7 +1,14 @@
 package ptithcm.onlinejudge.model.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "student_of_group")
 public class StudentOfGroup {
@@ -17,29 +24,4 @@ public class StudentOfGroup {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "subject_class_group_id", nullable = false)
     private SubjectClassGroup subjectClassGroup;
-
-    public StudentOfGroupId getId() {
-        return id;
-    }
-
-    public void setId(StudentOfGroupId id) {
-        this.id = id;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-    public SubjectClassGroup getSubjectClassGroup() {
-        return subjectClassGroup;
-    }
-
-    public void setSubjectClassGroup(SubjectClassGroup subjectClassGroup) {
-        this.subjectClassGroup = subjectClassGroup;
-    }
-
 }

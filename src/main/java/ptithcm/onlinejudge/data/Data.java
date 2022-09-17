@@ -92,8 +92,8 @@ public class Data {
     public static List<ProblemDTO> problemList = new ArrayList<>();
 
     static {
-        problemList.add(new ProblemDTO("aplusb", "A cộng B", "/problem-pdf/A cộng B.pdf", 1000, 512, 100, levelList.get(0), teacherList.get(0), false, true));
-        problemList.add(new ProblemDTO("findprime", "Tìm số nguyên tố", "/problem-pdf/Tìm số nguyên tố.pdf", 1000, 512, 100, levelList.get(1), teacherList.get(0), false, false));
+        problemList.add(new ProblemDTO("aplusb", "A cộng B", "/problem-pdf/A cộng B.pdf", "", 1000, 512, 100, levelList.get(0), teacherList.get(0), false));
+        problemList.add(new ProblemDTO("findprime", "Tìm số nguyên tố", "/problem-pdf/Tìm số nguyên tố.pdf", "", 1000, 512, 100, levelList.get(1), teacherList.get(0), false));
     }
 
     public static List<SubmissionDetailDTO> submissionCodeList = new ArrayList<>();

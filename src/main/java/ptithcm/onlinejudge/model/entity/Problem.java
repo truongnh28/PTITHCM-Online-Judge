@@ -1,7 +1,14 @@
 package ptithcm.onlinejudge.model.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "problems")
 public class Problem {
@@ -22,6 +29,12 @@ public class Problem {
     @Column(name = "problem_score")
     private Integer problemScore;
 
+    @Column(name = "problem_time_limit")
+    private Integer problemTimeLimit;
+
+    @Column(name = "problem_memory_limit")
+    private Integer problemMemoryLimit;
+
     @Column(name = "hide")
     private Byte hide;
 
@@ -29,70 +42,8 @@ public class Problem {
     @JoinColumn(name = "teacher_id", nullable = false)
     private Teacher teacher;
 
-    public Problem(String id, String problemName, String problemCloudinaryId, String problemUrl, Integer problemScore, Byte hide, Teacher teacher) {
-        this.id = id;
-        this.problemName = problemName;
-        this.problemCloudinaryId = problemCloudinaryId;
-        this.problemUrl = problemUrl;
-        this.problemScore = problemScore;
-        this.hide = hide;
-        this.teacher = teacher;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getProblemName() {
-        return problemName;
-    }
-
-    public void setProblemName(String problemName) {
-        this.problemName = problemName;
-    }
-
-    public String getProblemCloudinaryId() {
-        return problemCloudinaryId;
-    }
-
-    public void setProblemCloudinaryId(String problemCloudinaryId) {
-        this.problemCloudinaryId = problemCloudinaryId;
-    }
-
-    public String getProblemUrl() {
-        return problemUrl;
-    }
-
-    public void setProblemUrl(String problemUrl) {
-        this.problemUrl = problemUrl;
-    }
-
-    public Integer getProblemScore() {
-        return problemScore;
-    }
-
-    public void setProblemScore(Integer problemScore) {
-        this.problemScore = problemScore;
-    }
-
-    public Byte getHide() {
-        return hide;
-    }
-
-    public void setHide(Byte hide) {
-        this.hide = hide;
-    }
-
-    public Teacher getTeacher() {
-        return teacher;
-    }
-
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
-    }
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "level_id", nullable = false)
+    private Level level;
 
 }

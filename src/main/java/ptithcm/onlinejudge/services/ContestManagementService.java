@@ -10,4 +10,8 @@ public interface ContestManagementService {
     ResponseObject editContest(ContestRequest contestRequest);
     ResponseObject getAllContestCreateByTeacher(String teacherId);
 
+    ResponseObject getAllContestActiveCreatedByTeacher(String teacherId);
+
+    ResponseObject getAllContestActiveCreatedByTeacherOfGroupId(String teacherId, String groupId);
+
 }

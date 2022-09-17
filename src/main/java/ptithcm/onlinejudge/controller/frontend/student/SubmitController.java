@@ -13,7 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ptithcm.onlinejudge.services.StorageService;
+import ptithcm.onlinejudge.services.StorageFileService;
 
 import javax.servlet.http.HttpSession;
 import java.io.*;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Controller
 public class SubmitController{
     @Autowired
-    private StorageService storageService;
+    private StorageFileService storageService;
     @GetMapping("/submit/{problemId}")
     public String gotoSubmit(@PathVariable("problemId") String problemId, Model model) {
         ProblemDTO problemDetails = new ProblemDTO();

@@ -13,5 +13,5 @@ public class ContestDTO {
     private String contestStart;
     private String contestEnd;
     private boolean hide;
-    private TeacherDTO author;
+    private TeacherDTO teacher;
 }

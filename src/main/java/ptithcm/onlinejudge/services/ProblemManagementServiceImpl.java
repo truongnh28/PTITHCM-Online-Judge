@@ -4,89 +4,99 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import ptithcm.onlinejudge.model.entity.Contest;
-import ptithcm.onlinejudge.model.entity.ContestHasProblem;
+import ptithcm.onlinejudge.helper.FileHelper;
+import ptithcm.onlinejudge.model.entity.*;
+import ptithcm.onlinejudge.model.request.ProblemHasTypeRequest;
 import ptithcm.onlinejudge.model.request.ProblemRequest;
+import ptithcm.onlinejudge.model.request.TestCaseRequest;
 import ptithcm.onlinejudge.model.response.ResponseObject;
-import ptithcm.onlinejudge.model.entity.Problem;
-import ptithcm.onlinejudge.model.entity.Teacher;
-import ptithcm.onlinejudge.repository.ContestHasProblemRepository;
-import ptithcm.onlinejudge.repository.ContestRepository;
-import ptithcm.onlinejudge.repository.ProblemRepository;
-import ptithcm.onlinejudge.repository.TeacherRepository;
+import ptithcm.onlinejudge.repository.*;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProblemManagementServiceImpl implements ProblemManagementService {
     @Autowired
-    UploadFileService uploadFileService;
+    private UploadFileService uploadFileService;
     @Autowired
-    ProblemRepository problemRepository;
+    private ProblemRepository problemRepository;
     @Autowired
-    TeacherRepository teacherRepository;
-
+    private TeacherRepository teacherRepository;
     @Autowired
-    ContestRepository contestRepository;
+    private TestCaseRepository testCaseRepository;
     @Autowired
-    ContestHasProblemRepository contestHasProblemRepository;
+    private ContestRepository contestRepository;
+    @Autowired
+    private LevelManagementService levelManagementService;
+    @Autowired
+    private ContestHasProblemRepository contestHasProblemRepository;
 
     @Override
-    public ResponseObject addProblem(ProblemRequest problemRequest, String filePath) {
-        if (checkFile(problemRequest, filePath)) {
+    public ResponseObject addProblem(ProblemRequest problemRequest, String descriptionPath) {
+        if (checkFile(problemRequest, descriptionPath)) {
             return new ResponseObject(HttpStatus.FOUND, "Null data error", "");
         }
         if (problemRequestIsValid(problemRequest)) {
             return new ResponseObject(HttpStatus.FOUND, "Problem Found", "");
         }
-        if (!Files.exists(Path.of(filePath))) {
+        if (!Files.exists(Path.of(descriptionPath))) {
             return new ResponseObject(HttpStatus.FOUND, "File is not exists", "");
         }
-        ResponseObject responseUpload = uploadFileService.uploadFile(filePath);
+        ResponseObject responseUpload = uploadFileService.uploadFile(descriptionPath);
         if (responseUpload.getStatus() == HttpStatus.FOUND) {
             return new ResponseObject(HttpStatus.FOUND, "Found upload", "");
         }
-        if(problemRepository.existsById(problemRequest.getProblemId())) {
+        if (problemRepository.existsById(problemRequest.getProblemId())) {
             return new ResponseObject(HttpStatus.FOUND, "Problem id is exist", "");
         }
         String problemId = problemRequest.getProblemId();
         String problemName = problemRequest.getProblemName();
         int score = problemRequest.getScore();
+        int timeLimit = problemRequest.getTimeLimit();
+        int memoryLimit = problemRequest.getMemoryLimit();
+        // level
+        ResponseObject responseGetLevelById = levelManagementService.getLevelById((byte) problemRequest.getLevelId());
+        if (!responseGetLevelById.getStatus().equals(HttpStatus.OK))
+            return new ResponseObject(HttpStatus.FOUND, "Level id not exist", "");
+        Level level = (Level) responseGetLevelById.getData();
+        // file description
         ObjectMapper objectMapper = new ObjectMapper();
         Map uploadInfo = objectMapper.convertValue(responseUpload.getData(), Map.class);
         String problemCloudinaryId = uploadInfo.get("public_id").toString();
         String url = uploadInfo.get("url").toString();
+
         Optional<Teacher> teacher = teacherRepository.findById(problemRequest.getTeacherId());
-        Problem problem = new Problem(problemId, problemName, problemCloudinaryId, url, score, (byte) 0, teacher.get());
-        problemRepository.save(problem);
+        Problem problem = new Problem(problemId, problemName, problemCloudinaryId, url, score, timeLimit, memoryLimit, (byte) 0, teacher.get(), level);
+        problem = problemRepository.save(problem);
         return new ResponseObject(HttpStatus.OK, "Success", problem);
     }
 
     @Override
-    public ResponseObject editProblem(ProblemRequest problemRequest, String filePath) {
-        if (checkFile(problemRequest, filePath)) {
+    public ResponseObject editProblem(ProblemRequest problemRequest, String descriptionPath) {
+        if (checkFile(problemRequest, descriptionPath)) {
             return new ResponseObject(HttpStatus.FOUND, "Null data error", "");
         }
         if (problemRequestIsValid(problemRequest)) {
             return new ResponseObject(HttpStatus.FOUND, "Problem Found", "");
         }
-        if (!Files.exists(Path.of(filePath))) {
+        if (!Files.exists(Path.of(descriptionPath))) {
             return new ResponseObject(HttpStatus.FOUND, "File is not exists", "");
         }
-        ResponseObject responseUpload = uploadFileService.uploadFile(filePath);
+        ResponseObject responseUpload = uploadFileService.uploadFile(descriptionPath);
         if (responseUpload.getStatus() == HttpStatus.FOUND) {
             return new ResponseObject(HttpStatus.FOUND, "Found upload", "");
         }
-        if(!problemRepository.existsById(problemRequest.getProblemId())) {
+        if (!problemRepository.existsById(problemRequest.getProblemId())) {
             return new ResponseObject(HttpStatus.FOUND, "Problem id is not exist", "");
         }
         String problemId = problemRequest.getProblemId();
         String problemName = problemRequest.getProblemName();
         int score = problemRequest.getScore();
+        int timeLimit = problemRequest.getTimeLimit();
+        int memoryLimit = problemRequest.getMemoryLimit();
         ObjectMapper objectMapper = new ObjectMapper();
         Map uploadInfo = objectMapper.convertValue(responseUpload.getData(), Map.class);
         String problemCloudinaryId = uploadInfo.get("public_id").toString();
@@ -96,6 +106,8 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
         problem.get().setProblemScore(score);
         problem.get().setProblemCloudinaryId(problemCloudinaryId);
         problem.get().setProblemUrl(url);
+        problem.get().setProblemTimeLimit(timeLimit);
+        problem.get().setProblemMemoryLimit(memoryLimit);
         ResponseObject responseDelete = uploadFileService.deleteFile(problemCloudinaryId);
         if (responseDelete.getStatus() == HttpStatus.FOUND) {
             return new ResponseObject(HttpStatus.FOUND, "Found", "");
@@ -123,7 +135,7 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
         if (!problemRepository.existsById(problemId)) {
             return new ResponseObject(HttpStatus.FOUND, "Problem is not exist", "");
         }
-        if(!contestRepository.existsById(contestId)) {
+        if (!contestRepository.existsById(contestId)) {
             return new ResponseObject(HttpStatus.FOUND, "Contest is not exist", "");
         }
         Optional<Problem> problem = problemRepository.findById(problemId);
@@ -137,11 +149,19 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
 
     @Override
     public ResponseObject getAllProblemCreateByTeacher(String teacherId) {
-        if(!teacherRepository.existsById(teacherId)) {
+        if (!teacherRepository.existsById(teacherId)) {
             return new ResponseObject(HttpStatus.FOUND, "Teacher is not exist", "");
         }
         List<Problem> problems = problemRepository.getProblemsByTeacher(teacherId);
         return new ResponseObject(HttpStatus.OK, "Success", problems);
+    }
+
+    @Override
+    public ResponseObject getProblemById(String problemId) {
+        Optional<Problem> foundProblem = problemRepository.findById(problemId);
+        if (foundProblem.isEmpty())
+            return new ResponseObject(HttpStatus.FOUND, "Problem is not exist", "");
+        return new ResponseObject(HttpStatus.OK, "Success", foundProblem.get());
     }
 
     private boolean problemRequestIsValid(ProblemRequest problem) {
