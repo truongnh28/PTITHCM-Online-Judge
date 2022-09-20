@@ -6,10 +6,10 @@ import ptithcm.onlinejudge.model.response.ResponseObject;
 
 @Service
 public interface Adapter {
-    ResponseObject getProblemList();
-    ResponseObject getProblemInfo(String problemId);
-    ResponseObject getStatus(String jobId);
-    ResponseObject getSubmissionSource(String jobId);
-    ResponseObject getSubmissions(int pageNumber, String key);
-    ResponseObject submitProblem(SubmitRequest submitRequest);
+    ResponseObject getProblemListAdapter();
+    ResponseObject getProblemInfoAdapter(String problemId);
+    ResponseObject getStatusAdapter(String jobId);
+    ResponseObject getSubmissionSourceAdapter(String jobId);
+    ResponseObject getSubmissionsAdapter(int pageNumber, String key);
+    ResponseObject submitProblemAdapter(SubmitRequest submitRequest);
 }

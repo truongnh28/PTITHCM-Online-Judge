@@ -16,7 +16,7 @@ import ptithcm.onlinejudge.model.response.ResponseObject;
 @Service
 public class AdapterImpl implements Adapter {
     @Override
-    public ResponseObject getProblemList() {
+    public ResponseObject getProblemListAdapter() {
         final String url = "http://localhost:80/api/get_problem_list";
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -28,7 +28,7 @@ public class AdapterImpl implements Adapter {
     }
 
     @Override
-    public ResponseObject getProblemInfo(String problemId) {
+    public ResponseObject getProblemInfoAdapter(String problemId) {
         final String url = "http://localhost:80/api/get_problem_info/" + problemId;
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -40,7 +40,7 @@ public class AdapterImpl implements Adapter {
     }
 
     @Override
-    public ResponseObject getStatus(String jobId) {
+    public ResponseObject getStatusAdapter(String jobId) {
         final String url = "http://localhost:80/api/get_status/" + jobId;
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -52,7 +52,7 @@ public class AdapterImpl implements Adapter {
     }
 
     @Override
-    public ResponseObject getSubmissionSource(String jobId) {
+    public ResponseObject getSubmissionSourceAdapter(String jobId) {
         final String url = "http://localhost:80/api/get_submission_source/" + jobId;
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -64,7 +64,7 @@ public class AdapterImpl implements Adapter {
     }
 
     @Override
-    public ResponseObject getSubmissions(int pageNumber, String key) {
+    public ResponseObject getSubmissionsAdapter(int pageNumber, String key) {
         final String url = "http://localhost:80/api/get_submissions/" + pageNumber + "?secret_key=" + key;
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -76,7 +76,7 @@ public class AdapterImpl implements Adapter {
     }
 
     @Override
-    public ResponseObject submitProblem(SubmitRequest submitRequest) {
+    public ResponseObject submitProblemAdapter(SubmitRequest submitRequest) {
         final String url = "http://localhost:80/api/submit";
         try {
             RestTemplate restTemplate = new RestTemplate();
