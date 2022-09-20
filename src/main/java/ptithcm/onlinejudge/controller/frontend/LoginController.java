@@ -32,8 +32,7 @@ public class LoginController {
         Optional<Teacher> foundTeacher = teacherRepository.findById(user.getUsername());
         if (foundTeacher.isPresent()) {
             Teacher teacher = foundTeacher.get();
-            SHA256Helper sha256Helper = new SHA256Helper();
-            if (!teacher.getPassword().equals(sha256Helper.hash(user.getPassword())))
+            if (!teacher.getPassword().equals(SHA256Helper.hash(user.getPassword())))
                 return "redirect:/error";
             session.setAttribute("user", user);
             return "redirect:/teacher/problem";

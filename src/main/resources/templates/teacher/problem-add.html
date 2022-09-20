@@ -15,14 +15,14 @@
                             <span class="fw-bold">Mã bài tập</span>
                             <span class="fw-bold text-danger">*</span>
                         </label>
-                        <input type="text" class="form-control" th:field="*{getId}" aria-describedby="helpId" placeholder="Ví dụ: aplusb, maxnumber,..."/>
+                        <input type="text" class="form-control" th:field="*{id}" aria-describedby="helpId" placeholder="Ví dụ: aplusb, maxnumber,..."/>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">
                             <span class="fw-bold">Tên bài tập</span>
                             <span class="fw-bold text-danger">*</span>
                         </label>
-                        <input type="text" class="form-control" th:field="*{getProblemName}" aria-describedby="helpId" placeholder="Ví dụ: A cộng B, Số lớn nhất,..."/>
+                        <input type="text" class="form-control" th:field="*{problemName}" aria-describedby="helpId" placeholder="Ví dụ: A cộng B, Số lớn nhất,..."/>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">
@@ -83,7 +83,7 @@
                             </label>
                         </div>
                         <div class="form-check form-check-inline" th:each="problemType: ${problemTypes}">
-                            <input class="form-check-input" type="checkbox" name="problemTypeIdList" th:value="${problemType.problemTypeId}">
+                            <input class="form-check-input" type="checkbox" name="problemTypeIds" th:value="${problemType.problemTypeId}">
                             <label class="form-check-label" th:text="${problemType.problemTypeName}"></label>
                         </div>
                     </div>

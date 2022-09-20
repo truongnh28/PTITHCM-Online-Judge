@@ -11,11 +11,11 @@ public class ProblemDTO {
     private String id;
     private String problemName;
     private String problemUrl;
+    private String problemCloudinaryId;
     private int problemTimeLimit;
     private int problemMemoryLimit;
     private int problemScore;
     private LevelDTO level;
-    private TeacherDTO author;
+    private TeacherDTO teacher;
     private boolean hide;
-    private boolean solved;
 }

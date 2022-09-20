@@ -1,7 +1,21 @@
 package ptithcm.onlinejudge.model.entity;
 
-import javax.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "test_case")
 public class TestCase {
@@ -23,45 +37,4 @@ public class TestCase {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getTestCaseIn() {
-        return testCaseIn;
-    }
-
-    public void setTestCaseIn(String testCaseIn) {
-        this.testCaseIn = testCaseIn;
-    }
-
-    public String getTestCaseOut() {
-        return testCaseOut;
-    }
-
-    public void setTestCaseOut(String testCaseOut) {
-        this.testCaseOut = testCaseOut;
-    }
-
-    public Integer getTestCaseScore() {
-        return testCaseScore;
-    }
-
-    public void setTestCaseScore(Integer testCaseScore) {
-        this.testCaseScore = testCaseScore;
-    }
-
-    public Problem getProblem() {
-        return problem;
-    }
-
-    public void setProblem(Problem problem) {
-        this.problem = problem;
-    }
-
 }
