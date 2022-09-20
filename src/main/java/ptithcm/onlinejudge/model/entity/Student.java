@@ -32,6 +32,10 @@ public class Student {
         this.active = active;
     }
 
+    public Student() {
+
+    }
+
     public String getId() {
         return id;
     }

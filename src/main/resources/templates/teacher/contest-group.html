@@ -6,7 +6,7 @@
     <header th:replace="/fragments/teacher-header :: teacher-header"></header>
     <section>
         <div class="d-flex flex-wrap justify-content-center mb-3">
-            <a th:href="@{/teacher/problem}" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-decoration-none btn btn-primary" role="button">Trở lại trang chủ</a>
+            <a th:href="@{/teacher/problem}" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-decoration-none btn btn-secondary" role="button">Trở lại trang chủ</a>
             <form class="col-12 col-lg-auto mb-3 mb-lg-0" role="search">
                 <input type="search" class="form-control" placeholder="Tìm nhóm thực hành..." aria-label="Search"/>
             </form>
@@ -32,7 +32,7 @@
                     <td th:text="${group.subjectClassGroupId}"></td>
                     <td th:text="${group.subjectClassGroupName}"></td>
                     <td>
-                        <a th:href="@{/teacher/contest/group/{groupId}(groupId=${group.subjectClassGroupId})}" type="button" class="btn btn-primary btn-sm me-2">
+                        <a th:href="@{/teacher/contest/group/{groupId}(groupId=${group.subjectClassGroupId})}" type="button" class="btn btn-info btn-sm me-2">
                             Chi tiết
                         </a>
                     </td>

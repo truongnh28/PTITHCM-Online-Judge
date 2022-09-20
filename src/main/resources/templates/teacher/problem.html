@@ -31,8 +31,8 @@
                 <tbody>
                 <tr th:each="problem: ${problems}">
                     <td></td>
-                    <td th:text="${problem.getProblemId}"></td>
-                    <td th:text="${problem.getProblemTitle}"></td>
+                    <td th:text="${problem.getId}"></td>
+                    <td th:text="${problem.getProblemName}"></td>
                     <td th:text="${problem.author.teacherId}"></td>
                     <td th:text="${problem.getProblemScore}"></td>
                     <td th:text="${problem.getLevel().getLevelName}"></td>

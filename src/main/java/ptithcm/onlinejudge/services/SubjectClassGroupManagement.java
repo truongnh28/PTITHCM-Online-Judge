@@ -9,4 +9,6 @@ public interface SubjectClassGroupManagement {
     ResponseObject editSubjectClassGroup(SubjectClassGroupRequest subjectClassGroupRequest);
     ResponseObject getAllSubjectClassGroup();
     ResponseObject getAllSubjectClassGroupOfSubjectClass(String subjectClassId);
+
+    ResponseObject getSubjectClassGroupById(String subjectClassGroupId);
 }

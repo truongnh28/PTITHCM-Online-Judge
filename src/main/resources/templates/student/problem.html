@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${problemDetails.getProblemId}"></title>
+    <title th:text="${problemDetails.getId}"></title>
     <!-- Required meta tags -->
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
@@ -50,8 +50,8 @@
             <div class="col-9">
                 <div class="card bg-light">
                     <div class="card-body">
-                        <h2 class="card-title" th:text="${problemDetails.getProblemTitle}"></h2>
-                        <iframe th:src="@{${problemDetails.getProblemDescription}}" width="100%" height="600"></iframe>
+                        <h2 class="card-title" th:text="${problemDetails.getProblemName}"></h2>
+                        <iframe th:src="@{${problemDetails.getProblemUrl}}" width="100%" height="600"></iframe>
                     </div>
                 </div>
             </div>
@@ -61,7 +61,7 @@
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item bg-light">
                                 <div class="d-grid gap-2 my-2">
-                                    <a class="btn btn-primary" th:href="@{'/submit/' + ${problemDetails.getProblemId}}"
+                                    <a class="btn btn-primary" th:href="@{'/submit/' + ${problemDetails.getId}}"
                                        role="button">Nộp bài</a>
                                 </div>
                             </li>

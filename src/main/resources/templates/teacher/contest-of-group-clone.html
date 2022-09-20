@@ -8,14 +8,14 @@
     <section>
         <div class="card bg-light">
             <div class="card-body">
-                <form th:action="@{/teacher/contest/{contestId}/group/{groupId}/edit(contestId=${contestId},groupId=${groupId})}" method="post" th:object="${contest}">
-                    <h2 class="card-title text-center">Chỉnh sửa bài thực hành</h2>
+                <form th:action="@{/teacher/contest/group/{groupId}/add(groupId=${groupId})}" method="post" th:object="${contest}">
+                    <h2 class="card-title text-center">Clone bài thực hành</h2>
                     <div class="mb-3">
                         <label class="form-label">
                             <span class="fw-bold">Mã bài thực hành</span>
                             <span class="fw-bold text-danger">*</span>
                         </label>
-                        <input type="text" class="form-control" th:field="*{contestId}" aria-describedby="helpId" placeholder="" disabled/>
+                        <input type="text" class="form-control" th:field="*{contestId}" aria-describedby="helpId" placeholder="Ví dụ: THPYD19CN1-NHOM1"/>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">
@@ -38,7 +38,7 @@
                         </label>
                         <input type="datetime-local" class="form-control" th:field="*{contestEnd}" aria-describedby="helpId" placeholder=""/>
                     </div>
-                    <button type="submit" class="btn btn-primary">Cập nhật bài thực hành</button>
+                    <button type="submit" class="btn btn-primary">Lưu bài thực hành</button>
                 </form>
             </div>
         </div>

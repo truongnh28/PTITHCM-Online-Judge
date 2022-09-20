@@ -159,7 +159,7 @@ public class TeacherProblemController {
         // check the problemId is used or not
         boolean isOverlap = false;
         for (ProblemDTO problemDTO: Data.problemList) {
-            if (problemDTO.getProblemId().equals(problem.getProblemId())) {
+            if (problemDTO.getId().equals(problem.getId())) {
                 isOverlap = true;
                 break;
             }
@@ -188,7 +188,7 @@ public class TeacherProblemController {
             return "redirect:/error";
 
         // set the problem description link
-        problem.setProblemDescription(pathCloud);
+        problem.setProblemUrl(pathCloud);
 
         // check if every pair of test case uploaded has same name
         if (!checkTestCaseUpload(testCasesIn, testCasesOut)) {
@@ -213,12 +213,12 @@ public class TeacherProblemController {
                 return "redirect:/error";
             String randomId = UUID.randomUUID().toString().replace("-", "");
             // add testcase of problem
-            Data.testCaseList.add(new TestCaseDTO(randomId, pathTestInCloud, pathTestOutCloud, 0, problem.getProblemId()));
+            Data.testCaseList.add(new TestCaseDTO(randomId, pathTestInCloud, pathTestOutCloud, 0, problem.getId()));
         }
 
         // set problem type
         for (String problemTypeId: problemTypeIdList)
-            Data.problemHasTypeList.add(new ProblemHasTypeDTO(problem.getProblemId(), problemTypeId));
+            Data.problemHasTypeList.add(new ProblemHasTypeDTO(problem.getId(), problemTypeId));
         // set level
         problem.setLevel(getLevelById(levelId));
         // set author

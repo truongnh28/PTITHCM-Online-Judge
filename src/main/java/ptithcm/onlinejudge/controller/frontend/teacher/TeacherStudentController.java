@@ -48,7 +48,6 @@ public class TeacherStudentController {
     @PostMapping("/add")
     public String addStudent(@ModelAttribute("student") StudentDTO student) {
         student.setActive(true);
-        student.setRole(Data.roleList.get(1));
         Data.studentList.add(student);
         return "redirect:/teacher/student";
     }
