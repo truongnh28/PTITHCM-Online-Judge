@@ -1,8 +1,15 @@
 package ptithcm.onlinejudge.model.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.time.Instant;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "submissions")
 public class Submission {
@@ -26,53 +33,4 @@ public class Submission {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Instant getSubmissionTime() {
-        return submissionTime;
-    }
-
-    public void setSubmissionTime(Instant submissionTime) {
-        this.submissionTime = submissionTime;
-    }
-
-    public Integer getSubmissionScore() {
-        return submissionScore;
-    }
-
-    public void setSubmissionScore(Integer submissionScore) {
-        this.submissionScore = submissionScore;
-    }
-
-    public Byte getVerdict() {
-        return verdict;
-    }
-
-    public void setVerdict(Byte verdict) {
-        this.verdict = verdict;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-    public Problem getProblem() {
-        return problem;
-    }
-
-    public void setProblem(Problem problem) {
-        this.problem = problem;
-    }
-
 }

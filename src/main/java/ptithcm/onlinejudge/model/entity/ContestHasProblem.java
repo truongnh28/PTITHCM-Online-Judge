@@ -1,7 +1,14 @@
 package ptithcm.onlinejudge.model.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "contest_has_problem")
 public class ContestHasProblem {
@@ -17,29 +24,5 @@ public class ContestHasProblem {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
-
-    public ContestHasProblemId getId() {
-        return id;
-    }
-
-    public void setId(ContestHasProblemId id) {
-        this.id = id;
-    }
-
-    public Contest getContest() {
-        return contest;
-    }
-
-    public void setContest(Contest contest) {
-        this.contest = contest;
-    }
-
-    public Problem getProblem() {
-        return problem;
-    }
-
-    public void setProblem(Problem problem) {
-        this.problem = problem;
-    }
 
 }

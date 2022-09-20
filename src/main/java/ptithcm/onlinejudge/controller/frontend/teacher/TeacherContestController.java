@@ -6,6 +6,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ptithcm.onlinejudge.data.Data;
 import ptithcm.onlinejudge.dto.*;
+import ptithcm.onlinejudge.mapper.ContestMapper;
+import ptithcm.onlinejudge.mapper.SubjectClassGroupMapper;
+import ptithcm.onlinejudge.services.ContestManagementService;
+import ptithcm.onlinejudge.services.SubjectClassGroupManagement;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -15,15 +19,26 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/teacher/contest")
 public class TeacherContestController {
+    @Autowired
+    private ContestMapper contestMapper;
+    @Autowired
+    private ContestManagementService contestManagementService;
+    @Autowired
+    private SubjectClassGroupMapper subjectClassGroupMapper;
+    @Autowired
+    private SubjectClassGroupManagement subjectClassGroupManagement;
     @GetMapping("/group")
     public String showGroupPage(Model model) {
         model.addAttribute("pageTitle", "Danh sách nhóm thực hành");
         model.addAttribute("groups", Data.subjectClassGroupList);
+//        List<SubjectClassGroup> subjectClassGroupEntities = (List<SubjectClassGroup>) subjectClassGroupManagement.getAllSubjectClassGroup().getData();
+//        List<SubjectClassGroupDTO> subjectClassGroupList = subjectClassGroupEntities.stream().map(item -> subjectClassGroupMapper.entityToDTO(item)).toList();
+//        model.addAttribute("groups", subjectClassGroupList);
         return "/teacher/contest-group";
     }
 
     @GetMapping("/group/{groupId}")
-    public String showContestInGroup(@PathVariable("groupId") String groupId, Model model) {
+    public String showContestInGroup(@PathVariable("groupId") String groupId, Model model, HttpSession session) {
         model.addAttribute("pageTitle", "Danh sách bài thực hành");
         List<ContestDTO> contestList = new ArrayList<>();
         for (ContestDTO contest : Data.contestList) {
@@ -32,6 +47,10 @@ public class TeacherContestController {
             }
         }
         model.addAttribute("contests", contestList);
+//        UserLogin userLogin = (UserLogin) session.getAttribute("user");
+//        List<Contest> contestEntities = (List<Contest>) contestManagementService.getAllContestActiveCreatedByTeacher(userLogin.getUsername()).getData();
+//        List<ContestDTO> contestList = contestEntities.stream().map(item -> contestMapper.entityToDTO(item)).toList();
+//        model.addAttribute("contests", contestList);
         return "/teacher/contest-of-group";
     }
 
@@ -117,7 +136,7 @@ public class TeacherContestController {
             problemShow.setProblemUrl(problem.getProblemUrl());
             problemShow.setProblemScore(problem.getProblemScore());
             problemShow.setProblemName(problem.getProblemName());
-            problemShow.setAuthor(problem.getAuthor());
+            problemShow.setTeacher(problem.getTeacher());
             problemShow.setLevel(problem.getLevel());
             problemShow.setProblemTimeLimit(problem.getProblemTimeLimit());
             problemShow.setProblemMemoryLimit(problem.getProblemMemoryLimit());
@@ -184,7 +203,7 @@ public class TeacherContestController {
         Optional<TeacherDTO> foundTeacher = findTeacherById(username);
         if (foundTeacher.isEmpty())
             return "redirect:/error";
-        contest.setAuthor(foundTeacher.get());
+        contest.setTeacher(foundTeacher.get());
         contest.setHide(false);
 
         Data.contestList.add(contest);

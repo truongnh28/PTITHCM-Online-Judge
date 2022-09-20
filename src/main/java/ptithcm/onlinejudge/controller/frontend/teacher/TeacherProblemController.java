@@ -1,42 +1,51 @@
 package ptithcm.onlinejudge.controller.frontend.teacher;
 
-import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ptithcm.onlinejudge.data.Data;
 import ptithcm.onlinejudge.dto.*;
+import ptithcm.onlinejudge.mapper.ProblemMapper;
+import ptithcm.onlinejudge.model.entity.Problem;
+import ptithcm.onlinejudge.model.request.MultipleProblemTypeRequest;
+import ptithcm.onlinejudge.model.request.MultipleTestCaseRequest;
+import ptithcm.onlinejudge.model.request.ProblemRequest;
 import ptithcm.onlinejudge.model.response.ResponseObject;
-import ptithcm.onlinejudge.services.UploadFileService;
+import ptithcm.onlinejudge.services.*;
 
 import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/teacher/problem")
 public class TeacherProblemController {
-    private final UploadFileService uploadFileService;
-
-    public TeacherProblemController(UploadFileService uploadFileService) {
-        this.uploadFileService = uploadFileService;
-    }
+    @Autowired
+    private ProblemMapper problemMapper;
+    @Autowired
+    private ProblemManagementService problemManagementService;
+    @Autowired
+    private TestCaseManagementService testCaseManagementService;
+    @Autowired
+    private ProblemHasTypeManagementService problemHasTypeManagementService;
+    @Autowired
+    private UploadFileService uploadFileService;
+    @Autowired
+    private StorageFileService storageFileService;
 
     @GetMapping("")
-    public String showProblemList(Model model) {
+    public String showProblemListPage(Model model, HttpSession session) {
         model.addAttribute("pageTitle", "Problem list");
-        List<ProblemDTO> problemList = new ArrayList<>();
-        for (ProblemDTO problem : Data.problemList)
-            if (!problem.isHide())
-                problemList.add(problem);
+//        List<ProblemDTO> problemList = new ArrayList<>();
+//        for (ProblemDTO problem : Data.problemList)
+//            if (!problem.isHide())
+//                problemList.add(problem);
+        UserLogin userLogin = (UserLogin) session.getAttribute("user");
+        List<Problem> problemEntities = (List<Problem>) problemManagementService.getAllProblemCreateByTeacher(userLogin.getUsername()).getData();
+        List<ProblemDTO> problemList = problemEntities.stream().map(item -> problemMapper.entityToDTO(item)).collect(Collectors.toList());
         model.addAttribute("problems", problemList);
         return "/teacher/problem";
     }
@@ -86,64 +95,14 @@ public class TeacherProblemController {
         return res;
     }
 
-    private boolean checkFileIsNotUploaded(MultipartFile[] file) {
-        return Arrays.stream(file).filter(f -> !f.isEmpty()).count() == 0;
+    private boolean checkFileIsNotUploaded(MultipartFile file) {
+        return file == null || file.isEmpty();
     }
 
-    private boolean checkTestCaseUpload(MultipartFile[] testCasesIn, MultipartFile[] testCasesOut) {
-        boolean testCaseInEmpty = checkFileIsNotUploaded(testCasesIn);
-        boolean testCaseOutEmpty = checkFileIsNotUploaded(testCasesOut);
-        // if both of them not upload then return true -> because test case can be empty
-        if (testCaseInEmpty && testCaseOutEmpty) return true;
-        // if one of them not upload then return false
-        if ((!testCaseInEmpty && testCaseOutEmpty) || (testCaseInEmpty && !testCaseOutEmpty)) return false;
-        // if upload but the number of file of input and output are not same
-        if (testCasesOut.length != testCasesIn.length) return false;
-        // if upload with the same number of file of input and output
-        String[] fileNameInArray = new String[testCasesIn.length];
-        String[] fileNameOutArray = new String[testCasesOut.length];
-        fileNameInArray = Arrays.stream(testCasesIn).map(MultipartFile::getOriginalFilename).toList().toArray(fileNameInArray);
-        Arrays.sort(fileNameInArray);
-        fileNameOutArray = Arrays.stream(testCasesOut).map(MultipartFile::getOriginalFilename).toList().toArray(fileNameOutArray);
-        Arrays.sort(fileNameOutArray);
-        for (int i = 0; i < testCasesIn.length; ++i) {
-            String fullNameIn = FilenameUtils.getName(fileNameInArray[i]);
-            String fullNameOut = FilenameUtils.getName(fileNameOutArray[i]);
-            // if file name not equal
-            if (!fullNameIn.equals(fullNameOut) ||
-                    !FilenameUtils.getExtension(fullNameIn).equals("in") ||
-                    !FilenameUtils.getExtension(fullNameOut).equals("out")
-            )
-                return false;
-        }
-        return true;
-    }
-
-    private String helperUploadToCloud(MultipartFile multipartFile) {
-        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-        String fileNameServer = UUID.randomUUID().toString().replace("-", "");
-        String uploadDir = "./uploads/";
-        Path uploadPath = Paths.get(uploadDir);
-        try {
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-            String fileExtension = FilenameUtils.getExtension(fileName);
-            fileNameServer = fileNameServer + "." + fileExtension;
-            Path fileServerPath = uploadPath.resolve(fileNameServer).toAbsolutePath();
-            InputStream inputStream = multipartFile.getInputStream();
-            Files.copy(inputStream, fileServerPath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return uploadDir + fileNameServer;
-    }
-
-    private boolean helperDeleteTempFile(String filePath) {
-        if (Files.exists(Path.of(filePath))) {
-            File file = new File(filePath);
-            return file.delete();
-        }
+    private boolean checkFilesAreNotUpload(MultipartFile[] files) {
+        for (MultipartFile file: files)
+            if (file == null || file.isEmpty())
+                return true;
         return false;
     }
 
@@ -153,9 +112,60 @@ public class TeacherProblemController {
                              @RequestParam("fileDescription") MultipartFile fileDescription,
                              @RequestParam("testCasesIn") MultipartFile[] testCasesIn,
                              @RequestParam("testCasesOut") MultipartFile[] testCasesOut,
-                             @RequestParam("problemTypeIdList") String[] problemTypeIdList,
+                             @RequestParam("problemTypeIds") String[] problemTypeIds,
                              HttpSession session) {
         String username = ((UserLogin) session.getAttribute("user")).getUsername();
+        ProblemRequest problemRequest = new ProblemRequest();
+        problemRequest.setProblemId(problem.getId());
+        problemRequest.setProblemName(problem.getProblemName());
+        problemRequest.setScore(problem.getProblemScore());
+        problemRequest.setTimeLimit(problem.getProblemTimeLimit());
+        problemRequest.setMemoryLimit(problem.getProblemMemoryLimit());
+        problemRequest.setTeacherId(username);
+        problemRequest.setLevelId(levelId);
+
+        if (checkFileIsNotUploaded(fileDescription))
+            return "redirect:/error";
+
+        String descriptionPath = storageFileService.storeFile(fileDescription);
+        ResponseObject responseAddProblem = problemManagementService.addProblem(problemRequest, descriptionPath);
+        if (!responseAddProblem.getStatus().equals(HttpStatus.OK))
+            return "redirect:/error";
+
+        MultipleProblemTypeRequest multipleProblemTypeRequest = new MultipleProblemTypeRequest();
+        multipleProblemTypeRequest.setProblemId(problem.getId());
+        multipleProblemTypeRequest.setProblemTypeIds(problemTypeIds);
+        ResponseObject responseAddProblemTypes = problemHasTypeManagementService.addMultipleProblemType(multipleProblemTypeRequest);
+        if (!responseAddProblemTypes.getStatus().equals(HttpStatus.OK))
+            return "redirect:/error";
+
+        if ((checkFilesAreNotUpload(testCasesIn) && !checkFilesAreNotUpload(testCasesOut))
+            || (!checkFilesAreNotUpload(testCasesIn) && checkFilesAreNotUpload(testCasesOut)))
+            return "redirect:/error";
+
+        if (!checkFilesAreNotUpload(testCasesIn) && !checkFilesAreNotUpload(testCasesOut)) {
+            int inputFilesLength = testCasesIn.length;
+            int outputFilesLength = testCasesOut.length;
+            if (inputFilesLength != outputFilesLength) {
+                return "redirect:/error";
+            }
+
+            String[] testInPaths = new String[inputFilesLength];
+            String[] testOutPaths = new String[outputFilesLength];
+            for (int i = 0; i < inputFilesLength; ++i) {
+                testInPaths[i] = storageFileService.storeFile(testCasesIn[i]);
+                testOutPaths[i] = storageFileService.storeFile(testCasesOut[i]);
+            }
+
+            MultipleTestCaseRequest multipleTestCaseRequest = new MultipleTestCaseRequest();
+            multipleTestCaseRequest.setTestInPaths(testInPaths);
+            multipleTestCaseRequest.setTestOutPaths(testOutPaths);
+            multipleTestCaseRequest.setProblemId(problem.getId());
+            ResponseObject responseAddTestCaseToProblem = testCaseManagementService.addMultipleTestCaseProblem(multipleTestCaseRequest);
+            if (!responseAddTestCaseToProblem.getStatus().equals(HttpStatus.OK))
+                return "redirect:/error";
+        }
+        /*
         // check the problemId is used or not
         boolean isOverlap = false;
         for (ProblemDTO problemDTO: Data.problemList) {
@@ -191,9 +201,6 @@ public class TeacherProblemController {
         problem.setProblemUrl(pathCloud);
 
         // check if every pair of test case uploaded has same name
-        if (!checkTestCaseUpload(testCasesIn, testCasesOut)) {
-            return "redirect:/error";
-        }
 
         int numberTestCase = testCasesIn.length;
         // upload testcase from client to temp folder then upload them to cloud
@@ -222,8 +229,9 @@ public class TeacherProblemController {
         // set level
         problem.setLevel(getLevelById(levelId));
         // set author
-        problem.setAuthor(getAuthorByUsername(username));
+        problem.setTeacher(getAuthorByUsername(username));
         problem.setHide(false);
+         */
         return "redirect:/teacher/problem";
     }
 }

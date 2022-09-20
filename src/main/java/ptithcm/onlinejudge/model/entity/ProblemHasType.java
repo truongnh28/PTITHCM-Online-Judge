@@ -1,7 +1,20 @@
 package ptithcm.onlinejudge.model.entity;
 
-import javax.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
+import javax.persistence.Table;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "problem_has_type")
 public class ProblemHasType {
@@ -17,29 +30,5 @@ public class ProblemHasType {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "problem_type_id", nullable = false)
     private ProblemType problemType;
-
-    public ProblemHasTypeId getId() {
-        return id;
-    }
-
-    public void setId(ProblemHasTypeId id) {
-        this.id = id;
-    }
-
-    public Problem getProblem() {
-        return problem;
-    }
-
-    public void setProblem(Problem problem) {
-        this.problem = problem;
-    }
-
-    public ProblemType getProblemType() {
-        return problemType;
-    }
-
-    public void setProblemType(ProblemType problemType) {
-        this.problemType = problemType;
-    }
 
 }

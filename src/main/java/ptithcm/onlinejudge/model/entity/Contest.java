@@ -1,8 +1,15 @@
 package ptithcm.onlinejudge.model.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.time.Instant;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "contests")
 public class Contest {
@@ -25,62 +32,5 @@ public class Contest {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "teacher_id", nullable = false)
     private Teacher teacher;
-
-    public Contest(String id, String contestName, Instant contestStart, Instant contestEnd, Byte hide, Teacher teacher) {
-        this.id = id;
-        this.contestName = contestName;
-        this.contestStart = contestStart;
-        this.contestEnd = contestEnd;
-        this.hide = hide;
-        this.teacher = teacher;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getContestName() {
-        return contestName;
-    }
-
-    public void setContestName(String contestName) {
-        this.contestName = contestName;
-    }
-
-    public Instant getContestStart() {
-        return contestStart;
-    }
-
-    public void setContestStart(Instant contestStart) {
-        this.contestStart = contestStart;
-    }
-
-    public Instant getContestEnd() {
-        return contestEnd;
-    }
-
-    public void setContestEnd(Instant contestEnd) {
-        this.contestEnd = contestEnd;
-    }
-
-    public Byte getHide() {
-        return hide;
-    }
-
-    public void setHide(Byte hide) {
-        this.hide = hide;
-    }
-
-    public Teacher getTeacher() {
-        return teacher;
-    }
-
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
-    }
 
 }

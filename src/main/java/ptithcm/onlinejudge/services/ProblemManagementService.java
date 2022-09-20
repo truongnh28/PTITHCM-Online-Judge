@@ -6,9 +6,15 @@ import ptithcm.onlinejudge.model.response.ResponseObject;
 
 @Service
 public interface ProblemManagementService {
-    ResponseObject addProblem(ProblemRequest problemRequest, String filePath);
-    ResponseObject editProblem(ProblemRequest problemRequest, String filePath);
+    ResponseObject addProblem(ProblemRequest problemRequest, String descriptionPath);
+
+    ResponseObject editProblem(ProblemRequest problemRequest, String descriptionPath);
+
     ResponseObject deleteProblem(String problemId);
+
     ResponseObject addProblemToContest(String problemId, String contestId);
+
     ResponseObject getAllProblemCreateByTeacher(String teacherId);
+
+    ResponseObject getProblemById(String problemId);
 }

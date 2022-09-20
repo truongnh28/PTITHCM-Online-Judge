@@ -1,10 +1,17 @@
 package ptithcm.onlinejudge.model.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "problem_type")
 public class ProblemType {
@@ -14,21 +21,4 @@ public class ProblemType {
 
     @Column(name = "problem_type_name", nullable = false, length = 100)
     private String problemTypeName;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getProblemTypeName() {
-        return problemTypeName;
-    }
-
-    public void setProblemTypeName(String problemTypeName) {
-        this.problemTypeName = problemTypeName;
-    }
-
 }

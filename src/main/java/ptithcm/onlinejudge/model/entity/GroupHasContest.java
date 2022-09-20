@@ -1,7 +1,14 @@
 package ptithcm.onlinejudge.model.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "group_has_contest")
 public class GroupHasContest {
@@ -17,29 +24,5 @@ public class GroupHasContest {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "subject_class_group_id", nullable = false)
     private SubjectClassGroup subjectClassGroup;
-
-    public GroupHasContestId getId() {
-        return id;
-    }
-
-    public void setId(GroupHasContestId id) {
-        this.id = id;
-    }
-
-    public Contest getContest() {
-        return contest;
-    }
-
-    public void setContest(Contest contest) {
-        this.contest = contest;
-    }
-
-    public SubjectClassGroup getSubjectClassGroup() {
-        return subjectClassGroup;
-    }
-
-    public void setSubjectClassGroup(SubjectClassGroup subjectClassGroup) {
-        this.subjectClassGroup = subjectClassGroup;
-    }
 
 }

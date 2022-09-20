@@ -82,7 +82,7 @@ public class AdminAddProblemController {
             return "redirect:/error";
         }
         problem.setProblemUrl(pathServer);
-        problem.setAuthor(foundTeacher);
+        problem.setTeacher(foundTeacher);
         problem.setHide(false);
         Data.problemList.add(problem);
         return "redirect:/admin/problems";
