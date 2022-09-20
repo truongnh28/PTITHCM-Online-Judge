@@ -183,3 +183,4 @@ WARNING: khugepaged defrag is enabled.
 [SJ 09/20 17:39:57] Final verdict: {'verdict': 'AC', 'score': 100, 'max_score': 100, 'time': 24, 'memory': 12.9, 'testcase': 5}
 17:39:57 [32mdefault[39;49;00m: [34mJob OK[39;49;00m (4a108391-9862-48c6-83f0-58716dc2c02a)
 17:39:57 Result is kept for 2000000000 seconds
+17:46:42 Cleaning registries for queue: default
