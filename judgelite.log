@@ -1,0 +1,185 @@
+------------------JUDGELITE STARTED------------------
+Checking for cgroup support for memory ... [32mPASS(B[m
+Checking for cgroup support for cpuacct ... [32mPASS(B[m
+Checking for cgroup support for cpuset ... [32mPASS(B[m
+Checking for swap ... [32mPASS(B[m
+Checking for CPU frequency scaling ... [31mFAIL(B[m
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy6/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy4/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy2/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy7/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy5/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy3/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy1/scaling_governor
+Checking for kernel address space randomisation ... [31mFAIL(B[m
+WARNING: address space randomisation is enabled.
++ echo 0 > /proc/sys/kernel/randomize_va_space
+Checking for transparent hugepage support ... [31mFAIL(B[m
+WARNING: transparent hugepages are enabled.
++ echo never > /sys/kernel/mm/transparent_hugepage/enabled
+WARNING: transparent hugepage defrag is enabled.
++ echo never > /sys/kernel/mm/transparent_hugepage/defrag
+WARNING: khugepaged defrag is enabled.
++ echo 0 > /sys/kernel/mm/transparent_hugepage/khugepaged/defrag
+40:C 15 Sep 2022 11:45:32.526 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+40:C 15 Sep 2022 11:45:32.526 # Redis version=5.0.7, bits=64, commit=00000000, modified=0, pid=40, just started
+40:C 15 Sep 2022 11:45:32.526 # Configuration loaded
+40:M 15 Sep 2022 11:45:32.528 # Server initialized
+40:M 15 Sep 2022 11:45:32.528 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+11:45:34 Worker rq:worker:da62df9592ba4cdda3692d3ae6ef57b3: started, version 1.6.1
+11:45:34 Subscribing to channel rq:pubsub:da62df9592ba4cdda3692d3ae6ef57b3
+11:45:34 *** Listening on [32mdefault[39;49;00m...
+11:45:34 Cleaning registries for queue: default
+[2022-09-15 11:45:34 +0000] [46] [INFO] Starting gunicorn 20.0.4
+[2022-09-15 11:45:34 +0000] [46] [INFO] Listening at: http://0.0.0.0:80 (46)
+[2022-09-15 11:45:34 +0000] [46] [INFO] Using worker: gthread
+[2022-09-15 11:45:34 +0000] [50] [INFO] Booting worker with pid: 50
+12:12:34 Cleaning registries for queue: default
+------------------JUDGELITE STARTED------------------
+Checking for cgroup support for memory ... [32mPASS(B[m
+Checking for cgroup support for cpuacct ... [32mPASS(B[m
+Checking for cgroup support for cpuset ... [32mPASS(B[m
+Checking for swap ... [32mPASS(B[m
+Checking for CPU frequency scaling ... [31mFAIL(B[m
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy6/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy4/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy2/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy7/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy5/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy3/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy1/scaling_governor
+Checking for kernel address space randomisation ... [31mFAIL(B[m
+WARNING: address space randomisation is enabled.
++ echo 0 > /proc/sys/kernel/randomize_va_space
+Checking for transparent hugepage support ... [31mFAIL(B[m
+WARNING: transparent hugepages are enabled.
++ echo never > /sys/kernel/mm/transparent_hugepage/enabled
+WARNING: transparent hugepage defrag is enabled.
++ echo never > /sys/kernel/mm/transparent_hugepage/defrag
+WARNING: khugepaged defrag is enabled.
++ echo 0 > /sys/kernel/mm/transparent_hugepage/khugepaged/defrag
+40:C 18 Sep 2022 17:47:14.680 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+40:C 18 Sep 2022 17:47:14.680 # Redis version=5.0.7, bits=64, commit=00000000, modified=0, pid=40, just started
+40:C 18 Sep 2022 17:47:14.680 # Configuration loaded
+40:M 18 Sep 2022 17:47:14.682 # Server initialized
+40:M 18 Sep 2022 17:47:14.682 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+17:47:16 Worker rq:worker:69fa08c7059e45089bc2696fa7d7601b: started, version 1.6.1
+17:47:16 Subscribing to channel rq:pubsub:69fa08c7059e45089bc2696fa7d7601b
+17:47:16 *** Listening on [32mdefault[39;49;00m...
+17:47:16 Cleaning registries for queue: default
+[2022-09-18 17:47:16 +0000] [46] [INFO] Starting gunicorn 20.0.4
+[2022-09-18 17:47:16 +0000] [46] [INFO] Listening at: http://0.0.0.0:80 (46)
+[2022-09-18 17:47:16 +0000] [46] [INFO] Using worker: gthread
+[2022-09-18 17:47:16 +0000] [50] [INFO] Booting worker with pid: 50
+------------------JUDGELITE STARTED------------------
+Checking for cgroup support for memory ... [32mPASS(B[m
+Checking for cgroup support for cpuacct ... [32mPASS(B[m
+Checking for cgroup support for cpuset ... [32mPASS(B[m
+Checking for swap ... [32mPASS(B[m
+Checking for CPU frequency scaling ... [31mFAIL(B[m
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy6/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy4/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy2/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy7/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy5/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy3/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy1/scaling_governor
+Checking for kernel address space randomisation ... [31mFAIL(B[m
+WARNING: address space randomisation is enabled.
++ echo 0 > /proc/sys/kernel/randomize_va_space
+Checking for transparent hugepage support ... [31mFAIL(B[m
+WARNING: transparent hugepages are enabled.
++ echo never > /sys/kernel/mm/transparent_hugepage/enabled
+WARNING: transparent hugepage defrag is enabled.
++ echo never > /sys/kernel/mm/transparent_hugepage/defrag
+WARNING: khugepaged defrag is enabled.
++ echo 0 > /sys/kernel/mm/transparent_hugepage/khugepaged/defrag
+40:C 20 Sep 2022 15:05:13.027 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+40:C 20 Sep 2022 15:05:13.027 # Redis version=5.0.7, bits=64, commit=00000000, modified=0, pid=40, just started
+40:C 20 Sep 2022 15:05:13.027 # Configuration loaded
+40:M 20 Sep 2022 15:05:13.029 # Server initialized
+40:M 20 Sep 2022 15:05:13.029 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+15:05:14 Worker rq:worker:47b4e7b39cc44d6bb2b1bc6f196b3518: started, version 1.6.1
+15:05:14 Subscribing to channel rq:pubsub:47b4e7b39cc44d6bb2b1bc6f196b3518
+15:05:14 *** Listening on [32mdefault[39;49;00m...
+15:05:14 Cleaning registries for queue: default
+[2022-09-20 15:05:14 +0000] [46] [INFO] Starting gunicorn 20.0.4
+[2022-09-20 15:05:14 +0000] [46] [INFO] Listening at: http://0.0.0.0:80 (46)
+[2022-09-20 15:05:14 +0000] [46] [INFO] Using worker: gthread
+[2022-09-20 15:05:14 +0000] [50] [INFO] Booting worker with pid: 50
+15:32:14 Cleaning registries for queue: default
+15:38:32 [32mdefault[39;49;00m: [34mjudge_submission.judge_submission('/tmp/judge-tvd2xtpk', 'sample', 'sol.py', 'python', '"truongnh3"', True)[39;49;00m (fdfbfe2f-851f-4f8c-9307-81d100faf3fd)
+[SJ 09/20 15:38:33] Final verdict: {'verdict': 'AC', 'score': 100, 'max_score': 100, 'time': 19, 'memory': 12.6, 'testcase': 5}
+15:38:33 [32mdefault[39;49;00m: [34mJob OK[39;49;00m (fdfbfe2f-851f-4f8c-9307-81d100faf3fd)
+15:38:33 Result is kept for 2000000000 seconds
+15:46:24 [32mdefault[39;49;00m: [34mjudge_submission.judge_submission('/tmp/judge-i3tn1_lq', 'sample', 'sol.py', 'python', '"truongnh3"', True)[39;49;00m (bff433ed-784f-4fec-b99a-08aecd474309)
+[SJ 09/20 15:46:25] Final verdict: {'verdict': 'AC', 'score': 100, 'max_score': 100, 'time': 22, 'memory': 12.4, 'testcase': 5}
+15:46:25 [32mdefault[39;49;00m: [34mJob OK[39;49;00m (bff433ed-784f-4fec-b99a-08aecd474309)
+15:46:25 Result is kept for 2000000000 seconds
+15:59:55 Cleaning registries for queue: default
+16:26:55 Cleaning registries for queue: default
+16:48:58 [32mdefault[39;49;00m: [34mjudge_submission.judge_submission('/tmp/judge-1ccqw2y6', 'sample', 'sol.py', 'python', '"truongnh3"', True)[39;49;00m (72add186-f25e-4616-aeed-993b4c53aaed)
+[SJ 09/20 16:48:59] Final verdict: {'verdict': 'AC', 'score': 100, 'max_score': 100, 'time': 20, 'memory': 12.4, 'testcase': 5}
+16:48:59 [32mdefault[39;49;00m: [34mJob OK[39;49;00m (72add186-f25e-4616-aeed-993b4c53aaed)
+16:48:59 Result is kept for 2000000000 seconds
+16:55:44 Cleaning registries for queue: default
+17:22:45 Cleaning registries for queue: default
+17:25:02 [32mdefault[39;49;00m: [34mjudge_submission.judge_submission('/tmp/judge-slayau9s', 'sample', 'sol.py', 'python', 'truongnh3', True)[39;49;00m (07fb0a3e-9973-4a30-8d6a-a74fd09b5347)
+[SJ 09/20 17:25:03] Final verdict: {'verdict': 'AC', 'score': 100, 'max_score': 100, 'time': 21, 'memory': 12.8, 'testcase': 5}
+17:25:03 [32mdefault[39;49;00m: [34mJob OK[39;49;00m (07fb0a3e-9973-4a30-8d6a-a74fd09b5347)
+17:25:03 Result is kept for 2000000000 seconds
+17:30:28 [32mdefault[39;49;00m: [34mjudge_submission.judge_submission('/tmp/judge-gpyagbxl', 'sample', 'sol.py', 'python', 'truongnh3', True)[39;49;00m (44637750-bd97-4824-b6d6-0cc3f522fccb)
+[SJ 09/20 17:30:31] Final verdict: {'verdict': 'AC', 'score': 100, 'max_score': 100, 'time': 50, 'memory': 12.8, 'testcase': 5}
+17:30:31 [32mdefault[39;49;00m: [34mJob OK[39;49;00m (44637750-bd97-4824-b6d6-0cc3f522fccb)
+17:30:31 Result is kept for 2000000000 seconds
+17:31:08 [32mdefault[39;49;00m: [34mjudge_submission.judge_submission('/tmp/judge-wo2mplb6', 'sample', 'sol.py', 'python', 'truongnh3', True)[39;49;00m (0d141983-baf7-49f8-8371-022566856b3e)
+[SJ 09/20 17:31:11] Final verdict: {'verdict': 'AC', 'score': 100, 'max_score': 100, 'time': 82, 'memory': 12.8, 'testcase': 5}
+17:31:11 [32mdefault[39;49;00m: [34mJob OK[39;49;00m (0d141983-baf7-49f8-8371-022566856b3e)
+17:31:11 Result is kept for 2000000000 seconds
+17:31:36 [32mdefault[39;49;00m: [34mjudge_submission.judge_submission('/tmp/judge-3fp8rb7i', 'sample', 'sol.py', 'python', 'truongnh3', True)[39;49;00m (694484c2-648a-448e-ac36-431bf7640855)
+[SJ 09/20 17:31:39] Final verdict: {'verdict': 'AC', 'score': 100, 'max_score': 100, 'time': 61, 'memory': 12.8, 'testcase': 5}
+17:31:39 [32mdefault[39;49;00m: [34mJob OK[39;49;00m (694484c2-648a-448e-ac36-431bf7640855)
+17:31:39 Result is kept for 2000000000 seconds
+17:32:02 [32mdefault[39;49;00m: [34mjudge_submission.judge_submission('/tmp/judge-96swqg3y', 'sample', 'sol.py', 'python', 'truongnh3', True)[39;49;00m (32d5d8e5-402b-4d82-bee0-582ef4d68861)
+[SJ 09/20 17:32:03] Final verdict: {'verdict': 'AC', 'score': 100, 'max_score': 100, 'time': 20, 'memory': 12.8, 'testcase': 5}
+17:32:03 [32mdefault[39;49;00m: [34mJob OK[39;49;00m (32d5d8e5-402b-4d82-bee0-582ef4d68861)
+17:32:03 Result is kept for 2000000000 seconds
+17:32:57 [32mdefault[39;49;00m: [34mjudge_submission.judge_submission('/tmp/judge-fv2hu8cg', 'sample', 'sol.py', 'python', 'truongnh3', True)[39;49;00m (aea03dce-c26f-4911-a57e-4040d07536d6)
+[SJ 09/20 17:32:58] Final verdict: {'verdict': 'AC', 'score': 100, 'max_score': 100, 'time': 21, 'memory': 12.7, 'testcase': 5}
+17:32:58 [32mdefault[39;49;00m: [34mJob OK[39;49;00m (aea03dce-c26f-4911-a57e-4040d07536d6)
+17:32:58 Result is kept for 2000000000 seconds
+17:33:25 [32mdefault[39;49;00m: [34mjudge_submission.judge_submission('/tmp/judge-0ho9q5kv', 'sample', 'sol.py', 'python', 'truongnh3', True)[39;49;00m (83cf6e57-144f-4129-8492-8d2a3e634622)
+[SJ 09/20 17:33:26] Final verdict: {'verdict': 'AC', 'score': 100, 'max_score': 100, 'time': 26, 'memory': 12.8, 'testcase': 5}
+17:33:26 [32mdefault[39;49;00m: [34mJob OK[39;49;00m (83cf6e57-144f-4129-8492-8d2a3e634622)
+17:33:26 Result is kept for 2000000000 seconds
+17:39:56 [32mdefault[39;49;00m: [34mjudge_submission.judge_submission('/tmp/judge-cv182u60', 'sample', 'sol.py', 'python', 'truongnh3', True)[39;49;00m (4a108391-9862-48c6-83f0-58716dc2c02a)
+[SJ 09/20 17:39:57] Final verdict: {'verdict': 'AC', 'score': 100, 'max_score': 100, 'time': 24, 'memory': 12.9, 'testcase': 5}
+17:39:57 [32mdefault[39;49;00m: [34mJob OK[39;49;00m (4a108391-9862-48c6-83f0-58716dc2c02a)
+17:39:57 Result is kept for 2000000000 seconds

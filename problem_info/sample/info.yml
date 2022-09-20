@@ -1,0 +1,25 @@
+---
+problem_id: sample
+problem_name: A Sample Problem
+difficulty: Beginner
+time_limit: 2
+memory_limit: 192
+scoring_method: minimum
+checker: diff
+max_score: 100
+# fill_missing_output: true
+
+subtasks:
+  - name: 01_small
+    score: 30
+    num_samples: 1
+  - name: 02_large
+    score: 70
+    depends_on:
+      - 01_small
+  - name: 03_bonus
+    is_bonus: true
+    score: 10
+    depends_on:
+      - 02_large
+...
