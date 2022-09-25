@@ -187,3 +187,50 @@ WARNING: khugepaged defrag is enabled.
 18:13:42 Cleaning registries for queue: default
 18:40:42 Cleaning registries for queue: default
 19:07:42 Cleaning registries for queue: default
+------------------JUDGELITE STARTED------------------
+Checking for cgroup support for memory ... [32mPASS(B[m
+Checking for cgroup support for cpuacct ... [32mPASS(B[m
+Checking for cgroup support for cpuset ... [32mPASS(B[m
+Checking for swap ... [32mPASS(B[m
+Checking for CPU frequency scaling ... [31mFAIL(B[m
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy6/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy4/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy2/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy7/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy5/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy3/scaling_governor
+WARNING: cpufreq governor set to 'powersave', but 'performance' would be better
++ echo performance > /sys/devices/system/cpu/cpufreq/policy1/scaling_governor
+Checking for kernel address space randomisation ... [31mFAIL(B[m
+WARNING: address space randomisation is enabled.
++ echo 0 > /proc/sys/kernel/randomize_va_space
+Checking for transparent hugepage support ... [31mFAIL(B[m
+WARNING: transparent hugepages are enabled.
++ echo never > /sys/kernel/mm/transparent_hugepage/enabled
+WARNING: transparent hugepage defrag is enabled.
++ echo never > /sys/kernel/mm/transparent_hugepage/defrag
+WARNING: khugepaged defrag is enabled.
++ echo 0 > /sys/kernel/mm/transparent_hugepage/khugepaged/defrag
+40:C 25 Sep 2022 15:45:59.975 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+40:C 25 Sep 2022 15:45:59.975 # Redis version=5.0.7, bits=64, commit=00000000, modified=0, pid=40, just started
+40:C 25 Sep 2022 15:45:59.975 # Configuration loaded
+40:M 25 Sep 2022 15:45:59.977 # Server initialized
+40:M 25 Sep 2022 15:45:59.977 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+15:46:01 Worker rq:worker:c5460021da8e4c7e90be6874c84ca8a6: started, version 1.6.1
+15:46:01 Subscribing to channel rq:pubsub:c5460021da8e4c7e90be6874c84ca8a6
+15:46:01 *** Listening on [32mdefault[39;49;00m...
+15:46:01 Cleaning registries for queue: default
+[2022-09-25 15:46:01 +0000] [46] [INFO] Starting gunicorn 20.0.4
+[2022-09-25 15:46:01 +0000] [46] [INFO] Listening at: http://0.0.0.0:80 (46)
+[2022-09-25 15:46:01 +0000] [46] [INFO] Using worker: gthread
+[2022-09-25 15:46:01 +0000] [50] [INFO] Booting worker with pid: 50
+16:13:01 Cleaning registries for queue: default
+16:40:01 Cleaning registries for queue: default
