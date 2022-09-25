@@ -5,35 +5,11 @@ import ptithcm.onlinejudge.model.request.SubmitRequest;
 import ptithcm.onlinejudge.model.response.ResponseObject;
 
 @Service
-public class SubmitServiceImpl implements SubmitService {
-
-    @Override
-    public ResponseObject submitProblem(SubmitRequest submitRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseObject getSubmissions(int numberPage, String key) {
-        return null;
-    }
-
-    @Override
-    public ResponseObject getSubmissionSource(String jobId) {
-        return null;
-    }
-
-    @Override
-    public ResponseObject getStatusSubmission(String jobId) {
-        return null;
-    }
-
-    @Override
-    public ResponseObject getProblemInfo(String problemId) {
-        return null;
-    }
-
-    @Override
-    public ResponseObject getProblemList() {
-        return null;
-    }
+public interface SubmitServiceImpl {
+    ResponseObject getProblemListAdapter();
+    ResponseObject getProblemInfoAdapter(String problemId);
+    ResponseObject getStatusAdapter(String jobId);
+    ResponseObject getSubmissionSourceAdapter(String jobId);
+    ResponseObject getSubmissionsAdapter(int pageNumber, String key);
+    ResponseObject submitProblemAdapter(SubmitRequest submitRequest);
 }

@@ -33,7 +33,6 @@ public class TestCaseManagementServiceImpl implements TestCaseManagementService 
         testCase.setId(UUID.randomUUID().toString().replace("-", ""));
         testCase.setTestCaseIn(testCaseRequest.getTestCaseIn());
         testCase.setTestCaseOut(testCaseRequest.getTestCaseOut());
-        testCase.setTestCaseScore(testCaseRequest.getTestCaseScore());
         String problemId = testCaseRequest.getProblemId();
         ResponseObject responseGetProblemById = problemManagementService.getProblemById(problemId);
         if (!responseGetProblemById.getStatus().equals(HttpStatus.OK))

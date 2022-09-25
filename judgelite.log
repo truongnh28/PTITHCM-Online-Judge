@@ -184,3 +184,6 @@ WARNING: khugepaged defrag is enabled.
 17:39:57 [32mdefault[39;49;00m: [34mJob OK[39;49;00m (4a108391-9862-48c6-83f0-58716dc2c02a)
 17:39:57 Result is kept for 2000000000 seconds
 17:46:42 Cleaning registries for queue: default
+18:13:42 Cleaning registries for queue: default
+18:40:42 Cleaning registries for queue: default
+19:07:42 Cleaning registries for queue: default
