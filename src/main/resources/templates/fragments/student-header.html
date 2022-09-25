@@ -1,20 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<header th:fragment="teacher-header" class="d-flex mb-3 py-3 align-items-center border-bottom">
+<header th:fragment="student-header" class="d-flex mb-3 py-3 align-items-center border-bottom">
     <div class="me-auto">
         <div class="d-flex align-items-center">
             <div class="me-2">
-                <a th:href="@{/teacher/problem}"><img th:src="@{/images/ptit-logo.png}" width="40" height="43" alt=""></a>
+                <a th:href="@{/student/problem}"><img th:src="@{/images/ptit-logo.png}" width="40" height="43" alt=""></a>
             </div>
             <div class="mx-1">
-                <a th:href="@{/teacher/problem}" class="nav-link">Bài tập</a>
-            </div>
-            <div class="mx-1">
-                <a th:href="@{/teacher/contest/group}" class="nav-link">Bài thực hành</a>
+                <a th:href="@{/student/problem}" class="nav-link">Bài tập</a>
             </div>
             <div class="ms-2">
-                <a th:href="@{/teacher/subject}" class="nav-link">Môn học</a>
+                <a th:href="@{/student/submission}" class="nav-link">Bài nộp</a>
             </div>
         </div>
     </div>

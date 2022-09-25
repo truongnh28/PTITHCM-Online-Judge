@@ -3,17 +3,12 @@ package ptithcm.onlinejudge.mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ptithcm.onlinejudge.dto.TestCaseDTO;
-import ptithcm.onlinejudge.model.entity.Problem;
 import ptithcm.onlinejudge.model.entity.TestCase;
-import ptithcm.onlinejudge.repository.ProblemRepository;
-
-import java.util.Optional;
 
 @Component
 public class TestCaseMapperImpl implements TestCaseMapper {
     @Autowired
-    private ProblemRepository problemRepository;
-
+    private ProblemMapper problemMapper;
     @Override
     public TestCase dtoToEntity(TestCaseDTO dto) {
         if (dto == null) return null;
@@ -22,10 +17,7 @@ public class TestCaseMapperImpl implements TestCaseMapper {
         entity.setTestCaseIn(dto.getTestCaseInput());
         entity.setTestCaseOut(dto.getTestCaseOutput());
         entity.setTestCaseScore(dto.getTestCaseScore());
-        Optional<Problem> foundProblem = problemRepository.findById(dto.getProblemId());
-        if (foundProblem.isEmpty())
-            return null;
-        entity.setProblem(foundProblem.get());
+        entity.setProblem(problemMapper.dtoToEntity(dto.getProblem()));
         return entity;
     }
 
@@ -37,7 +29,7 @@ public class TestCaseMapperImpl implements TestCaseMapper {
         dto.setTestCaseInput(entity.getTestCaseIn());
         dto.setTestCaseOutput(entity.getTestCaseOut());
         dto.setTestCaseScore(entity.getTestCaseScore());
-        dto.setProblemId(entity.getProblem().getId());
+        dto.setProblem(problemMapper.entityToDTO(entity.getProblem()));
         return dto;
     }
 }

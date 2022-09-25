@@ -8,12 +8,14 @@ import ptithcm.onlinejudge.model.entity.Problem;
 @Component
 public class ProblemMapperImpl implements ProblemMapper {
     @Autowired
+    private LevelMapper levelMapper;
+    @Autowired
     private TeacherMapper teacherMapper;
     @Override
     public Problem dtoToEntity(ProblemDTO dto) {
         if (dto == null) return null;
         Problem entity = new Problem();
-        entity.setId(dto.getId());
+        entity.setId(dto.getProblemId());
         entity.setProblemName(dto.getProblemName());
         entity.setProblemUrl(dto.getProblemUrl());
         entity.setProblemCloudinaryId(dto.getProblemCloudinaryId());
@@ -21,6 +23,7 @@ public class ProblemMapperImpl implements ProblemMapper {
         entity.setProblemMemoryLimit(dto.getProblemMemoryLimit());
         entity.setHide(dto.isHide() ? Byte.valueOf("1") : Byte.valueOf("0"));
         entity.setProblemScore(dto.getProblemScore());
+        entity.setLevel(levelMapper.dtoToEntity(dto.getLevel()));
         entity.setTeacher(teacherMapper.dtoToEntity(dto.getTeacher()));
         return entity;
     }
@@ -29,7 +32,7 @@ public class ProblemMapperImpl implements ProblemMapper {
     public ProblemDTO entityToDTO(Problem entity) {
         if (entity == null) return null;
         ProblemDTO dto = new ProblemDTO();
-        dto.setId(entity.getId());
+        dto.setProblemId(entity.getId());
         dto.setProblemName(entity.getProblemName());
         dto.setProblemUrl(entity.getProblemUrl());
         dto.setProblemCloudinaryId(entity.getProblemCloudinaryId());
@@ -37,6 +40,7 @@ public class ProblemMapperImpl implements ProblemMapper {
         dto.setProblemTimeLimit(entity.getProblemTimeLimit());
         dto.setProblemMemoryLimit(entity.getProblemMemoryLimit());
         dto.setHide(entity.getHide().equals(Byte.valueOf("1")));
+        dto.setLevel(levelMapper.entityToDTO(entity.getLevel()));
         dto.setTeacher(teacherMapper.entityToDTO(entity.getTeacher()));
         return dto;
     }

@@ -1,6 +1,8 @@
 package ptithcm.onlinejudge.services;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import ptithcm.onlinejudge.dto.ProblemDTO;
 import ptithcm.onlinejudge.model.request.ProblemRequest;
 import ptithcm.onlinejudge.model.response.ResponseObject;
 
@@ -13,6 +15,8 @@ public interface ProblemManagementService {
     ResponseObject deleteProblem(String problemId);
 
     ResponseObject addProblemToContest(String problemId, String contestId);
+
+    ResponseObject addProblemWithTestCasesAndTypes(ProblemDTO problemDTO, String teacherId, int levelId, MultipartFile description, MultipartFile[] inputs, MultipartFile[] outputs, String[] types);
 
     ResponseObject getAllProblemCreateByTeacher(String teacherId);
 

@@ -11,7 +11,7 @@ import ptithcm.onlinejudge.repository.TeacherRepository;
 
 @RequestMapping("api/teacher")
 @RestController
-public class TeacherController {
+public class TeacherManagementController {
     @Autowired
     private TeacherRepository teacherRepository;
     @PostMapping("")
@@ -20,8 +20,7 @@ public class TeacherController {
         entity.setId(teacher.getTeacherId());
         entity.setTeacherFirstName(teacher.getTeacherFirstName());
         entity.setTeacherLastName(teacher.getTeacherLastName());
-        SHA256Helper sha256 = new SHA256Helper();
-        entity.setPassword(sha256.hash(teacher.getTeacherPassword()));
+        entity.setPassword(SHA256Helper.hash(teacher.getTeacherPassword()));
         entity.setActive(Byte.valueOf("1"));
         teacherRepository.save(entity);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("Add successful");

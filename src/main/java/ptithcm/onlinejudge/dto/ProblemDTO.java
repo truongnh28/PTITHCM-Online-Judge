@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProblemDTO {
-    private String id;
+    private String problemId;
     private String problemName;
     private String problemUrl;
     private String problemCloudinaryId;

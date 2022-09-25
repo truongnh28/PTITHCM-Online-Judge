@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ptithcm.onlinejudge.data.Data;
 import ptithcm.onlinejudge.dto.ProblemDTO;
 import ptithcm.onlinejudge.dto.TeacherDTO;
-import ptithcm.onlinejudge.dto.UserLogin;
+import ptithcm.onlinejudge.dto.Login;
 import ptithcm.onlinejudge.model.response.ResponseObject;
 import ptithcm.onlinejudge.services.UploadFileService;
 
@@ -61,7 +61,7 @@ public class AdminAddProblemController {
     }
     @PostMapping("/admin/problem/add")
     public String addProblem(HttpSession httpSession, @ModelAttribute("problem") ProblemDTO problem, @RequestParam("fileDescription") MultipartFile fileDescription) {
-        UserLogin user = (UserLogin) httpSession.getAttribute("user");
+        Login user = (Login) httpSession.getAttribute("user");
         // TODO: find by username
         TeacherDTO foundTeacher = new TeacherDTO();
         for (TeacherDTO teacher: Data.teacherList) {

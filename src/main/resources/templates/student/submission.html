@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head :: head">
+<body class="bg-light">
+<main class="container">
+    <header th:replace="/fragments/student-header :: student-header"></header>
+    <section>
+        <div class="card table-responsive mb-3">
+            <table class="table table-hover caption-top">
+                <caption class="bg-secondary bg-opacity-10 ps-4">
+                    <h2>Danh sách các bài nộp</h2>
+                </caption>
+                <thead class="thead-inverse text-center">
+                <tr>
+                    <th>#</th>
+                    <th>Tài khoản</th>
+                    <th>Trạng thái</th>
+                    <th>Bài tập</th>
+                    <th>Thời gian</th>
+                    <th>Bộ nhớ</th>
+                    <th>Ngôn ngữ</th>
+                    <th>ID</th>
+                </tr>
+                </thead>
+                <tbody class="text-center">
+                <tr th:each="submission: ${submissionList}">
+                    <td th:text="${submission.timeSubmit}"></td>
+                    <td>
+                        <a href="#" class="text-decoration-none" th:text="${submission.getStudentId}"></a>
+                    </td>
+                    <td th:switch="${submission.status}">
+                        <div th:case="'Accepted'"
+                             class="d-inline-flex rounded-1 border bg-success border-success text-light p-1">Accepted
+                        </div>
+                        <div th:case="'Compile Error'"
+                             class="d-inline-flex rounded-1 border bg-warning border-warning text-light p-1">Compile
+                            Error
+                        </div>
+                        <div th:case="'Time Limit Exceeded'"
+                             class="d-inline-flex rounded-1 border bg-danger border-danger text-light p-1">
+                            Time Limit Exceeded
+                        </div>
+                        <div th:case="'Wrong Answer'"
+                             class="d-inline-flex rounded-1 border bg-danger border-danger text-light p-1">
+                            Wrong Answer
+                        </div>
+                    </td>
+                    <td>
+                        <a th:href="@{/student/problem/{submissionId}(submissionId=${submission.problemId})}" th:text="${submission.problemId}" class="text-decoration-none"></a>
+                    </td>
+                    <td th:text="${submission.timeExecute} + 'ms'"></td>
+                    <td th:text="${submission.memoryUsed} + 'MB'"></td>
+                    <td th:text="${submission.language}"></td>
+                    <td>
+                        <a th:if="${submission.getStudentId} eq ${session.user.username}" th:href="@{/student/submission/{submissionId}(submissionId=${submission.getSourceCodeId})}" class="text-decoration-none">Xem code</a>
+                        <a th:unless="${submission.getStudentId} eq ${session.user.username}">Xem code</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <nav th:replace="/fragments/pagination :: pagination"></nav>
+    </section>
+    <footer th:replace="/fragments/footer :: footer"></footer>
+</main>
+<!-- Bootstrap JavaScript Libraries -->
+<script
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+        integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+        crossorigin="anonymous"
+></script>
+
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
+        integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+        crossorigin="anonymous"
+></script>
+</body>
+</html>

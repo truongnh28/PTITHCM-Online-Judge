@@ -8,6 +8,8 @@ import ptithcm.onlinejudge.data.Data;
 import ptithcm.onlinejudge.dto.*;
 import ptithcm.onlinejudge.mapper.ContestMapper;
 import ptithcm.onlinejudge.mapper.SubjectClassGroupMapper;
+import ptithcm.onlinejudge.model.entity.Contest;
+import ptithcm.onlinejudge.model.entity.SubjectClassGroup;
 import ptithcm.onlinejudge.services.ContestManagementService;
 import ptithcm.onlinejudge.services.SubjectClassGroupManagement;
 
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/teacher/contest")
@@ -30,28 +33,21 @@ public class TeacherContestController {
     @GetMapping("/group")
     public String showGroupPage(Model model) {
         model.addAttribute("pageTitle", "Danh sách nhóm thực hành");
-        model.addAttribute("groups", Data.subjectClassGroupList);
-//        List<SubjectClassGroup> subjectClassGroupEntities = (List<SubjectClassGroup>) subjectClassGroupManagement.getAllSubjectClassGroup().getData();
-//        List<SubjectClassGroupDTO> subjectClassGroupList = subjectClassGroupEntities.stream().map(item -> subjectClassGroupMapper.entityToDTO(item)).toList();
-//        model.addAttribute("groups", subjectClassGroupList);
-        return "/teacher/contest-group";
+        List<SubjectClassGroupDTO> groups = ((List<SubjectClassGroup>) subjectClassGroupManagement.getAllSubjectClassGroup().getData())
+                .stream().map(item -> subjectClassGroupMapper.entityToDTO(item)).toList();
+        model.addAttribute("groups", groups);
+        return "/teacher/contest/contest-group";
     }
 
+    // CONTEST OF GROUP
     @GetMapping("/group/{groupId}")
     public String showContestInGroup(@PathVariable("groupId") String groupId, Model model, HttpSession session) {
         model.addAttribute("pageTitle", "Danh sách bài thực hành");
-        List<ContestDTO> contestList = new ArrayList<>();
-        for (ContestDTO contest : Data.contestList) {
-            if (!contest.isHide() && Data.groupHasContestList.contains(new GroupHasContestDTO(contest.getContestId(), groupId))) {
-                contestList.add(contest);
-            }
-        }
-        model.addAttribute("contests", contestList);
-//        UserLogin userLogin = (UserLogin) session.getAttribute("user");
-//        List<Contest> contestEntities = (List<Contest>) contestManagementService.getAllContestActiveCreatedByTeacher(userLogin.getUsername()).getData();
-//        List<ContestDTO> contestList = contestEntities.stream().map(item -> contestMapper.entityToDTO(item)).toList();
-//        model.addAttribute("contests", contestList);
-        return "/teacher/contest-of-group";
+        String teacherId = ((Login) session.getAttribute("user")).getUsername();
+        List<ContestDTO> contests = ((List<Contest>) contestManagementService.getAllContestActiveCreatedByTeacher(teacherId).getData())
+                .stream().map(item -> contestMapper.entityToDTO(item)).toList();
+        model.addAttribute("contests", contests);
+        return "/teacher/contest/contest-of-group";
     }
 
     @GetMapping("/group/{groupId}/add")
@@ -59,25 +55,24 @@ public class TeacherContestController {
         model.addAttribute("pageTitle", "Thêm bài thực hành");
         ContestDTO contest = new ContestDTO();
         model.addAttribute("contest", contest);
-        return "/teacher/contest-of-group-add";
+        return "/teacher/contest/contest-of-group-add";
     }
 
     @GetMapping("/group/{groupId}/choose")
     public String showChooseContestPage(@PathVariable("groupId") String groupId, Model model) {
         model.addAttribute("pageTitle", "Không có tiêu đề");
-        List<ContestDTO> contestList = Data.contestList;
-        model.addAttribute("contests", contestList);
-        return "/teacher/contest-of-group-choose-contest";
+        List<ContestDTO> contests = ((List<Contest>) contestManagementService.getAllContestActive().getData())
+                .stream().map(item -> contestMapper.entityToDTO(item)).toList();
+        model.addAttribute("contests", contests);
+        return "/teacher/contest/contest-of-group-choose-contest";
     }
 
     @GetMapping("/{contestId}")
     public String showContestInformation(@PathVariable("contestId") String contestId, Model model) {
         model.addAttribute("pageTitle", "Thông tin bài thực hành");
-        Optional<ContestDTO> foundContest = findContestById(contestId);
-        if (foundContest.isEmpty())
-            return "redirect:/error";
-        model.addAttribute("contest", foundContest.get());
-        return "/teacher/contest-information";
+        ContestDTO contest = contestMapper.entityToDTO((Contest) contestManagementService.getContestById(contestId).getData());
+        model.addAttribute("contest", contest);
+        return "/teacher/contest/contest-information";
     }
 
     @GetMapping("/{contestId}/group/{groupId}")
@@ -85,23 +80,23 @@ public class TeacherContestController {
         model.addAttribute("pageTitle", "Clone bài thực hành");
         ContestDTO contest = new ContestDTO();
         model.addAttribute("contest", contest);
-        return "/teacher/contest-of-group-clone";
+        return "/teacher/contest/contest-of-group-clone";
     }
 
     @GetMapping("/{contestId}/problem")
     public String showProblemOfContestPage(@PathVariable("contestId") String contestId, Model model) {
         model.addAttribute("pageTitle", "Danh sách bài tập");
-        List<ProblemDTO> problemList = new ArrayList<>();
-        for (ContestHasProblemDTO contestHasProblem: Data.contestHasProblemList) {
-            if (contestHasProblem.getContestId().equals(contestId)) {
-                Optional<ProblemDTO> foundProblem = findProblemById(contestHasProblem.getProblemId());
-                if (foundProblem.isEmpty())
-                    return "redirect:/error";
-                problemList.add(foundProblem.get());
-            }
-        }
-        model.addAttribute("problems", problemList);
-        return "/teacher/contest-information-problem";
+//        List<ProblemDTO> problemList = new ArrayList<>();
+//        for (ContestHasProblemDTO contestHasProblem: Data.contestHasProblemList) {
+//            if (contestHasProblem.getContestId().equals(contestId)) {
+//                Optional<ProblemDTO> foundProblem = findProblemById(contestHasProblem.getProblemId());
+//                if (foundProblem.isEmpty())
+//                    return "redirect:/error";
+//                problemList.add(foundProblem.get());
+//            }
+//        }
+//        model.addAttribute("problems", problemList);
+        return "/teacher/contest/contest-information-problem";
     }
 
     @GetMapping("/{contestId}/group/{groupId}/edit")
@@ -111,7 +106,7 @@ public class TeacherContestController {
         if (foundContest.isEmpty())
             return "redirect:/error";
         model.addAttribute("contest", foundContest.get());
-        return "/teacher/contest-of-group-edit";
+        return "/teacher/contest/contest-of-group-edit";
     }
 
     @GetMapping("/{contestId}/group/{groupId}/delete")
@@ -127,35 +122,35 @@ public class TeacherContestController {
     @GetMapping("/{contestId}/problem/edit")
     public String addProblemToContestPage(@PathVariable("contestId") String contestId, Model model) {
         model.addAttribute("pageTitle", "Danh sách bài tập");
-        List<ProblemShowDTO> problemShowList = new ArrayList<>();
-        for (ProblemDTO problem: Data.problemList) {
-            if (problem.isHide())
-                continue;
-            ProblemShowDTO problemShow = new ProblemShowDTO();
-            problemShow.setId(problem.getId());
-            problemShow.setProblemUrl(problem.getProblemUrl());
-            problemShow.setProblemScore(problem.getProblemScore());
-            problemShow.setProblemName(problem.getProblemName());
-            problemShow.setTeacher(problem.getTeacher());
-            problemShow.setLevel(problem.getLevel());
-            problemShow.setProblemTimeLimit(problem.getProblemTimeLimit());
-            problemShow.setProblemMemoryLimit(problem.getProblemMemoryLimit());
-            problemShow.setDisabledButtonAdding(Data.contestHasProblemList.contains(new ContestHasProblemDTO(contestId, problem.getId())));
-            problemShowList.add(problemShow);
-        }
-        model.addAttribute("problems", problemShowList);
-        return "/teacher/contest-of-group-edit-problem";
+//        List<ProblemShowDTO> problemShowList = new ArrayList<>();
+//        for (ProblemDTO problem: Data.problemList) {
+//            if (problem.isHide())
+//                continue;
+//            ProblemShowDTO problemShow = new ProblemShowDTO();
+//            problemShow.setProblemId(problem.getProblemId());
+//            problemShow.setProblemUrl(problem.getProblemUrl());
+//            problemShow.setProblemScore(problem.getProblemScore());
+//            problemShow.setProblemName(problem.getProblemName());
+//            problemShow.setTeacher(problem.getTeacher());
+//            problemShow.setLevel(problem.getLevel());
+//            problemShow.setProblemTimeLimit(problem.getProblemTimeLimit());
+//            problemShow.setProblemMemoryLimit(problem.getProblemMemoryLimit());
+//            problemShow.setDisabledButtonAdding(Data.contestHasProblemList.contains(new ContestHasProblemDTO(contestId, problem.getProblemId())));
+//            problemShowList.add(problemShow);
+//        }
+//        model.addAttribute("problems", problemShowList);
+        return "/teacher/contest/contest-of-group-edit-problem";
     }
 
     @GetMapping("/{contestId}/problem/{problemId}/add")
     public String addProblemToContest(@PathVariable("contestId") String contestId, @PathVariable("problemId") String problemId) {
-        Data.contestHasProblemList.add(new ContestHasProblemDTO(contestId, problemId));
+//        Data.contestHasProblemList.add(new ContestHasProblemDTO(contestId, problemId));
         return "redirect:/teacher/contest/{contestId}/problem/edit";
     }
 
     @GetMapping("/{contestId}/problem/{problemId}/delete")
     public String deleteProblemFromContest(@PathVariable("contestId") String contestId, @PathVariable("problemId") String problemId) {
-        Data.contestHasProblemList.remove(new ContestHasProblemDTO(contestId, problemId));
+//        Data.contestHasProblemList.remove(new ContestHasProblemDTO(contestId, problemId));
         return "redirect:/teacher/contest/{contestId}/problem/edit";
     }
 
@@ -163,7 +158,7 @@ public class TeacherContestController {
         boolean foundProblem = false;
         ProblemDTO problem = new ProblemDTO();
         for (ProblemDTO problemDTO: Data.problemList) {
-            if (problemDTO.getId().equals(problemId)) {
+            if (problemDTO.getProblemId().equals(problemId)) {
                 problem = problemDTO;
                 foundProblem = true;
             }
@@ -199,7 +194,7 @@ public class TeacherContestController {
     public String addContest(@PathVariable("groupId") String groupId,
                              @ModelAttribute("contest") ContestDTO contest,
                              HttpSession session) {
-        String username = ((UserLogin) session.getAttribute("user")).getUsername();
+        String username = ((Login) session.getAttribute("user")).getUsername();
         Optional<TeacherDTO> foundTeacher = findTeacherById(username);
         if (foundTeacher.isEmpty())
             return "redirect:/error";
@@ -207,7 +202,7 @@ public class TeacherContestController {
         contest.setHide(false);
 
         Data.contestList.add(contest);
-        Data.groupHasContestList.add(new GroupHasContestDTO(contest.getContestId(), groupId));
+//        Data.groupHasContestList.add(new GroupHasContestDTO(contest.getContestId(), groupId));
         return "redirect:/teacher/contest/group/{groupId}";
     }
 

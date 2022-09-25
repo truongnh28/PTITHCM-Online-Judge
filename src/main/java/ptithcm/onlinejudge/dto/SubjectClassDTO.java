@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class SubjectClassDTO {
     private String subjectClassId;
     private String subjectClassName;
-    private String subjectId;
+    private SubjectDTO subject;
 }

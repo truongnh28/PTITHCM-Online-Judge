@@ -64,6 +64,20 @@ public class ContestManagementServiceImpl implements ContestManagementService{
     }
 
     @Override
+    public ResponseObject getAllContestActive() {
+        List<Contest> contests = contestRepository.getContestsActive();
+        return new ResponseObject(HttpStatus.OK, "Success", contests);
+    }
+
+    @Override
+    public ResponseObject getContestById(String contestId) {
+        Optional<Contest> foundContest = contestRepository.findById(contestId);
+        if (foundContest.isEmpty())
+            return new ResponseObject(HttpStatus.FOUND, "Contest not exist", "");
+        return new ResponseObject(HttpStatus.OK, "Success", foundContest.get());
+    }
+
+    @Override
     public ResponseObject getAllContestCreateByTeacher(String teacherId) {
         if(!teacherRepository.existsById(teacherId)) {
             return new ResponseObject(HttpStatus.FOUND, "Teacher is not exist", "");

@@ -1,70 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Bài nộp</title>
-    <!-- Required meta tags -->
-    <meta charset="utf-8"/>
-    <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-
-    <!-- Bootstrap CSS v5.2.0-beta1 -->
-    <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
-            integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
-            crossorigin="anonymous"
-    />
-</head>
+<head th:replace="/fragments/head :: head">
 <body class="bg-light">
 <main class="container">
-    <header class="p-3 mb-3 border-bottom">
-        <div class="container">
-            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                <a th:href="@{/problems}" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
-                    <img src="/images/ptit-logo.png" width="40" height="43" alt="ptit-logo.png"/>
-                </a>
-
-                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                    <li>
-                        <a th:href="@{/problems}" class="nav-link px-2 link-dark">Bài tập</a>
-                    </li>
-                    <li>
-                        <a th:href="@{/submissions}" class="nav-link px-2 link-dark">Bài nộp</a>
-                    </li>
-                </ul>
-                <a href="#" class="me-2 text-decoration-none" th:text="${session.user.username}"></a>
-                <div class="dropdown text-end">
-                    <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
-                       aria-expanded="false">
-                        <img th:src="@{/images/person.svg}" alt="mdo" width="32" height="32"
-                             class="rounded-circle border border-dark"/>
-                    </a>
-                    <ul class="dropdown-menu text-small">
-                        <li><a class="dropdown-item" href="#">Thông tin</a></li>
-                        <li>
-                            <hr class="dropdown-divider"/>
-                        </li>
-                        <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </header>
+    <header th:replace="/fragments/student-header :: student-header"></header>
     <section>
         <div class="card text-start">
             <div class="m-3">
                 <h2 class="card-title" th:text="${problemDetails.getProblemName}"></h2>
                 <label class="form-label">Mời bạn upload code</label>
-                <form th:action="@{'/submit-code/'+ ${problemDetails.getId}}" method="post" th:object="${submit}" enctype="multipart/form-data">
+                <form th:action="@{'/submit-code/'+ ${problemDetails.getProblemId}}" method="post" th:object="${submit}" enctype="multipart/form-data">
                     <div class="mb-3">
-                        <input
-                                type="file"
-                                class="form-control"
-                                name="file"
-                                placeholder="Chọn một file để nộp"
-                        />
+                        <input type="file" class="form-control" name="file" placeholder="Chọn một file để nộp"/>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Ngôn ngữ</label>
@@ -81,15 +28,7 @@
             </div>
         </div>
     </section>
-    <footer
-            class="d-flex px-4 flex-wrap justify-content-between align-items-center py-3 my-4 border-top"
-    >
-        <div class="col-md-4 d-flex align-items-center">
-          <span class="mb-3 mb-md-0 text-muted"
-          >&copy; 2022 All rights reserved</span
-          >
-        </div>
-    </footer>
+    <footer th:replace="/fragments/footer :: footer"></footer>
 </main>
 <!-- Bootstrap JavaScript Libraries -->
 <script

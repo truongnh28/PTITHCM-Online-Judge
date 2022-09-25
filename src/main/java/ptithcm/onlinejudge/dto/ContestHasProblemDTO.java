@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ContestHasProblemDTO {
-    private String contestId;
-    private String problemId;
+    private ContestDTO contest;
+    private ProblemDTO problem;
 }
