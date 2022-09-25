@@ -22,10 +22,10 @@
                     <td class="text-center">
                     </td>
                     <td>
-                        <a th:href="@{/student/problem/{problemId}(problemId=${problem.getProblemId})}" th:text="${problem.getProblemId}" class="text-decoration-none"></a>
+                        <a th:href="@{/student/problem/{problemId}(problemId=${problem.id})}" th:text="${problem.getId}" class="text-decoration-none"></a>
                     </td>
                     <td>
-                        <a th:href="@{/student/problem/{problemId}(problemId=${problem.getProblemId})}" th:text="${problem.getProblemName}" class="text-decoration-none"></a>
+                        <a th:href="@{/student/problem/{problemId}(problemId=${problem.id})}" th:text="${problem.getProblemName}" class="text-decoration-none"></a>
                     </td>
                 </tr>
                 </tbody>

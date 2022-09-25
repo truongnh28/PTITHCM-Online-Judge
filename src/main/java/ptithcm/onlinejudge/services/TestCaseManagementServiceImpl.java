@@ -24,8 +24,6 @@ public class TestCaseManagementServiceImpl implements TestCaseManagementService 
     private UploadFileService uploadFileService;
     @Autowired
     private TestCaseRepository testCaseRepository;
-    @Autowired
-    private ProblemManagementService problemManagementService;
 
     @Override
     public ResponseObject addTestCaseProblem(TestCaseRequest testCaseRequest) {
@@ -33,11 +31,7 @@ public class TestCaseManagementServiceImpl implements TestCaseManagementService 
         testCase.setId(UUID.randomUUID().toString().replace("-", ""));
         testCase.setTestCaseIn(testCaseRequest.getTestCaseIn());
         testCase.setTestCaseOut(testCaseRequest.getTestCaseOut());
-        String problemId = testCaseRequest.getProblemId();
-        ResponseObject responseGetProblemById = problemManagementService.getProblemById(problemId);
-        if (!responseGetProblemById.getStatus().equals(HttpStatus.OK))
-            return new ResponseObject(HttpStatus.FOUND, "Problem is not exist", "");
-        testCase.setProblem((Problem) responseGetProblemById.getData());
+        testCase.setProblem(testCaseRequest.getProblem());
         testCase = testCaseRepository.save(testCase);
         return new ResponseObject(HttpStatus.OK, "Success", testCase);
     }
@@ -46,19 +40,13 @@ public class TestCaseManagementServiceImpl implements TestCaseManagementService 
     public ResponseObject addMultipleTestCaseProblem(MultipleTestCaseRequest multipleTestCaseRequest) {
         String[] testInPaths = multipleTestCaseRequest.getTestInPaths();
         String[] testOutPaths = multipleTestCaseRequest.getTestOutPaths();
-        String problemId = multipleTestCaseRequest.getProblemId();
+        Problem problem = multipleTestCaseRequest.getProblem();
         // sort test cases
         Arrays.sort(testInPaths);
         Arrays.sort(testOutPaths);
         // check test cases is valid
-        if (!checkTestCaseFilesIsValid(testInPaths, testOutPaths)) {
+        if (!checkTestCaseFilesIsValid(testInPaths, testOutPaths))
             return new ResponseObject(HttpStatus.FOUND, "Test case request invalid", "");
-        }
-        // find problem by id
-        ResponseObject responseGetProblemById = problemManagementService.getProblemById(problemId);
-        if (!responseGetProblemById.getStatus().equals(HttpStatus.OK))
-            return new ResponseObject(HttpStatus.FOUND, "Problem is not exist", "");
-        Problem problem = (Problem) responseGetProblemById.getData();
 
         ObjectMapper objectMapper = new ObjectMapper();
         String[] uploadTestCaseInPath = new String[testInPaths.length];
@@ -83,12 +71,12 @@ public class TestCaseManagementServiceImpl implements TestCaseManagementService 
             testCaseRequest.setTestCaseIn(uploadTestCaseInPath[i]);
             testCaseRequest.setTestCaseOut(uploadTestCaseOutPath[i]);
             testCaseRequest.setTestCaseScore(testCaseScore);
-            testCaseRequest.setProblemId(problemId);
+            testCaseRequest.setProblem(problem);
             ResponseObject responseAddTestCase = addTestCaseProblem(testCaseRequest);
             if (!responseAddTestCase.getStatus().equals(HttpStatus.OK))
-                return new ResponseObject(HttpStatus.FOUND, "Add problem failed", "");
+                return new ResponseObject(HttpStatus.FOUND, "Add test case to problem failed", "");
         }
-        return null;
+        return new ResponseObject(HttpStatus.OK, "Success", "");
     }
 
     private boolean checkTestCaseFilesIsValid(String[] testCaseInPath, String[] testCaseOutPath) {
@@ -103,7 +91,7 @@ public class TestCaseManagementServiceImpl implements TestCaseManagementService 
                 return false;
             String fileExtensionIn = FileHelper.getFileExtensionFromPath(testCaseInPath[i]);
             String fileExtensionOut = FileHelper.getFileExtensionFromPath(testCaseOutPath[i]);
-            if (!fileExtensionIn.equals("in") || !fileExtensionOut.equals("out"))
+            if (!fileExtensionIn.equals("inp") || !fileExtensionOut.equals("outp"))
                 return false;
         }
         return true;

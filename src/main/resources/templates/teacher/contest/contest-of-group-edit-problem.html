@@ -31,17 +31,17 @@
                 <tbody>
                 <tr th:each="problem: ${problems}">
                     <td></td>
-                    <td th:text="${problem.getId}"></td>
+                    <td th:text="${problem.getProblemId}"></td>
                     <td th:text="${problem.getProblemName}"></td>
                     <td th:text="${problem.getTeacher.teacherId}"></td>
                     <td th:text="${problem.problemScore}"></td>
                     <td th:text="${problem.level.levelName}"></td>
                     <td>
-                        <a th:href="@{/teacher/contest/{contestId}/problem/{problemId}/add(contestId=${contestId},problemId=${problem.getId})}" type="button"
+                        <a th:href="@{/teacher/contest/{contestId}/problem/{problemId}/add(contestId=${contestId},problemId=${problem.getProblemId})}" type="button"
                            class="btn btn-primary btn-sm me-2" th:classappend="${problem.disabledButtonAdding} ? 'disabled': ''">
                             Thêm
                         </a>
-                        <a th:href="@{/teacher/contest/{contestId}/problem/{problemId}/delete(contestId=${contestId},problemId=${problem.getId})}" type="button"
+                        <a th:href="@{/teacher/contest/{contestId}/problem/{problemId}/delete(contestId=${contestId},problemId=${problem.getProblemId})}" type="button"
                            class="btn btn-danger btn-sm" th:classappend="${problem.disabledButtonAdding} ? '' : 'disabled'">
                             Xóa
                         </a>

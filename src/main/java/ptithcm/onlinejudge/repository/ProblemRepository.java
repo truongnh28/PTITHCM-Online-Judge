@@ -12,4 +12,7 @@ import java.util.List;
 public interface ProblemRepository extends JpaRepository<Problem, String> {
     @Query(value = "select * from problems where teacher_id = ?1", nativeQuery = true)
     List<Problem> getProblemsByTeacher(String teacherId);
+
+    @Query(value = "select * from problems where problems.problem_id in (select contest_has_problem.problem_id from contest_has_problem where contest_id = ?1)", nativeQuery = true)
+    List<Problem> getProblemsByContestId(String contestId);
 }

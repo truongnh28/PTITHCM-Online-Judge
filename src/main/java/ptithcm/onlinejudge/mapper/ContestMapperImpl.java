@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ptithcm.onlinejudge.dto.ContestDTO;
 import ptithcm.onlinejudge.helper.TimeHelper;
 import ptithcm.onlinejudge.model.entity.Contest;
+import ptithcm.onlinejudge.model.request.ContestRequest;
 
 
 @Component
@@ -35,5 +36,18 @@ public class ContestMapperImpl implements ContestMapper {
         dto.setContestEnd(entity.getContestEnd().toString());
         dto.setTeacher(teacherMapper.entityToDTO(entity.getTeacher()));
         return dto;
+    }
+
+    @Override
+    public ContestRequest dtoToRequest(ContestDTO dto) {
+        if (dto == null) return null;
+        ContestRequest request = new ContestRequest();
+        request.setContestId(dto.getContestId());
+        request.setContestStartTime(dto.getContestStart());
+        request.setContestEndTime(dto.getContestEnd());
+        request.setContestName(dto.getContestName());
+        if (dto.getTeacher() != null)
+            request.setTeacherId(dto.getTeacher().getTeacherId());
+        return request;
     }
 }

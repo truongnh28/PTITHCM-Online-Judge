@@ -1,14 +1,19 @@
 package ptithcm.onlinejudge.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import ptithcm.onlinejudge.helper.FileHelper;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+import ptithcm.onlinejudge.dto.ProblemDTO;
+import ptithcm.onlinejudge.dto.ProblemShowDTO;
+import ptithcm.onlinejudge.mapper.ProblemMapper;
 import ptithcm.onlinejudge.model.entity.*;
-import ptithcm.onlinejudge.model.request.ProblemHasTypeRequest;
+import ptithcm.onlinejudge.model.request.MultipleProblemTypeRequest;
 import ptithcm.onlinejudge.model.request.ProblemRequest;
-import ptithcm.onlinejudge.model.request.TestCaseRequest;
 import ptithcm.onlinejudge.model.response.ResponseObject;
 import ptithcm.onlinejudge.repository.*;
 
@@ -20,17 +25,21 @@ import java.util.stream.Collectors;
 @Service
 public class ProblemManagementServiceImpl implements ProblemManagementService {
     @Autowired
+    private ProblemMapper problemMapper;
+    @Autowired
     private UploadFileService uploadFileService;
     @Autowired
     private ProblemRepository problemRepository;
     @Autowired
     private TeacherRepository teacherRepository;
     @Autowired
-    private TestCaseRepository testCaseRepository;
+    private StorageFileService storageFileService;
     @Autowired
     private ContestRepository contestRepository;
     @Autowired
     private LevelManagementService levelManagementService;
+    @Autowired
+    private ProblemHasTypeManagementService problemHasTypeManagementService;
     @Autowired
     private ContestHasProblemRepository contestHasProblemRepository;
 
@@ -148,11 +157,68 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
     }
 
     @Override
-    public ResponseObject getAllProblemCreateByTeacher(String teacherId) {
+    public ResponseObject addProblemWithTestCasesAndTypes(ProblemDTO problemDTO, String teacherId, int levelId, MultipartFile description, MultipartFile[] inputs, MultipartFile[] outputs, String[] typeIds) {
+        Arrays.sort(inputs);
+        Arrays.sort(outputs);
+        if (!checkInputsAndOutputs(inputs, outputs))
+            return new ResponseObject(HttpStatus.FOUND, "Input test cases and Output test cases not valid", "");
+
+        ProblemRequest problemRequest = new ProblemRequest();
+        problemRequest.setProblemId(problemDTO.getProblemId());
+        problemRequest.setScore(problemDTO.getProblemScore());
+        problemRequest.setProblemName(problemDTO.getProblemName());
+        problemRequest.setTimeLimit(problemDTO.getProblemTimeLimit());
+        problemRequest.setMemoryLimit(problemDTO.getProblemMemoryLimit());
+        problemRequest.setLevelId(levelId);
+        problemRequest.setTeacherId(teacherId);
+
+        String pathDescription = storageFileService.storeFile(description);
+        ResponseObject addProblemWithLevelAndTeacherResponse = addProblem(problemRequest, pathDescription);
+        if (!addProblemWithLevelAndTeacherResponse.getStatus().equals(HttpStatus.OK))
+            return new ResponseObject(HttpStatus.FOUND, "Add problem failed", "");
+
+        Problem problem = (Problem) addProblemWithLevelAndTeacherResponse.getData();
+        ResponseObject addProblemTypesResponse = problemHasTypeManagementService.addMultipleProblemType(new MultipleProblemTypeRequest(typeIds, problem));
+        if (!addProblemTypesResponse.getStatus().equals(HttpStatus.OK))
+            return new ResponseObject(HttpStatus.FOUND, "Add problem types failed", "");
+
+
+        return new ResponseObject(HttpStatus.OK, "Success", "");
+    }
+
+    @Override
+    public ResponseObject getAllProblems() {
+        List<Problem> problems = problemRepository.findAll();
+        return new ResponseObject(HttpStatus.OK, "Success", problems);
+    }
+
+    @Override
+    public ResponseObject getAllProblemsCreateByTeacher(String teacherId) {
         if (!teacherRepository.existsById(teacherId)) {
             return new ResponseObject(HttpStatus.FOUND, "Teacher is not exist", "");
         }
         List<Problem> problems = problemRepository.getProblemsByTeacher(teacherId);
+        return new ResponseObject(HttpStatus.OK, "Success", problems);
+    }
+
+    @Override
+    public ResponseObject getAllProblemsForAddingOrRemovingContest(String contestId) {
+        if (!contestRepository.existsById(contestId))
+            return new ResponseObject(HttpStatus.FOUND, "Contest not exist", "");
+        List<Problem> problems = problemRepository.findAll();
+        List<ProblemShowDTO> problemShows = problems.stream().map(problem -> {
+            ProblemShowDTO problemShowDTO = problemMapper.entityToProblemShowDTO(problem);
+            problemShowDTO.setDisabledButtonAdding(contestHasProblemRepository.existsById(new ContestHasProblemId(contestId, problem.getId())));
+            return problemShowDTO;
+        }).toList();
+        return new ResponseObject(HttpStatus.OK, "Success", problemShows);
+    }
+
+    @Override
+    public ResponseObject getAllProblemsOfContest(String contestId) {
+        if (!contestRepository.existsById(contestId))
+            return new ResponseObject(HttpStatus.FOUND, "Contest is not exist", "");
+        List<Problem> problems = problemRepository.getProblemsByContestId(contestId);
         return new ResponseObject(HttpStatus.OK, "Success", problems);
     }
 
@@ -173,5 +239,33 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
     private boolean checkFile(ProblemRequest problemRequest, String filePath) {
         if (filePath == null) return true;
         return problemRequest == null;
+    }
+
+    private boolean isNotUploaded(MultipartFile file) {
+        return (file == null || file.isEmpty());
+    }
+
+    private boolean checkInputsAndOutputs(MultipartFile[] inputs, MultipartFile[] outputs) {
+        if (inputs.length != outputs.length)
+            return false;
+        if (inputs.length == 1) {
+            if (isNotUploaded(inputs[0]) && isNotUploaded(outputs[0]))
+                return true;
+            if (isNotUploaded(inputs[0]) || isNotUploaded(outputs[0]))
+                return false;
+        }
+        for (int i = 0; i < inputs.length; ++i) {
+            String fullInputName = inputs[i].getOriginalFilename();
+            String fullOutputName = outputs[i].getOriginalFilename();
+            String inputName = StringUtils.cleanPath(fullInputName);
+            String outputName = StringUtils.cleanPath(fullOutputName);
+            if (!inputName.equals(outputName))
+                return false;
+            String inputExtension = FilenameUtils.getExtension(fullInputName);
+            String outputExtension = FilenameUtils.getExtension(fullOutputName);
+            if (!inputExtension.equals("in") || !outputExtension.equals("out"))
+                return false;
+        }
+        return true;
     }
 }

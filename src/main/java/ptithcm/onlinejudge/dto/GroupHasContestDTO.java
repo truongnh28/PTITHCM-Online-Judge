@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GroupHasContestDTO {
-    private String contestId;
-    private String groupId;
+    private ContestDTO contest;
+    private SubjectClassGroupDTO group;
 }

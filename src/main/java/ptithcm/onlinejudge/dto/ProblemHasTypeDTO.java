@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProblemHasTypeDTO {
-    private String problemId;
-    private String problemTypeId;
+    private ProblemDTO problem;
+    private ProblemTypeDTO problemType;
 }

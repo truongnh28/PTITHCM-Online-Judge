@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubjectClassGroupDTO {
-    private String subjectClassGroupId;
-    private String subjectClassGroupName;
-    private SubjectClassDTO subjectClass;
+public class ProblemSolvedDTO extends ProblemDTO {
+    private boolean solved;
 }

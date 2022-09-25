@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StudentOfGroupDTO {
-    private String studentId;
-    private String subjectClassGroupId;
+    private StudentDTO student;
+    private SubjectClassGroupDTO subjectClassGroup;
 }

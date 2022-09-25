@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head :: head">
+<body class="bg-light">
+<main class="container">
+    <header th:replace="/fragments/student-header :: student-header"></header>
+    <section>
+        <div class="card text-start">
+            <div class="card-body">
+                <h4 class="card-title" th:text="${submissionCode.status}">Accepted</h4>
+                <span th:text="'Thời gian: ' + ${submissionCode.timeExec} + 's &NonBreakingSpace;'"></span>
+                <span th:text="'Bộ nhớ: ' + ${submissionCode.memoryUsed} + 'MB &NonBreakingSpace;'"></span>
+                <span th:text="'Ngôn ngữ: ' + ${submissionCode.language} + '&NonBreakingSpace;'"></span>
+                <span th:text="'Tài khoản: ' + ${submissionCode.getStudentId} + '&NonBreakingSpace;'"></span>
+                <div class="mb-3">
+                    <label for="code" class="form-label"></label>
+                    <textarea
+                            class="form-control bg-light font-monospace ps-1"
+                            name="code"
+                            id="code"
+                            rows="3"
+                            style="width: 100%; height: 400px"
+                            th:text="${submissionCode.sourceCode}"
+                            readonly>
+              </textarea>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer th:replace="/fragments/footer :: footer">
+    </footer>
+</main>
+<!-- Bootstrap JavaScript Libraries -->
+<script
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+        integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+        crossorigin="anonymous"
+></script>
+
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
+        integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+        crossorigin="anonymous"
+></script>
+</body>
+</html>

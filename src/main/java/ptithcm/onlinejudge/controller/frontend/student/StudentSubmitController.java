@@ -22,14 +22,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
 @Controller
-public class SubmitController{
+public class StudentSubmitController {
     @Autowired
     private StorageFileService storageService;
     @GetMapping("/submit/{problemId}")
     public String gotoSubmit(@PathVariable("problemId") String problemId, Model model) {
+        model.addAttribute("pageTitle", "Nộp bài");
         ProblemDTO problemDetails = new ProblemDTO();
         for (ProblemDTO problemDTO : Data.problemList) {
-            if (problemDTO.getId().equals(problemId)) {
+            if (problemDTO.getProblemId().equals(problemId)) {
                 problemDetails = problemDTO;
                 break;
             }
@@ -51,11 +52,11 @@ public class SubmitController{
             String filePath = storageService.storeFile(multipartFile);
             // gọi api
             Unirest.setTimeouts(0, 0);
-            UserLogin userLogin = (UserLogin) session.getAttribute("user");
+            Login login = (Login) session.getAttribute("user");
             File file = new File(filePath);
             HttpResponse<String> response = Unirest.post("http://localhost:80/api/submit")
                     .field("problem_id", problemId)
-                    .field("username ", userLogin.getUsername())
+                    .field("username ", login.getUsername())
                     .field("type", submitDTO.getLanguage())
                     .field("file", new File(filePath))
                     .field("secret_key", "default_change_this")
@@ -83,7 +84,7 @@ public class SubmitController{
                 submissionDTO.setTimeSubmit(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss")));
                 submissionDTO.setTimeExecute(15); // cái này là giả
                 submissionDTO.setLanguage(submitDTO.getLanguage());
-                submissionDTO.setStudentId(userLogin.getUsername());
+                submissionDTO.setStudentId(login.getUsername());
                 SubmissionDetailDTO submissionDetailDTO = new SubmissionDetailDTO();
                 submissionDetailDTO.setSourceCodeId(submissionDTO.getSourceCodeId());
                 submissionDetailDTO.setStatus(submissionDTO.getStatus());

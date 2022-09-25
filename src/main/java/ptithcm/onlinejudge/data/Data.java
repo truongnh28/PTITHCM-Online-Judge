@@ -42,11 +42,11 @@ public class Data {
 
     public static List<ProblemHasTypeDTO> problemHasTypeList = new ArrayList<>();
 
-    static {
-        problemHasTypeList.add(new ProblemHasTypeDTO("aplusb", "basic"));
-        problemHasTypeList.add(new ProblemHasTypeDTO("findprime", "array"));
-        problemHasTypeList.add(new ProblemHasTypeDTO("findprime", "math"));
-    }
+//    static {
+//        problemHasTypeList.add(new ProblemHasTypeDTO("aplusb", "basic"));
+//        problemHasTypeList.add(new ProblemHasTypeDTO("findprime", "array"));
+//        problemHasTypeList.add(new ProblemHasTypeDTO("findprime", "math"));
+//    }
 
     public static List<LevelDTO> levelList = new ArrayList<>();
 
@@ -67,19 +67,19 @@ public class Data {
 
     public static List<SubjectClassDTO> subjectClassList = new ArrayList<>();
 
-    static {
-        subjectClassList.add(new SubjectClassDTO("INT13162-CN1", "Lập trình python lớp D19CN1", "INT13162"));
-        subjectClassList.add(new SubjectClassDTO("INT13162-CN2", "Lập trình python lớp D19CN2", "INT13162"));
-        subjectClassList.add(new SubjectClassDTO("INT1332-CN1", "Lập trình hướng đối tượng lớp D19CN1", "INT1332"));
-    }
+//    static {
+//        subjectClassList.add(new SubjectClassDTO("INT13162-CN1", "Lập trình python lớp D19CN1", "INT13162"));
+//        subjectClassList.add(new SubjectClassDTO("INT13162-CN2", "Lập trình python lớp D19CN2", "INT13162"));
+//        subjectClassList.add(new SubjectClassDTO("INT1332-CN1", "Lập trình hướng đối tượng lớp D19CN1", "INT1332"));
+//    }
 
     public static List<SubjectClassGroupDTO> subjectClassGroupList = new ArrayList<>();
 
-    static {
-        subjectClassGroupList.add(new SubjectClassGroupDTO("INT13162-CN1-1", "Lập trình python Nhóm 1 D19CN1", "INT13162-CN1"));
-        subjectClassGroupList.add(new SubjectClassGroupDTO("INT13162-CN1-2", "Lập trình python Nhóm 2 D19CN1", "INT13162-CN1"));
-        subjectClassGroupList.add(new SubjectClassGroupDTO("INT13162-CN2-1", "Lập trình python Nhóm 1 D19CN2", "INT13162-CN2"));
-    }
+//    static {
+//        subjectClassGroupList.add(new SubjectClassGroupDTO("INT13162-CN1-1", "Lập trình python Nhóm 1 D19CN1", "INT13162-CN1"));
+//        subjectClassGroupList.add(new SubjectClassGroupDTO("INT13162-CN1-2", "Lập trình python Nhóm 2 D19CN1", "INT13162-CN1"));
+//        subjectClassGroupList.add(new SubjectClassGroupDTO("INT13162-CN2-1", "Lập trình python Nhóm 1 D19CN2", "INT13162-CN2"));
+//    }
 
     public static List<StudentOfGroupDTO> studentOfGroupList = new ArrayList<>();
 
