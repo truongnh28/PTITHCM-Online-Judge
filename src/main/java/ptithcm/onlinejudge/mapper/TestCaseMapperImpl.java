@@ -16,7 +16,6 @@ public class TestCaseMapperImpl implements TestCaseMapper {
         entity.setId(dto.getTestCaseId());
         entity.setTestCaseIn(dto.getTestCaseInput());
         entity.setTestCaseOut(dto.getTestCaseOutput());
-        entity.setTestCaseScore(dto.getTestCaseScore());
         entity.setProblem(problemMapper.dtoToEntity(dto.getProblem()));
         return entity;
     }
@@ -28,7 +27,6 @@ public class TestCaseMapperImpl implements TestCaseMapper {
         dto.setTestCaseId(entity.getId());
         dto.setTestCaseInput(entity.getTestCaseIn());
         dto.setTestCaseOutput(entity.getTestCaseOut());
-        dto.setTestCaseScore(entity.getTestCaseScore());
         dto.setProblem(problemMapper.entityToDTO(entity.getProblem()));
         return dto;
     }

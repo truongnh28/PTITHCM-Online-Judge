@@ -31,9 +31,6 @@ public class TestCase {
     @Column(name = "test_case_out", nullable = false)
     private String testCaseOut;
 
-    @Column(name = "test_case_score")
-    private Integer testCaseScore;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;

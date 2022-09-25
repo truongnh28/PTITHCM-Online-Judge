@@ -3,7 +3,9 @@ package ptithcm.onlinejudge.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import ptithcm.onlinejudge.dto.ContestDTO;
 import ptithcm.onlinejudge.helper.TimeHelper;
+import ptithcm.onlinejudge.mapper.ContestMapper;
 import ptithcm.onlinejudge.model.response.ResponseObject;
 import ptithcm.onlinejudge.model.entity.Contest;
 import ptithcm.onlinejudge.model.entity.Teacher;
@@ -18,11 +20,13 @@ import java.util.Optional;
 @Service
 public class ContestManagementServiceImpl implements ContestManagementService{
     @Autowired
-    UploadFileService uploadFileService;
+    private UploadFileService uploadFileService;
     @Autowired
-    ContestRepository contestRepository;
+    private ContestRepository contestRepository;
     @Autowired
-    TeacherRepository teacherRepository;
+    private TeacherRepository teacherRepository;
+    @Autowired
+    private ContestMapper contestMapper;
 
     @Override
     public ResponseObject addContest(ContestRequest contestRequest) {
@@ -61,6 +65,29 @@ public class ContestManagementServiceImpl implements ContestManagementService{
         contest.get().setContestEnd(endTime);
         contestRepository.save(contest.get());
         return new ResponseObject(HttpStatus.OK, "Success", contest);
+    }
+
+    @Override
+    public ResponseObject deleteContest(String contestId) {
+        if (!contestRepository.existsById(contestId))
+            return new ResponseObject(HttpStatus.FOUND, "Contest not exist", "");
+        Contest foundContest = contestRepository.findById(contestId).get();
+        foundContest.setHide((byte) 1);
+        contestRepository.save(foundContest);
+        return new ResponseObject(HttpStatus.OK, "Success", "");
+    }
+
+    @Override
+    public ResponseObject addContestDTOAndTeacherId(ContestDTO contest, String teacherId) {
+        ContestRequest contestRequest = contestMapper.dtoToRequest(contest);
+        contestRequest.setTeacherId(teacherId);
+        return addContest(contestRequest);
+    }
+
+    @Override
+    public ResponseObject editContestDTO(ContestDTO contest) {
+        ContestRequest contestRequest = contestMapper.dtoToRequest(contest);
+        return editContest(contestRequest);
     }
 
     @Override

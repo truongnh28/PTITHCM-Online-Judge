@@ -15,7 +15,6 @@ import ptithcm.onlinejudge.services.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/teacher/problem")
@@ -29,7 +28,7 @@ public class TeacherProblemController {
     public String showProblemListPage(Model model, HttpSession session) {
         model.addAttribute("pageTitle", "Problem list");
         Login login = (Login) session.getAttribute("user");
-        List<ProblemDTO> problems = ((List<Problem>) problemManagementService.getAllProblemCreateByTeacher(login.getUsername()).getData())
+        List<ProblemDTO> problems = ((List<Problem>) problemManagementService.getAllProblemsCreateByTeacher(login.getUsername()).getData())
                 .stream().map(item -> problemMapper.entityToDTO(item)).toList();
         model.addAttribute("problems", problems);
         return "/teacher/problem/problem";

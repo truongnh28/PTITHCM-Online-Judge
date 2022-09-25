@@ -1,0 +1,157 @@
+Table "level" {
+  "level_id" tinyint [pk, not null]
+  "level_name" varchar(20)
+}
+
+Table "problem_type" {
+  "problem_type_id" varchar(100) [pk, not null]
+  "problem_type_name" varchar(100) [not null]
+}
+
+Table "role" {
+  "role_id" tinyint [pk, not null]
+  "role_name" varchar(20)
+}
+
+Table "students" {
+  "student_id" varchar(10) [pk, not null]
+  "active" tinyint
+  "password" varchar(100) [not null]
+  "student_first_name" varchar(100) [not null]
+  "student_last_name" varchar(100) [not null]
+}
+
+Table "subjects" {
+  "subject_id" varchar(10) [pk, not null]
+  "subject_name" varchar(100)
+}
+
+Table "subject_classes" {
+  "subject_class_id" varchar(10) [pk, not null]
+  "subject_class_name" varchar(100)
+  "subject_id" varchar(10) [not null]
+}
+
+Table "subject_class_groups" {
+  "subject_class_group_id" varchar(10) [pk, not null]
+  "subject_class_group_name" varchar(100)
+  "subject_class_id" varchar(10) [not null]
+}
+
+Table "student_of_group" {
+  "student_id" varchar(255) [not null]
+  "subject_class_group_id" varchar(255) [not null]
+
+Indexes {
+  (student_id, subject_class_group_id) [pk]
+}
+}
+
+Table "teachers" {
+  "teacher_id" varchar(10) [pk, not null]
+  "active" tinyint
+  "password" varchar(100) [not null]
+  "teacher_first_name" varchar(100) [not null]
+  "teacher_last_name" varchar(100) [not null]
+}
+
+Table "contests" {
+  "contest_id" varchar(100) [pk, not null]
+  "contest_end" datetime [not null]
+  "contest_name" varchar(100) [not null]
+  "contest_start" datetime [not null]
+  "hide" tinyint
+  "teacher_id" varchar(10) [not null]
+}
+
+Table "group_has_contest" {
+  "contest_id" varchar(255) [not null]
+  "subject_class_group_id" varchar(255) [not null]
+
+Indexes {
+  (contest_id, subject_class_group_id) [pk]
+}
+}
+
+Table "problems" {
+  "problem_id" varchar(100) [pk, not null]
+  "problem_cloudinary_id" varchar(100)
+  "problem_name" varchar(100)
+  "problem_score" int
+  "problem_time_limit" int
+  "problem_memory_limit" int
+  "problem_url" longtext
+  "hide" tinyint
+  "teacher_id" varchar(10) [not null]
+  "level_id" tinyint [not null]
+
+Indexes {
+  level_id [name: "FK_problems_level_idx"]
+}
+}
+
+Table "contest_has_problem" {
+  "contest_id" varchar(255) [not null]
+  "problem_id" varchar(255) [not null]
+
+Indexes {
+  (contest_id, problem_id) [pk]
+}
+}
+
+Table "problem_has_type" {
+  "problem_id" varchar(255) [not null]
+  "problem_type_id" varchar(255) [not null]
+
+Indexes {
+  (problem_id, problem_type_id) [pk]
+}
+}
+
+Table "submissions" {
+  "submission_id" bigint [pk, not null]
+  "submission_score" int
+  "submission_time" datetime
+  "verdict" tinyint
+  "problem_id" varchar(100) [not null]
+  "student_id" varchar(10) [not null]
+}
+
+Table "test_case" {
+  "test_case_id" varchar(100) [pk, not null]
+  "problem_id" varchar(100) [not null]
+  "test_case_in" longtext [not null]
+  "test_case_out" longtext [not null]
+}
+
+Ref "FKitnnog6jm0qvg0fyivvfe64of":"subjects"."subject_id" < "subject_classes"."subject_id"
+
+Ref "FK2a0mnnsisml66hi9yui89e1uo":"subject_classes"."subject_class_id" < "subject_class_groups"."subject_class_id"
+
+Ref "FK3y3ef138uc2nfwd7s2mwdnd1j":"subject_class_groups"."subject_class_group_id" < "student_of_group"."subject_class_group_id"
+
+Ref "FK6fsgrfeatuyel0bvdtsrfxli6":"students"."student_id" < "student_of_group"."student_id"
+
+Ref "FKmgx9ac1f3n40pqevrkv7etwch":"teachers"."teacher_id" < "contests"."teacher_id"
+
+Ref "FK1la0r5fym36gjxutb1b7slxl6":"contests"."contest_id" < "group_has_contest"."contest_id"
+
+Ref "FKafxidmce8clqmgxr6fg1bp5tn":"subject_class_groups"."subject_class_group_id" < "group_has_contest"."subject_class_group_id"
+
+Ref "FK_problems_level":"level"."level_id" < "problems"."level_id"
+
+Ref "FKbogtrdpnh3ei9selovxy1l3qb":"teachers"."teacher_id" < "problems"."teacher_id"
+
+Ref "FK8ny9fijhd0pyv2gbaorb3sh9t":"problems"."problem_id" < "contest_has_problem"."problem_id"
+
+Ref "FKrq4fhxf06yft0hr06ujalcx7c":"contests"."contest_id" < "contest_has_problem"."contest_id"
+
+Ref "FK4erjdrn95082n2v0d9y3aamlf":"problem_type"."problem_type_id" < "problem_has_type"."problem_type_id"
+
+Ref "FK85oikvlwn1igtxq5d7b4nf2yv":"problems"."problem_id" < "problem_has_type"."problem_id"
+
+Ref "FKhwebuw14r6lb2ja85w9mwa8vf":"students"."student_id" < "submissions"."student_id"
+
+Ref "FKj5kbdqokftgx992cx24x3s583":"problems"."problem_id" < "submissions"."problem_id"
+
+Ref "FKmxvd9qtqfvanwpwxvxns4nqpq":"problems"."problem_id" < "test_case"."problem_id"

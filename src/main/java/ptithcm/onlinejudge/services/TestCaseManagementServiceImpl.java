@@ -31,7 +31,6 @@ public class TestCaseManagementServiceImpl implements TestCaseManagementService 
         testCase.setId(UUID.randomUUID().toString().replace("-", ""));
         testCase.setTestCaseIn(testCaseRequest.getTestCaseIn());
         testCase.setTestCaseOut(testCaseRequest.getTestCaseOut());
-        testCase.setTestCaseScore(testCaseRequest.getTestCaseScore());
         testCase.setProblem(testCaseRequest.getProblem());
         testCase = testCaseRepository.save(testCase);
         return new ResponseObject(HttpStatus.OK, "Success", testCase);

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import ptithcm.onlinejudge.dto.ProblemDTO;
+import ptithcm.onlinejudge.dto.ProblemShowDTO;
+import ptithcm.onlinejudge.mapper.ProblemMapper;
 import ptithcm.onlinejudge.model.entity.*;
 import ptithcm.onlinejudge.model.request.MultipleProblemTypeRequest;
 import ptithcm.onlinejudge.model.request.ProblemRequest;
@@ -18,9 +20,12 @@ import ptithcm.onlinejudge.repository.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProblemManagementServiceImpl implements ProblemManagementService {
+    @Autowired
+    private ProblemMapper problemMapper;
     @Autowired
     private UploadFileService uploadFileService;
     @Autowired
@@ -182,11 +187,38 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
     }
 
     @Override
-    public ResponseObject getAllProblemCreateByTeacher(String teacherId) {
+    public ResponseObject getAllProblems() {
+        List<Problem> problems = problemRepository.findAll();
+        return new ResponseObject(HttpStatus.OK, "Success", problems);
+    }
+
+    @Override
+    public ResponseObject getAllProblemsCreateByTeacher(String teacherId) {
         if (!teacherRepository.existsById(teacherId)) {
             return new ResponseObject(HttpStatus.FOUND, "Teacher is not exist", "");
         }
         List<Problem> problems = problemRepository.getProblemsByTeacher(teacherId);
+        return new ResponseObject(HttpStatus.OK, "Success", problems);
+    }
+
+    @Override
+    public ResponseObject getAllProblemsForAddingOrRemovingContest(String contestId) {
+        if (!contestRepository.existsById(contestId))
+            return new ResponseObject(HttpStatus.FOUND, "Contest not exist", "");
+        List<Problem> problems = problemRepository.findAll();
+        List<ProblemShowDTO> problemShows = problems.stream().map(problem -> {
+            ProblemShowDTO problemShowDTO = problemMapper.entityToProblemShowDTO(problem);
+            problemShowDTO.setDisabledButtonAdding(contestHasProblemRepository.existsById(new ContestHasProblemId(contestId, problem.getId())));
+            return problemShowDTO;
+        }).toList();
+        return new ResponseObject(HttpStatus.OK, "Success", problemShows);
+    }
+
+    @Override
+    public ResponseObject getAllProblemsOfContest(String contestId) {
+        if (!contestRepository.existsById(contestId))
+            return new ResponseObject(HttpStatus.FOUND, "Contest is not exist", "");
+        List<Problem> problems = problemRepository.getProblemsByContestId(contestId);
         return new ResponseObject(HttpStatus.OK, "Success", problems);
     }
 

@@ -18,7 +18,12 @@ public interface ProblemManagementService {
 
     ResponseObject addProblemWithTestCasesAndTypes(ProblemDTO problemDTO, String teacherId, int levelId, MultipartFile description, MultipartFile[] inputs, MultipartFile[] outputs, String[] types);
 
-    ResponseObject getAllProblemCreateByTeacher(String teacherId);
+    ResponseObject getAllProblems();
+    ResponseObject getAllProblemsCreateByTeacher(String teacherId);
+
+    ResponseObject getAllProblemsForAddingOrRemovingContest(String contestId);
+
+    ResponseObject getAllProblemsOfContest(String contestId);
 
     ResponseObject getProblemById(String problemId);
 }

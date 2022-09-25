@@ -3,6 +3,7 @@ package ptithcm.onlinejudge.mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ptithcm.onlinejudge.dto.ProblemDTO;
+import ptithcm.onlinejudge.dto.ProblemShowDTO;
 import ptithcm.onlinejudge.model.entity.Problem;
 
 @Component
@@ -43,5 +44,22 @@ public class ProblemMapperImpl implements ProblemMapper {
         dto.setLevel(levelMapper.entityToDTO(entity.getLevel()));
         dto.setTeacher(teacherMapper.entityToDTO(entity.getTeacher()));
         return dto;
+    }
+
+    @Override
+    public ProblemShowDTO entityToProblemShowDTO(Problem entity) {
+        if (entity == null) return null;
+        ProblemShowDTO problemShowDTO = new ProblemShowDTO();
+        problemShowDTO.setProblemId(entity.getId());
+        problemShowDTO.setProblemName(entity.getProblemName());
+        problemShowDTO.setProblemScore(entity.getProblemScore());
+        problemShowDTO.setProblemUrl(entity.getProblemUrl());
+        problemShowDTO.setHide(entity.getHide() == (byte) 1);
+        problemShowDTO.setProblemCloudinaryId(entity.getProblemCloudinaryId());
+        problemShowDTO.setProblemTimeLimit(entity.getProblemTimeLimit());
+        problemShowDTO.setProblemMemoryLimit(entity.getProblemMemoryLimit());
+        problemShowDTO.setLevel(levelMapper.entityToDTO(entity.getLevel()));
+        problemShowDTO.setTeacher(teacherMapper.entityToDTO(entity.getTeacher()));
+        return problemShowDTO;
     }
 }
