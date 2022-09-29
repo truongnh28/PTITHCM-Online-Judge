@@ -98,31 +98,31 @@ public class Data {
 
     public static List<SubmissionDetailDTO> submissionCodeList = new ArrayList<>();
 
-    static {
-        submissionCodeList.add(new SubmissionDetailDTO("qwertyuiop", """
-                #include <iostream>
-                using namespace std;
-                int main() {
-                    int a, b;
-                    cin >> a >> b;
-                    cout << a + b << "\\n";
-                    return 0;
-                }""", 15, 10, "N19DCCN190", "C++", "Accepted"));
-        submissionCodeList.add(new SubmissionDetailDTO("asdfghjklz", """
-                #include <iostream>
-                using namespace std;
-                int main() {
-                    int a, b;
-                    cin >> a >> b;
-                    cout << a + b <<;
-                    return 0;
-                }""", 0, 0, "N19DCCN221", "C++", "Compile Error"));
-    }
+//    static {
+//        submissionCodeList.add(new SubmissionDetailDTO("qwertyuiop", """
+//                #include <iostream>
+//                using namespace std;
+//                int main() {
+//                    int a, b;
+//                    cin >> a >> b;
+//                    cout << a + b << "\\n";
+//                    return 0;
+//                }""", 15, 10, "N19DCCN190", "C++", "Accepted"));
+//        submissionCodeList.add(new SubmissionDetailDTO("asdfghjklz", """
+//                #include <iostream>
+//                using namespace std;
+//                int main() {
+//                    int a, b;
+//                    cin >> a >> b;
+//                    cout << a + b <<;
+//                    return 0;
+//                }""", 0, 0, "N19DCCN221", "C++", "Compile Error"));
+//    }
 
     public static List<SubmissionDTO> submissionList = new ArrayList<>();
 
-    static {
-        submissionList.add(new SubmissionDTO("N19DCCN190", "aplusb", "20/08/2022 01:10:45", "Accepted", 15, 1, "C++", "qwertyuiop", "/submit-code/1.cpp"));
-        submissionList.add(new SubmissionDTO("N19DCCN221", "aplusb", "19/08/2022 10:12:32", "Compile Error", 0, 0, "C++", "asdfghjklz", "/submit-code/2.cpp"));
-    }
+//    static {
+//        submissionList.add(new SubmissionDTO("N19DCCN190", "aplusb", "20/08/2022 01:10:45", "Accepted", 15, 1, "C++", "qwertyuiop", "/submit-code/1.cpp"));
+//        submissionList.add(new SubmissionDTO("N19DCCN221", "aplusb", "19/08/2022 10:12:32", "Compile Error", 0, 0, "C++", "asdfghjklz", "/submit-code/2.cpp"));
+//    }
 }

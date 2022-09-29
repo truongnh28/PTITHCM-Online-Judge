@@ -5,25 +5,38 @@
 <main class="container">
     <header th:replace="/fragments/student-header :: student-header"></header>
     <section>
-        <div class="card text-start">
-            <div class="card-body">
-                <h4 class="card-title" th:text="${submissionCode.status}">Accepted</h4>
-                <span th:text="'Thời gian: ' + ${submissionCode.timeExec} + 's &NonBreakingSpace;'"></span>
-                <span th:text="'Bộ nhớ: ' + ${submissionCode.memoryUsed} + 'MB &NonBreakingSpace;'"></span>
-                <span th:text="'Ngôn ngữ: ' + ${submissionCode.language} + '&NonBreakingSpace;'"></span>
-                <span th:text="'Tài khoản: ' + ${submissionCode.getStudentId} + '&NonBreakingSpace;'"></span>
-                <div class="mb-3">
-                    <label for="code" class="form-label"></label>
-                    <textarea
-                            class="form-control bg-light font-monospace ps-1"
-                            name="code"
-                            id="code"
-                            rows="3"
-                            style="width: 100%; height: 400px"
-                            th:text="${submissionCode.sourceCode}"
-                            readonly>
-              </textarea>
+        <div class="row">
+            <div class="col-9">
+                <div class="card text-start">
+                    <h2 class="card-title text-center">Kết quả bài nộp</h2>
+                    <div class="card-body">
+                        <div th:switch="${submission.verdict}">
+                            <h4 class="card-title" th:case="0">Pending</h4>
+                            <h4 class="card-title" th:case="1">Accepted</h4>
+                            <h4 class="card-title" th:case="2">Wrong Answer</h4>
+                            <h4 class="card-title" th:case="3">Time Limit Exceeded</h4>
+                            <h4 class="card-title" th:case="4">Compiler Error</h4>
+                        </div>
+                        <span th:text="'Bài tập: ' + ${submission.problem.problemId} + 's &NonBreakingSpace;'"></span>
+                        <span th:text="'Thời gian: ' + ${submission.submissionTime} + 's &NonBreakingSpace;'"></span>
+                        <span th:text="'Tài khoản: ' + ${submission.student.studentId} + '&NonBreakingSpace;'"></span>
+                        <div class="mb-3">
+                            <label for="code" class="form-label"></label>
+                            <textarea
+                                    class="form-control bg-light font-monospace ps-1"
+                                    name="code"
+                                    id="code"
+                                    rows="3"
+                                    style="width: 100%; height: 400px"
+                                    th:text="${submission.sourceCode}"
+                                    readonly>
+                    </textarea>
+                        </div>
+                    </div>
                 </div>
+            </div>
+            <div class="col-3">
+                <div th:replace="/fragments/right-tab :: right-tab"></div>
             </div>
         </div>
     </section>

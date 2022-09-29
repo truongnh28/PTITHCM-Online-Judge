@@ -83,6 +83,22 @@ public class StudentOfGroupManagementImpl implements StudentOfGroupManagement{
         return new ResponseObject(HttpStatus.OK, "Success", foundStudentOfGroup.get());
     }
 
+    @Override
+    public ResponseObject checkStudentInSubjectClass(String studentId, String subjectClassId) {
+        Optional<StudentOfGroup> foundStudentOfGroup = studentOfGroupRepository.findByStudentIdAndSubjectClassId(studentId, subjectClassId);
+        if (foundStudentOfGroup.isEmpty())
+            return new ResponseObject(HttpStatus.OK, "Student not exist", false);
+        return new ResponseObject(HttpStatus.OK, "Student exist in class", true);
+    }
+
+    @Override
+    public ResponseObject checkStudentInGroup(String studentId, String subjectClassGroupId) {
+        Optional<StudentOfGroup> foundStudentOfGroup = studentOfGroupRepository.findByStudentIdAndSubjectClassGroupId(studentId, subjectClassGroupId);
+        if (foundStudentOfGroup.isEmpty())
+            return new ResponseObject(HttpStatus.OK, "Student not exist", false);
+        return new ResponseObject(HttpStatus.OK, "Student exist in class", true);
+    }
+
     private boolean checkRequestAddingIsValid(StudentOfGroupRequest studentOfGroupRequest) {
         String studentId = studentOfGroupRequest.getStudentId();
         String subjectClassGroupId = studentOfGroupRequest.getSubjectClassGroupId();

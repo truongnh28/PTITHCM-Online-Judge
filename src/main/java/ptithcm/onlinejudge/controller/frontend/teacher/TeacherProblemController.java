@@ -46,17 +46,6 @@ public class TeacherProblemController {
         return "/teacher/problem/problem-add";
     }
 
-    private boolean checkFileIsNotUploaded(MultipartFile file) {
-        return file == null || file.isEmpty();
-    }
-
-    private boolean checkFilesAreNotUpload(MultipartFile[] files) {
-        for (MultipartFile file: files)
-            if (file == null || file.isEmpty())
-                return true;
-        return false;
-    }
-
     @PostMapping("/add")
     public String addProblem(@ModelAttribute("problem") ProblemDTO problem,
                              @RequestParam("levelSelect") int levelId,

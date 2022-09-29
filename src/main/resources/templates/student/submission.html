@@ -5,61 +5,65 @@
 <main class="container">
     <header th:replace="/fragments/student-header :: student-header"></header>
     <section>
-        <div class="card table-responsive mb-3">
-            <table class="table table-hover caption-top">
-                <caption class="bg-secondary bg-opacity-10 ps-4">
-                    <h2>Danh sách các bài nộp</h2>
-                </caption>
-                <thead class="thead-inverse text-center">
-                <tr>
-                    <th>#</th>
-                    <th>Tài khoản</th>
-                    <th>Trạng thái</th>
-                    <th>Bài tập</th>
-                    <th>Thời gian</th>
-                    <th>Bộ nhớ</th>
-                    <th>Ngôn ngữ</th>
-                    <th>ID</th>
-                </tr>
-                </thead>
-                <tbody class="text-center">
-                <tr th:each="submission: ${submissionList}">
-                    <td th:text="${submission.timeSubmit}"></td>
-                    <td>
-                        <a href="#" class="text-decoration-none" th:text="${submission.getStudentId}"></a>
-                    </td>
-                    <td th:switch="${submission.status}">
-                        <div th:case="'Accepted'"
-                             class="d-inline-flex rounded-1 border bg-success border-success text-light p-1">Accepted
-                        </div>
-                        <div th:case="'Compile Error'"
-                             class="d-inline-flex rounded-1 border bg-warning border-warning text-light p-1">Compile
-                            Error
-                        </div>
-                        <div th:case="'Time Limit Exceeded'"
-                             class="d-inline-flex rounded-1 border bg-danger border-danger text-light p-1">
-                            Time Limit Exceeded
-                        </div>
-                        <div th:case="'Wrong Answer'"
-                             class="d-inline-flex rounded-1 border bg-danger border-danger text-light p-1">
-                            Wrong Answer
-                        </div>
-                    </td>
-                    <td>
-                        <a th:href="@{/student/problem/{submissionId}(submissionId=${submission.problemId})}" th:text="${submission.problemId}" class="text-decoration-none"></a>
-                    </td>
-                    <td th:text="${submission.timeExecute} + 'ms'"></td>
-                    <td th:text="${submission.memoryUsed} + 'MB'"></td>
-                    <td th:text="${submission.language}"></td>
-                    <td>
-                        <a th:if="${submission.getStudentId} eq ${session.user.username}" th:href="@{/student/submission/{submissionId}(submissionId=${submission.getSourceCodeId})}" class="text-decoration-none">Xem code</a>
-                        <a th:unless="${submission.getStudentId} eq ${session.user.username}">Xem code</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+        <div class="row">
+            <div class="col-9">
+                <div class="card table-responsive mb-3">
+                    <table class="table table-hover caption-top">
+                        <caption class="bg-secondary bg-opacity-10 ps-4">
+                            <h2>Danh sách các bài nộp</h2>
+                        </caption>
+                        <thead class="thead-inverse text-center">
+                        <tr>
+                            <th>#</th>
+                            <th>Tài khoản</th>
+                            <th>Trạng thái</th>
+                            <th>Bài tập</th>
+                            <th>Thời gian nộp</th>
+                            <th>Hành động</th>
+                        </tr>
+                        </thead>
+                        <tbody class="text-center">
+                        <tr th:each="submission, i: ${submissions}">
+                            <td th:text="${i.count}"></td>
+                            <td>
+                                <a href="#" class="text-decoration-none" th:text="${submission.student.studentId}"></a>
+                            </td>
+                            <td th:switch="${submission.verdict}">
+                                <div th:case="0"
+                                     class="d-inline-flex rounded-1 border bg-secondary border-secondary text-light p-1">Pending
+                                </div>
+                                <div th:case="1"
+                                     class="d-inline-flex rounded-1 border bg-success border-success text-light p-1">Accepted
+                                </div>
+                                <div th:case="2"
+                                     class="d-inline-flex rounded-1 border bg-danger border-danger text-light p-1">Wrong Answer
+                                </div>
+                                <div th:case="3"
+                                     class="d-inline-flex rounded-1 border bg-danger border-danger text-light p-1">Time Limit Exceeded
+                                </div>
+                                <div th:case="4"
+                                     class="d-inline-flex rounded-1 border bg-warning border-warning text-light p-1">Compile Error
+                                </div>
+                            </td>
+                            <td>
+                                <a th:href="@{/student/problem/{problemId}(problemId=${submission.problem.problemId})}" th:text="${submission.problem.problemId}" class="text-decoration-none"></a>
+                            </td>
+                            <td th:text="${submission.submissionTime}">
+                            </td>
+                            <td>
+                                <a th:if="${submission.student.studentId} eq ${session.user.username}" th:href="@{/student/contest/{contestId}/submission/{submissionId}(contestId=${contestId},submissionId=${submission.submissionId})}" class="text-decoration-none">Xem code</a>
+                                <a th:unless="${submission.student.studentId} eq ${session.user.username}">Xem code</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <nav th:replace="/fragments/pagination :: pagination"></nav>
+            </div>
+            <div class="col-3">
+                <div th:replace="/fragments/right-tab :: right-tab"></div>
+            </div>
         </div>
-        <nav th:replace="/fragments/pagination :: pagination"></nav>
     </section>
     <footer th:replace="/fragments/footer :: footer"></footer>
 </main>

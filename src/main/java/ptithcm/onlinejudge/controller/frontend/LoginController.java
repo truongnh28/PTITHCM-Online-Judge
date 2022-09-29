@@ -44,7 +44,7 @@ public class LoginController {
             if (!student.getPassword().equals(SHA256Helper.hash(user.getPassword())))
                 return "redirect:/error";
             session.setAttribute("user", user);
-            return "redirect:/student/problem";
+            return "redirect:/student/contest";
         }
         return "redirect:/error";
     }

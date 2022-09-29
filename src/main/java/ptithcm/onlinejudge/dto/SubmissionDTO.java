@@ -8,13 +8,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubmissionDTO {
-    private String studentId;
-    private String problemId;
-    private String timeSubmit;
-    private String status;
-    private int timeExecute;
-    private int memoryUsed;
-    private String language;
-    private String sourceCodeId;
-    private String sourceCodeURL;
+    private String submissionId;
+    private StudentDTO student;
+    private ProblemDTO problem;
+    private String submissionTime;
+    private Integer submissionScore;
+    private Byte verdict;
 }

@@ -37,7 +37,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">
-                            <span class="fw-bold">Mô tả bài tập</span>
+                            <span class="fw-bold">Mô tả bài tập (định dạng pdf)</span>
                             <span class="fw-bold text-danger">*</span>
                         </label>
                         <input type="file" id="fileUpload" class="form-control" name="fileDescription" placeholder="Chọn một file pdf để upload phần mô tả bài tập" accept="application/pdf"/>
@@ -63,7 +63,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">
-                            <span class="fw-bold">Giới hạn thời gian (Tính bằng mili giây)</span>
+                            <span class="fw-bold">Giới hạn thời gian (Tính bằng giây)</span>
                             <span class="fw-bold text-danger">*</span>
                         </label>
                         <input type="number" min="0" class="form-control" th:field="*{problemTimeLimit}" placeholder=""/>

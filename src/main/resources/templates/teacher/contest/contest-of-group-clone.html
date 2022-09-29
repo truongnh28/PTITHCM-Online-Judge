@@ -8,7 +8,7 @@
     <section>
         <div class="card bg-light">
             <div class="card-body">
-                <form th:action="@{/teacher/contest/group/{groupId}/add(groupId=${groupId})}" method="post" th:object="${contest}">
+                <form th:action="@{/teacher/contest/{contestId}/group/{groupId}/clone(contestId=${contestId},groupId=${groupId})}" method="post" th:object="${contest}">
                     <h2 class="card-title text-center">Clone bài thực hành</h2>
                     <div class="mb-3">
                         <label class="form-label">

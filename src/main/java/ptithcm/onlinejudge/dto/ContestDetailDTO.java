@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubmitDTO {
-    private String studentId;
-    private String problemId;
-    private String sourceCode;
-    private String language;
+public class ContestDetailDTO extends ContestDTO {
+    private Byte verdict;
 }

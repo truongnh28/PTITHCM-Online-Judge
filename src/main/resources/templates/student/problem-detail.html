@@ -15,40 +15,40 @@
                 </div>
             </div>
             <div class="col-3">
-                <div class="row">
-                    <div class="card bg-light">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item bg-light">
-                                <div class="d-grid gap-2 my-2">
-                                    <a class="btn btn-primary" th:href="@{/submit/{problemId}(problemId=${problemDetail.getProblemId})}"
-                                       role="button">Nộp bài</a>
-                                </div>
-                            </li>
-                            <li class="list-group-item bg-light">
-                                <div class="my-2">
-                                    <span><img th:src="@{/images/list.svg}" alt="list.svg"></span>
-                                    <a th:href="@{/student/submission}" class="text-decoration-none">Danh sách bài nộp</a>
-                                </div>
-                            </li>
-                            <li class="list-group-item bg-light">
-                                <div class="my-2">
-                                    <span><img class="pb-1" th:src="@{/images/check2.svg}" alt="check2.svg"></span>
-                                    <span class="fw-bold">Điểm: </span>
-                                    <span th:text="${problemDetail.getProblemScore}"></span>
-                                </div>
-                                <div class="my-2">
-                                    <span><img class="pb-1" th:src="@{/images/clock.svg}" alt="clock.svg"></span>
-                                    <span class="fw-bold">Giới hạn thời gian: </span>
-                                    <span th:text="${problemDetail.getProblemTimeLimit} + 's'"></span>
-                                </div>
-                                <div class="my-2">
-                                    <span><img class="pb-1" th:src="@{/images/memory.svg}" alt="clock.svg"></span>
-                                    <span class="fw-bold">Giới hạn bộ nhớ: </span>
-                                    <span th:text="${problemDetail.getProblemMemoryLimit} + 'MB'"></span>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+                <div th:replace="/fragments/right-tab :: right-tab">
+                </div>
+                <div class="card bg-light">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item bg-light">
+                            <div class="d-grid gap-2">
+                                <a class="btn btn-primary" th:href="@{/student/contest/{contestId}/submit/{problemId}(contestId=${contestId},problemId=${problemDetail.problemId})}"
+                                   role="button">Nộp bài</a>
+                            </div>
+                        </li>
+                        <li class="list-group-item bg-light">
+                            <div class="">
+                                <span><img th:src="@{/images/list.svg}" alt="list.svg"></span>
+                                <a th:href="@{/student/submission}" class="text-decoration-none">Danh sách bài nộp</a>
+                            </div>
+                        </li>
+                        <li class="list-group-item bg-light">
+                            <div class="">
+                                <span><img class="pb-1" th:src="@{/images/check2.svg}" alt="check2.svg"></span>
+                                <span class="fw-bold">Điểm: </span>
+                                <span th:text="${problemDetail.getProblemScore}"></span>
+                            </div>
+                            <div class="">
+                                <span><img class="pb-1" th:src="@{/images/clock.svg}" alt="clock.svg"></span>
+                                <span class="fw-bold">Giới hạn thời gian: </span>
+                                <span th:text="${problemDetail.getProblemTimeLimit} + 's'"></span>
+                            </div>
+                            <div class="">
+                                <span><img class="pb-1" th:src="@{/images/memory.svg}" alt="clock.svg"></span>
+                                <span class="fw-bold">Giới hạn bộ nhớ: </span>
+                                <span th:text="${problemDetail.getProblemMemoryLimit} + 'MB'"></span>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

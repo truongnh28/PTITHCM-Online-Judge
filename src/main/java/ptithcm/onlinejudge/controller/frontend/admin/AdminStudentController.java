@@ -1,4 +1,4 @@
-package ptithcm.onlinejudge.controller.frontend.teacher;
+package ptithcm.onlinejudge.controller.frontend.admin;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/teacher/student")
-public class TeacherStudentController {
+public class AdminStudentController {
     private Optional<StudentDTO> findStudentByStudentId(String studentId) {
         StudentDTO studentDTO = new StudentDTO();
         boolean isExisted = false;

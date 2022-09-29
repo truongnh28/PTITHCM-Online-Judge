@@ -9,13 +9,17 @@ import ptithcm.onlinejudge.model.request.ContestRequest;
 public interface ContestManagementService {
     ResponseObject addContest(ContestRequest contestRequest);
 
+    ResponseObject cloneContest(ContestDTO contest, String teacherId, String contestId, String groupId);
+
     ResponseObject editContest(ContestRequest contestRequest);
 
     ResponseObject deleteContest(String contestId);
 
-    ResponseObject addContestDTOAndTeacherId(ContestDTO contest, String teacherId);
+    ResponseObject addContestController(ContestDTO contest, String teacherId, String groupId);
 
     ResponseObject editContestDTO(ContestDTO contest);
+
+    ResponseObject getAllContestActiveSortByDate();
 
     ResponseObject getAllContestActive();
 

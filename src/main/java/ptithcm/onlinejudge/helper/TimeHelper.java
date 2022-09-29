@@ -1,13 +1,31 @@
 package ptithcm.onlinejudge.helper;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class TimeHelper {
+    private static final String DATE_FORMATTER = "yyyy-MM-dd HH:mm:ss";
     // input time: "yyyy-MM-dd HH:mm:ss"
     public static Instant convertStringToInstance(String inputTime) {
         String date = inputTime.substring(0, inputTime.indexOf(' '));
-        String time = inputTime.substring(inputTime.indexOf(' '));
+        String time = inputTime.substring(inputTime.indexOf(' ') + 1);
         String formatTime = date + "T" + time + ".00Z";
         return Instant.parse(formatTime);
+    }
+
+    public static String convertLocalDateTimeToString(LocalDateTime localDateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMATTER);
+        return localDateTime.format(formatter);
+    }
+
+    public static boolean nowIsAfter(Instant time) {
+        String stringNow = convertLocalDateTimeToString(LocalDateTime.now());
+        Instant instantNow = convertStringToInstance(stringNow);
+        return instantNow.isAfter(time);
+    }
+
+    public static String convertStringFormToDateFormatter(String time) {
+        return time.replace("T", " ") + ":00";
     }
 }

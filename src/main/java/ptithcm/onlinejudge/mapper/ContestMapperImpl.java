@@ -3,6 +3,7 @@ package ptithcm.onlinejudge.mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ptithcm.onlinejudge.dto.ContestDTO;
+import ptithcm.onlinejudge.dto.ContestDetailDTO;
 import ptithcm.onlinejudge.helper.TimeHelper;
 import ptithcm.onlinejudge.model.entity.Contest;
 import ptithcm.onlinejudge.model.request.ContestRequest;
@@ -43,11 +44,30 @@ public class ContestMapperImpl implements ContestMapper {
         if (dto == null) return null;
         ContestRequest request = new ContestRequest();
         request.setContestId(dto.getContestId());
-        request.setContestStartTime(dto.getContestStart());
-        request.setContestEndTime(dto.getContestEnd());
+        request.setContestStartTime(TimeHelper.convertStringFormToDateFormatter(dto.getContestStart()));
+        request.setContestEndTime(TimeHelper.convertStringFormToDateFormatter(dto.getContestEnd()));
         request.setContestName(dto.getContestName());
         if (dto.getTeacher() != null)
             request.setTeacherId(dto.getTeacher().getTeacherId());
         return request;
+    }
+
+    @Override
+    public ContestDetailDTO entityToDetailDTO(Contest entity) {
+        if (entity == null) return null;
+        ContestDetailDTO dto = new ContestDetailDTO();
+        dto.setContestId(entity.getId());
+        dto.setContestName(entity.getContestName());
+        dto.setHide(entity.getHide() == (byte) 1);
+        dto.setContestStart(entity.getContestStart().toString());
+        dto.setContestEnd(entity.getContestEnd().toString());
+        dto.setTeacher(teacherMapper.entityToDTO(entity.getTeacher()));
+        if (TimeHelper.nowIsAfter(entity.getContestEnd()))
+            dto.setVerdict((byte) 2);
+        if (TimeHelper.nowIsAfter(entity.getContestStart()))
+            dto.setVerdict((byte) 1);
+        else
+            dto.setVerdict((byte) 0);
+        return dto;
     }
 }

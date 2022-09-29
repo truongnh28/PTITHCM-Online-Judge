@@ -207,8 +207,20 @@ public class TeacherSubjectController {
                 .stream().filter(item -> item.getActive() == (byte) 1).toList();
         List<StudentShowDTO> studentShowList = activeStudentList.stream().map(student -> {
             StudentShowDTO studentShowDTO = studentMapper.entityToShowDTO(student);
-            ResponseObject responseObject = studentOfGroupManagement.findStudentOfGroupByStudentIdAndSubjectClassId(student.getId(), classId);
-            studentShowDTO.setDisabledButtonAdding(responseObject.getStatus().equals(HttpStatus.OK));
+            ResponseObject responseCheckStudentInClass = studentOfGroupManagement.checkStudentInSubjectClass(student.getId(), classId);
+            if ((boolean) responseCheckStudentInClass.getData()) {
+                ResponseObject responseCheckStudentInGroup = studentOfGroupManagement.checkStudentInGroup(student.getId(), groupId);
+                if ((boolean) responseCheckStudentInGroup.getData()) {
+                    studentShowDTO.setDisabledButtonAdding(true);
+                    studentShowDTO.setDisabledButtonRemoving(false);
+                    return studentShowDTO;
+                }
+                studentShowDTO.setDisabledButtonRemoving(true);
+                studentShowDTO.setDisabledButtonAdding(true);
+                return studentShowDTO;
+            }
+            studentShowDTO.setDisabledButtonAdding(false);
+            studentShowDTO.setDisabledButtonRemoving(true);
             return studentShowDTO;
         }).collect(Collectors.toList());
         model.addAttribute("students", studentShowList);

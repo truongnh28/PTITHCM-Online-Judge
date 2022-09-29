@@ -5,26 +5,43 @@
 <main class="container">
     <header th:replace="/fragments/student-header :: student-header"></header>
     <section>
-        <div class="card text-start">
-            <div class="m-3">
-                <h2 class="card-title" th:text="${problemDetails.getProblemName}"></h2>
-                <label class="form-label">Mời bạn upload code</label>
-                <form th:action="@{'/submit-code/'+ ${problemDetails.getProblemId}}" method="post" th:object="${submit}" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <input type="file" class="form-control" name="file" placeholder="Chọn một file để nộp"/>
+        <div class="row">
+            <div class="col-9">
+                <div class="card text-start bg-light">
+                    <div class="m-3">
+                        <h2 class="card-title" th:text="${problemDetails.getProblemName}"></h2>
+                        <label class="form-label">Mời bạn upload code</label>
+                        <form th:action="@{/student/contest/{contestId}/submit/{problemId}(contestId=${contestId},problemId=${problemDetails.problemId})}" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <input type="file" class="form-control" name="file" placeholder="Chọn một file để nộp"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Ngôn ngữ</label>
+                                <select class="form-control" name="language">
+                                    <option value="cpp">C++</option>
+                                    <option value="java">Java</option>
+                                    <option value="python">Python</option>
+                                </select>
+                            </div>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <div th:switch="${contest.verdict}">
+                                    <div th:case="0">
+                                        <button class="btn btn-primary disabled">Nộp code</button>
+                                    </div>
+                                    <div th:case="2">
+                                        <button class="btn btn-primary disabled">Nộp code</button>
+                                    </div>
+                                    <div th:case="1">
+                                        <button type="submit" class="btn btn-primary">Nộp code</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Ngôn ngữ</label>
-                        <select class="form-control" th:field="*{language}">
-                            <option value="C++">C++</option>
-                            <option value="Java">Java</option>
-                            <option value="Python">Python</option>
-                        </select>
-                    </div>
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <button type="submit" class="btn btn-primary">Nộp code</button>
-                    </div>
-                </form>
+                </div>
+            </div>
+            <div class="col-3">
+                <div th:replace="/fragments/right-tab :: right-tab"></div>
             </div>
         </div>
     </section>

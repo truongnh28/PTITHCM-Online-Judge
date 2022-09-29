@@ -5,31 +5,38 @@
 <main class="container">
     <header th:replace="/fragments/student-header :: student-header"></header>
     <section>
-        <div class="card table-responsive">
-            <table class="table table-hover caption-top">
-                <caption class="bg-secondary bg-opacity-10 ps-4">
-                    <h2>Danh sách các bài tập</h2>
-                </caption>
-                <thead class="thead-inverse">
-                <tr>
-                    <th></th>
-                    <th>#</th>
-                    <th>Tiêu đề</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="problem : ${problems}">
-                    <td class="text-center">
-                    </td>
-                    <td>
-                        <a th:href="@{/student/problem/{problemId}(problemId=${problem.getProblemId})}" th:text="${problem.getProblemId}" class="text-decoration-none"></a>
-                    </td>
-                    <td>
-                        <a th:href="@{/student/problem/{problemId}(problemId=${problem.getProblemId})}" th:text="${problem.getProblemName}" class="text-decoration-none"></a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+        <div class="row">
+            <div class="col-9">
+                <div class="card table-responsive">
+                    <table class="table table-hover caption-top">
+                        <caption class="bg-secondary bg-opacity-10 ps-4">
+                            <h2>Danh sách các bài tập</h2>
+                        </caption>
+                        <thead class="thead-inverse">
+                        <tr>
+                            <th></th>
+                            <th>#</th>
+                            <th>Tiêu đề</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="problem : ${problems}">
+                            <td class="text-center">
+                            </td>
+                            <td>
+                                <a th:href="@{/student/contest/{contestId}/problem/{problemId}(contestId=${contestId},problemId=${problem.problemId})}" th:text="${problem.getProblemId}" class="text-decoration-none"></a>
+                            </td>
+                            <td>
+                                <a th:href="@{/student/contest/{contestId}/problem/{problemId}(contestId=${contestId},problemId=${problem.problemId})}" th:text="${problem.getProblemName}" class="text-decoration-none"></a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-3">
+                <div th:replace="/fragments/right-tab :: right-tab"></div>
+            </div>
         </div>
     </section>
     <footer th:replace="/fragments/footer :: footer">

@@ -85,8 +85,8 @@ public class TestCaseManagementServiceImpl implements TestCaseManagementService 
         for (int i = 0; i < testCaseInPath.length; ++i) {
             if (!Files.exists(Path.of(testCaseInPath[i])) || !Files.exists(Path.of(testCaseOutPath[i])))
                 return false;
-            String fileNameIn = FileHelper.getFileNameFromPath(testCaseInPath[i]);
-            String fileNameOut = FileHelper.getFileNameFromPath(testCaseOutPath[i]);
+            String fileNameIn = FileHelper.getBaseNameFromPath(testCaseInPath[i]);
+            String fileNameOut = FileHelper.getBaseNameFromPath(testCaseOutPath[i]);
             if (!fileNameIn.equals(fileNameOut))
                 return false;
             String fileExtensionIn = FileHelper.getFileExtensionFromPath(testCaseInPath[i]);

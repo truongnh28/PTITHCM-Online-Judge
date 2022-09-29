@@ -12,4 +12,8 @@ public interface StudentOfGroupManagement {
     ResponseObject getStudentOfGroupByStudentId(String studentId);
 
     ResponseObject findStudentOfGroupByStudentIdAndSubjectClassId(String studentId, String subjectClassId);
+
+    ResponseObject checkStudentInSubjectClass(String studentId, String subjectClassId);
+
+    ResponseObject checkStudentInGroup(String studentId, String subjectClassGroupId);
 }

@@ -34,12 +34,18 @@
                     <td th:text="${student.studentLastName}"></td>
                     <td th:text="${student.studentFirstName}"></td>
                     <td>
-                        <a th:href="@{/teacher/subject/{subjectId}/class/{classId}/group/{groupId}/student/{studentId}/add(subjectId=${subjectId}, classId=${classId}, groupId=${groupId}, studentId=${student.studentId})}"
-                           role="button" type="button" class="btn btn-primary btn-sm me-2" th:classappend="${student.disabledButtonAdding} ? 'disabled': ''">
+                        <a th:if="${student.disabledButtonAdding} == false" th:href="@{/teacher/subject/{subjectId}/class/{classId}/group/{groupId}/student/{studentId}/add(subjectId=${subjectId}, classId=${classId}, groupId=${groupId}, studentId=${student.studentId})}"
+                           role="button" type="button" class="btn btn-primary btn-sm me-2">
                             Thêm
                         </a>
-                        <a th:href="@{/teacher/subject/{subjectId}/class/{classId}/group/{groupId}/student/{studentId}/delete(subjectId=${subjectId}, classId=${classId}, groupId=${groupId}, studentId=${student.studentId})}"
-                           type="button" class="btn btn-danger btn-sm" th:classappend="${student.disabledButtonAdding} ? '' : 'disabled'">
+                        <a th:unless="${student.disabledButtonAdding} == false" href="" role="button" type="button" class="btn btn-secondary btn-sm me-2 disabled">
+                            Thêm
+                        </a>
+                        <a th:if="${student.disabledButtonRemoving} == false" th:href="@{/teacher/subject/{subjectId}/class/{classId}/group/{groupId}/student/{studentId}/delete(subjectId=${subjectId}, classId=${classId}, groupId=${groupId}, studentId=${student.studentId})}"
+                           type="button" class="btn btn-danger btn-sm">
+                            Xóa
+                        </a>
+                        <a th:unless="${student.disabledButtonRemoving} == false" href="" role="button" type="button" class="btn btn-secondary btn-sm me-2 disabled">
                             Xóa
                         </a>
                     </td>

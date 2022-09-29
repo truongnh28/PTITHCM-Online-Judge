@@ -1,26 +1,27 @@
 package ptithcm.onlinejudge.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import ptithcm.onlinejudge.dto.ProblemDTO;
 import ptithcm.onlinejudge.dto.ProblemShowDTO;
+import ptithcm.onlinejudge.helper.FileHelper;
 import ptithcm.onlinejudge.mapper.ProblemMapper;
 import ptithcm.onlinejudge.model.entity.*;
 import ptithcm.onlinejudge.model.request.MultipleProblemTypeRequest;
 import ptithcm.onlinejudge.model.request.ProblemRequest;
 import ptithcm.onlinejudge.model.response.ResponseObject;
+import ptithcm.onlinejudge.model.yaml.Info;
+import ptithcm.onlinejudge.model.yaml.ProblemYaml;
+import ptithcm.onlinejudge.model.yaml.Subtask;
 import ptithcm.onlinejudge.repository.*;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class ProblemManagementServiceImpl implements ProblemManagementService {
@@ -36,6 +37,8 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
     private StorageFileService storageFileService;
     @Autowired
     private ContestRepository contestRepository;
+    @Autowired
+    private AddProblemToYaml addProblemToYaml;
     @Autowired
     private LevelManagementService levelManagementService;
     @Autowired
@@ -158,8 +161,8 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
 
     @Override
     public ResponseObject addProblemWithTestCasesAndTypes(ProblemDTO problemDTO, String teacherId, int levelId, MultipartFile description, MultipartFile[] inputs, MultipartFile[] outputs, String[] typeIds) {
-        Arrays.sort(inputs);
-        Arrays.sort(outputs);
+        Arrays.sort(inputs, Comparator.comparing(MultipartFile::getOriginalFilename));
+        Arrays.sort(outputs, Comparator.comparing(MultipartFile::getOriginalFilename));
         if (!checkInputsAndOutputs(inputs, outputs))
             return new ResponseObject(HttpStatus.FOUND, "Input test cases and Output test cases not valid", "");
 
@@ -182,7 +185,34 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
         if (!addProblemTypesResponse.getStatus().equals(HttpStatus.OK))
             return new ResponseObject(HttpStatus.FOUND, "Add problem types failed", "");
 
+        ProblemYaml problemYaml = new ProblemYaml();
+        problemYaml.setId(problem.getId());
+        problemYaml.setName(problem.getProblemName());
+        problemYaml.setStatus("up");
+        ResponseObject responseAddProblemToYaml = addProblemToYaml.addProblemToYaml(problemYaml);
+        if (!responseAddProblemToYaml.getStatus().equals(HttpStatus.OK))
+            return new ResponseObject(HttpStatus.FOUND, "Add problem failed", "");
 
+        Info info = new Info();
+        info.setProblemId(problem.getId());
+        info.setProblemName(problem.getProblemName());
+        info.setTimeLimit(problem.getProblemTimeLimit());
+        info.setMemoryLimit(problem.getProblemMemoryLimit());
+        info.setMaxScore(problem.getProblemScore());
+        info.setScoringMethod("minimum");
+        info.setChecker("diff");
+
+        List<Subtask> subtasks = new ArrayList<>();
+        Subtask subtask = new Subtask();
+        subtask.setName("main");
+        subtask.setScore(problem.getProblemScore());
+        subtask.setNumSamples(inputs.length);
+        subtasks.add(subtask);
+
+        info.setSubtasks(subtasks);
+        ResponseObject responseAddProblemToDir = addProblemToYaml.addProblemToDir(info, inputs, outputs);
+        if (!responseAddProblemToDir.getStatus().equals(HttpStatus.OK))
+            return new ResponseObject(HttpStatus.FOUND, "Add problem with test case not completed", "");
         return new ResponseObject(HttpStatus.OK, "Success", "");
     }
 
@@ -251,14 +281,18 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
         if (inputs.length == 1) {
             if (isNotUploaded(inputs[0]) && isNotUploaded(outputs[0]))
                 return true;
+            if (!isNotUploaded(inputs[0]) && !isNotUploaded(outputs[0]))
+                return true;
             if (isNotUploaded(inputs[0]) || isNotUploaded(outputs[0]))
                 return false;
         }
         for (int i = 0; i < inputs.length; ++i) {
             String fullInputName = inputs[i].getOriginalFilename();
             String fullOutputName = outputs[i].getOriginalFilename();
-            String inputName = StringUtils.cleanPath(fullInputName);
-            String outputName = StringUtils.cleanPath(fullOutputName);
+            if (fullInputName == null || fullOutputName == null)
+                return false;
+            String inputName = FileHelper.getBaseNameFromPath(fullInputName);
+            String outputName = FileHelper.getBaseNameFromPath(fullOutputName);
             if (!inputName.equals(outputName))
                 return false;
             String inputExtension = FilenameUtils.getExtension(fullInputName);

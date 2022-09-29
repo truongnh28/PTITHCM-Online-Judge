@@ -17,6 +17,9 @@ public interface ContestRepository extends JpaRepository<Contest, String> {
     @Query(value = "select * from contests where hide = 0", nativeQuery = true)
     List<Contest> getContestsActive();
 
+    @Query(value = "select * from contests where hide = 0 order by contest_start desc", nativeQuery = true)
+    List<Contest> getContestsActiveDescByDate();
+
     @Query(value = "select * " +
             "from contests " +
             "where contests.hide = 0 " +

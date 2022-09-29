@@ -14,8 +14,8 @@ import java.time.Instant;
 @Table(name = "submissions")
 public class Submission {
     @Id
-    @Column(name = "submission_id", nullable = false)
-    private Long id;
+    @Column(name = "submission_id", nullable = false, length = 100)
+    private String id;
 
     @Column(name = "submission_time")
     private Instant submissionTime;
