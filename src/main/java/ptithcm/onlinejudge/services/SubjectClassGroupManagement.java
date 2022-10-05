@@ -1,14 +1,24 @@
 package ptithcm.onlinejudge.services;
 
 import org.springframework.stereotype.Service;
+import ptithcm.onlinejudge.dto.SubjectClassGroupDTO;
 import ptithcm.onlinejudge.model.response.ResponseObject;
-import ptithcm.onlinejudge.model.request.SubjectClassGroupRequest;
+
 @Service
 public interface SubjectClassGroupManagement {
-    ResponseObject addSubjectClassGroup(SubjectClassGroupRequest subjectClassGroupRequest);
-    ResponseObject editSubjectClassGroup(SubjectClassGroupRequest subjectClassGroupRequest);
-    ResponseObject getAllSubjectClassGroup();
-    ResponseObject getAllSubjectClassGroupOfSubjectClass(String subjectClassId);
+    ResponseObject addGroupToClass(String classId, SubjectClassGroupDTO group);
 
-    ResponseObject getSubjectClassGroupById(String subjectClassGroupId);
+    ResponseObject editGroup(String groupId, SubjectClassGroupDTO group);
+
+    ResponseObject getAllSubjectClassGroup();
+
+    ResponseObject getAllGroupsOfClass(String classId);
+
+    ResponseObject lockGroup(String groupId);
+
+    ResponseObject unlockGroup(String groupId);
+
+    ResponseObject searchGroupByIdOrName(String classId, String keyword);
+
+    ResponseObject getGroupById(String groupId);
 }

@@ -17,6 +17,6 @@ public class GroupHasContestId implements Serializable {
     @Column(name = "contest_id", nullable = false, length = 100)
     private String contestId;
 
-    @Column(name = "subject_class_group_id", nullable = false, length = 10)
+    @Column(name = "subject_class_group_id", nullable = false, length = 50)
     private String subjectClassGroupId;
 }

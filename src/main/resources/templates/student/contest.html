@@ -3,59 +3,59 @@
 <head th:replace="/fragments/head :: head">
 <body class="bg-light">
 <main class="container">
-    <header th:replace="/fragments/student-header :: student-header"></header>
-    <section>
-        <div class="d-flex mb-3">
-            <form role="search">
-                <input type="search" class="form-control" placeholder="Tìm bài thực hành..." aria-label="Search"/>
-            </form>
-        </div>
-        <div class="card table-responsive mb-3">
-            <table class="table table-hover caption-top text-center">
-                <caption class="bg-secondary bg-opacity-10 ps-4">
-                    <h2>Danh sách các bài thực hành</h2>
-                </caption>
-                <thead class="thead-inverse">
-                <tr>
-                    <th></th>
-                    <th>#</th>
-                    <th>Mã bài thực hành</th>
-                    <th>Tên bài thực hành</th>
-                    <th>Thời gian bắt đầu</th>
-                    <th>Thời gian kết thúc</th>
-                    <th>Mã giáo viên</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="contest, i: ${contests}">
-                    <td></td>
-                    <td th:text="${i.count}"></td>
-                    <td>
-                        <a th:href="@{/student/contest/{contestId}(contestId=${contest.contestId})}" th:text="${contest.contestId}" class="text-decoration-none"></a>
-                    </td>
-                    <td>
-                        <a th:href="@{/student/contest/{contestId}(contestId=${contest.contestId})}" th:text="${contest.contestName}" class="text-decoration-none"></a>
-                    </td>
-                    <td th:text="${contest.contestStart}"></td>
-                    <td th:text="${contest.contestEnd}"></td>
-                    <td th:text="${contest.teacher.teacherId}"></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <nav th:replace="/fragments/pagination :: pagination"></nav>
-    </section>
-    <footer th:replace="/fragments/footer :: footer"></footer>
+  <header th:replace="/fragments/student-header :: student-header"></header>
+  <section>
+    <div class="d-flex mb-3">
+      <form role="search">
+        <input type="search" class="form-control" placeholder="Tìm bài thực hành..." aria-label="Search"/>
+      </form>
+    </div>
+    <div class="card table-responsive mb-3">
+      <table class="table table-hover caption-top text-center">
+        <caption class="bg-secondary bg-opacity-10 ps-4">
+          <h2>Danh sách các bài thực hành</h2>
+        </caption>
+        <thead class="thead-inverse">
+        <tr>
+          <th></th>
+          <th>#</th>
+          <th>Mã bài thực hành</th>
+          <th>Tên bài thực hành</th>
+          <th>Thời gian bắt đầu</th>
+          <th>Thời gian kết thúc</th>
+          <th>Mã giáo viên</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="contest, i: ${contests}">
+          <td></td>
+          <td th:text="${i.count}"></td>
+          <td>
+            <a th:href="@{/student/contest/{contestId}(contestId=${contest.contestId})}" th:text="${contest.contestId}" class="text-decoration-none"></a>
+          </td>
+          <td>
+            <a th:href="@{/student/contest/{contestId}(contestId=${contest.contestId})}" th:text="${contest.contestName}" class="text-decoration-none"></a>
+          </td>
+          <td th:text="${contest.contestStart}"></td>
+          <td th:text="${contest.contestEnd}"></td>
+          <td th:text="${contest.teacher.teacherId}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <nav th:replace="/fragments/pagination :: pagination"></nav>
+  </section>
+  <footer th:replace="/fragments/footer :: footer"></footer>
 </main>
 <script
-        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
-        integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
-        crossorigin="anonymous">
+    src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+    integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+    crossorigin="anonymous">
 </script>
 <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
-        integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
-        crossorigin="anonymous">
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
+    integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+    crossorigin="anonymous">
 </script>
 </body>
 </html>

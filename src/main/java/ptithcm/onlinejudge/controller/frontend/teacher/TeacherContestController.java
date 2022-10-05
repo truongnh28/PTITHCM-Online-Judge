@@ -9,11 +9,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ptithcm.onlinejudge.dto.ContestDTO;
-import ptithcm.onlinejudge.dto.Login;
-import ptithcm.onlinejudge.dto.ProblemDTO;
-import ptithcm.onlinejudge.dto.ProblemShowDTO;
-import ptithcm.onlinejudge.dto.SubjectClassGroupDTO;
+import ptithcm.onlinejudge.dto.*;
+import ptithcm.onlinejudge.dto.LoginDTO;
 import ptithcm.onlinejudge.mapper.ContestMapper;
 import ptithcm.onlinejudge.mapper.ProblemMapper;
 import ptithcm.onlinejudge.mapper.SubjectClassGroupMapper;
@@ -62,7 +59,7 @@ public class TeacherContestController {
     @GetMapping("/group/{groupId}")
     public String showContestInGroup(@PathVariable("groupId") String groupId, Model model, HttpSession session) {
         model.addAttribute("pageTitle", "Danh sách bài thực hành");
-        String teacherId = ((Login) session.getAttribute("user")).getUsername();
+        String teacherId = ((LoginDTO) session.getAttribute("user")).getUsername();
         List<ContestDTO> contests = ((List<Contest>) contestManagementService.getAllContestActiveCreatedByTeacher(teacherId).getData())
                 .stream().map(item -> contestMapper.entityToDTO(item)).toList();
         model.addAttribute("contests", contests);
@@ -81,7 +78,7 @@ public class TeacherContestController {
     public String addContest(@PathVariable("groupId") String groupId,
                              @ModelAttribute("contest") ContestDTO contest,
                              HttpSession session) {
-        String teacherId = ((Login) session.getAttribute("user")).getUsername();
+        String teacherId = ((LoginDTO) session.getAttribute("user")).getUsername();
         ResponseObject addContestResponse = contestManagementService.addContestController(contest, teacherId, groupId);
         if (!addContestResponse.getStatus().equals(HttpStatus.OK))
             return "redirect:/error";
@@ -120,7 +117,7 @@ public class TeacherContestController {
                                @PathVariable("groupId") String groupId,
                                @ModelAttribute("contest") ContestDTO contest,
                                HttpSession session) {
-        String teacherId = ((Login) session.getAttribute("user")).getUsername();
+        String teacherId = ((LoginDTO) session.getAttribute("user")).getUsername();
         ResponseObject cloneContestResponse = contestManagementService.cloneContest(contest, teacherId, contestId, groupId);
         if (!cloneContestResponse.getStatus().equals(HttpStatus.OK))
             return "redirect:/error";

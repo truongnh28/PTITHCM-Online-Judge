@@ -3,6 +3,9 @@ package ptithcm.onlinejudge.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import ptithcm.onlinejudge.dto.StudentDTO;
+import ptithcm.onlinejudge.helper.SHA256Helper;
+import ptithcm.onlinejudge.mapper.StudentMapper;
 import ptithcm.onlinejudge.model.response.ResponseObject;
 import ptithcm.onlinejudge.model.entity.*;
 import ptithcm.onlinejudge.model.request.AddStudentToGroupRequest;
@@ -12,49 +15,98 @@ import ptithcm.onlinejudge.repository.StudentRepository;
 import ptithcm.onlinejudge.repository.SubjectClassGroupRepository;
 import ptithcm.onlinejudge.repository.SubjectClassRepository;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 @Service
 public class StudentManagementServiceImpl implements StudentManagementService {
     @Autowired
-    StudentRepository studentRepository;
+    private StudentMapper studentMapper;
     @Autowired
-    SubjectClassGroupRepository subjectClassGroupRepository;
+    private StudentRepository studentRepository;
     @Autowired
-    StudentOfGroupRepository studentOfGroupRepository;
+    private SubjectClassGroupRepository subjectClassGroupRepository;
     @Autowired
-    SubjectClassRepository subjectClassRepository;
+    private StudentOfGroupRepository studentOfGroupRepository;
+    @Autowired
+    private SubjectClassRepository subjectClassRepository;
 
     @Override
-    public ResponseObject addStudent(StudentRequest studentRequest) {
-        if(studentRepository.existsById(studentRequest.getStudentId())) {
-            return new ResponseObject(HttpStatus.FOUND, "Student is exist", "");
-        }
-        if(!studentRequestIsValid(studentRequest)) {
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "request data is not valid", "");
-        }
-        String studentId = studentRequest.getStudentId();
-        String fName = studentRequest.getFirstName();
-        String lName = studentRequest.getLastName();
-        String password = studentRequest.getPassword();
-        Student student = new Student(studentId, password, fName, lName, (byte)1);
-        studentRepository.save(student);
-        return new ResponseObject(HttpStatus.OK, "Success", student);
+    public ResponseObject addStudent(StudentDTO student) {
+        String id = student.getStudentId();
+        String fName = student.getStudentFirstName();
+        String lName = student.getStudentLastName();
+        if(studentRepository.existsById(id))
+            return new ResponseObject(HttpStatus.FOUND, "Sinh viên tồn tại", null);
+        if (fName == null || fName.isEmpty() || lName == null || lName.isEmpty())
+            return new ResponseObject(HttpStatus.BAD_REQUEST, "Họ và tên sinh viên không được trống", null);
+        Student newStudent = studentMapper.dtoToEntity(student);
+        newStudent.setPassword(SHA256Helper.hash("123456"));
+        newStudent.setActive((byte) 1);
+        newStudent.setCreateAt(Instant.now());
+        newStudent.setUpdateAt(Instant.now());
+        newStudent.setLastLogin(Instant.now());
+        newStudent = studentRepository.save(newStudent);
+        return new ResponseObject(HttpStatus.OK, "Success", newStudent);
     }
 
     @Override
-    public ResponseObject editStudent(StudentRequest studentRequest) {
-        if(!studentRepository.existsById(studentRequest.getStudentId())) {
-            return new ResponseObject(HttpStatus.FOUND, "Student is not exist", "");
-        }
-        if(!studentRequestIsValid(studentRequest)) {
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "request data is not valid", "");
-        }
-        Optional<Student> student = studentRepository.findById(studentRequest.getStudentId());
-        student.get().setStudentFirstName(studentRequest.getFirstName());
-        student.get().setStudentLastName(studentRequest.getLastName());
-        studentRepository.save(student.get());
-        return new ResponseObject(HttpStatus.OK, "Success", student);
+    public ResponseObject editStudent(String studentId, StudentDTO student) {
+        String newFName = student.getStudentFirstName();
+        String newLName = student.getStudentLastName();
+        if (newFName == null || newFName.isEmpty() || newLName == null || newLName.isEmpty())
+            return new ResponseObject(HttpStatus.BAD_REQUEST, "Họ và tên sinh viên không được để trống", null);
+        Optional<Student> foundStudent = studentRepository.findById(studentId);
+        if (foundStudent.isEmpty())
+            return new ResponseObject(HttpStatus.FOUND, "Sinh viên cũ không tồn tại", null);
+        Student editedStudent = foundStudent.get();
+        editedStudent.setStudentFirstName(newFName);
+        editedStudent.setStudentLastName(newLName);
+        editedStudent.setUpdateAt(Instant.now());
+        editedStudent = studentRepository.save(editedStudent);
+        return new ResponseObject(HttpStatus.OK, "Success", editedStudent);
+    }
+
+    @Override
+    public ResponseObject resetPassword(String studentId) {
+        Optional<Student> foundStudent = studentRepository.findById(studentId);
+        if (foundStudent.isEmpty())
+            return new ResponseObject(HttpStatus.FOUND, "Sinh viên không tồn tại", null);
+        Student updatedStudent = foundStudent.get();
+        updatedStudent.setUpdateAt(Instant.now());
+        updatedStudent.setPassword(SHA256Helper.hash("123456"));
+        updatedStudent = studentRepository.save(updatedStudent);
+        return new ResponseObject(HttpStatus.OK, "Success", updatedStudent);
+    }
+
+    @Override
+    public ResponseObject lockStudent(String studentId) {
+        Optional<Student> foundStudent = studentRepository.findById(studentId);
+        if (foundStudent.isEmpty())
+            return new ResponseObject(HttpStatus.FOUND, "Sinh viên không tồn tại", null);
+        Student lockedStudent = foundStudent.get();
+        lockedStudent.setUpdateAt(Instant.now());
+        lockedStudent.setActive((byte) 0);
+        lockedStudent = studentRepository.save(lockedStudent);
+        return new ResponseObject(HttpStatus.OK, "Success", lockedStudent);
+    }
+
+    @Override
+    public ResponseObject unlockStudent(String studentId) {
+        Optional<Student> foundStudent = studentRepository.findById(studentId);
+        if (foundStudent.isEmpty())
+            return new ResponseObject(HttpStatus.FOUND, "Sinh viên không tồn tại", null);
+        Student unlockedStudent = foundStudent.get();
+        unlockedStudent.setUpdateAt(Instant.now());
+        unlockedStudent.setActive((byte) 1);
+        unlockedStudent = studentRepository.save(unlockedStudent);
+        return new ResponseObject(HttpStatus.OK, "Success", unlockedStudent);
+    }
+
+    @Override
+    public ResponseObject searchStudentByIdLike(String studentId) {
+        List<Student> students = studentRepository.searchStudentByIdLikeIgnoreCase(studentId);
+        return new ResponseObject(HttpStatus.OK, "Success", students);
     }
 
     @Override
@@ -87,6 +139,14 @@ public class StudentManagementServiceImpl implements StudentManagementService {
         student.get().setActive((byte) (student.get().getActive() == 0 ? 1 : 0));
         studentRepository.save(student.get());
         return new ResponseObject(HttpStatus.OK, "Success", student);
+    }
+
+    @Override
+    public ResponseObject getStudentById(String studentId) {
+        Optional<Student> foundStudent = studentRepository.findById(studentId);
+        if (foundStudent.isEmpty())
+            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy sinh viên", null);
+        return new ResponseObject(HttpStatus.OK, "Success", foundStudent.get());
     }
 
     @Override

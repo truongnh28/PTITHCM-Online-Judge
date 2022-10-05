@@ -3,6 +3,7 @@ package ptithcm.onlinejudge.mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ptithcm.onlinejudge.dto.SubjectClassDTO;
+import ptithcm.onlinejudge.helper.TimeHelper;
 import ptithcm.onlinejudge.model.entity.SubjectClass;
 
 @Component
@@ -15,7 +16,10 @@ public class SubjectClassMapperImpl implements SubjectClassMapper{
         SubjectClass entity = new SubjectClass();
         entity.setId(dto.getSubjectClassId());
         entity.setSubjectClassName(dto.getSubjectClassName());
-        entity.setSubject(subjectMapper.dtoToEntity(dto.getSubject()));
+        entity.setHide(dto.getHide());
+        if (dto.getCreateAt() != null) entity.setCreateAt(TimeHelper.convertStringToInstance(dto.getCreateAt()));
+        if (dto.getUpdateAt() != null) entity.setUpdateAt(TimeHelper.convertStringToInstance(dto.getUpdateAt()));
+        if (dto.getSubject() != null) entity.setSubject(subjectMapper.dtoToEntity(dto.getSubject()));
         return entity;
     }
 
@@ -25,7 +29,10 @@ public class SubjectClassMapperImpl implements SubjectClassMapper{
         SubjectClassDTO dto = new SubjectClassDTO();
         dto.setSubjectClassId(entity.getId());
         dto.setSubjectClassName(entity.getSubjectClassName());
-        dto.setSubject(subjectMapper.entityToDTO(entity.getSubject()));
+        dto.setHide(entity.getHide());
+        if (entity.getCreateAt() != null) dto.setCreateAt(TimeHelper.convertInstantToString(entity.getCreateAt()));
+        if (entity.getUpdateAt() != null) dto.setUpdateAt(TimeHelper.convertInstantToString(entity.getUpdateAt()));
+        if (entity.getSubject() != null) dto.setSubject(subjectMapper.entityToDTO(entity.getSubject()));
         return dto;
     }
 }

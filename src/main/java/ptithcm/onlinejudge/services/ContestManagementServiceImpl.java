@@ -45,9 +45,9 @@ public class ContestManagementServiceImpl implements ContestManagementService{
         Instant startTime = TimeHelper.convertStringToInstance(contestRequest.getContestStartTime());
         Instant endTime = TimeHelper.convertStringToInstance(contestRequest.getContestEndTime());
         Optional<Teacher> teacher = teacherRepository.findById(contestRequest.getTeacherId());
-        Contest contest = new Contest(contestId, contestName, startTime, endTime, (byte)0, teacher.get());
-        contestRepository.save(contest);
-        return new ResponseObject(HttpStatus.OK, "Success", contest);
+//        Contest contest = new Contest(contestId, contestName, startTime, endTime, (byte)0, teacher.get());
+//        contestRepository.save(contest);
+        return new ResponseObject(HttpStatus.OK, "Success", null);
     }
 
     @Override

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head :: head"></head>
+<body class="bg-light">
+<header th:replace="/fragments/admin-header :: admin-header">
+</header>
+<main>
+  <div class="container-xxl">
+    <div class="py-3"></div>
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="border-bottom pb-3 align-items-center">
+          <form class="d-flex" role="search" th:action="@{/admin/subject}" method="post">
+            <h4 class="card-title">Danh sách môn học</h4>
+            <div class="ms-auto d-flex">
+              <input type="text" class="form-control me-2" data-bs-toggle="tooltip" data-bs-placement="top" name="keyword" th:value="${keyword}"
+                     data-bs-title="Nhập mã môn học hoặc tên môn học cần tìm" placeholder="Tìm môn học">
+              <button type="submit" class="btn btn-outline-success">Search</button>
+            </div>
+          </form>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Mã môn học</th>
+              <th scope="col">Tên môn học</th>
+              <th scope="col">Thời gian tạo</th>
+              <th scope="col">Thời gian cập nhật</th>
+              <th scope="col">Trạng thái</th>
+              <th scope="col">Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="subject, i : ${subjects}">
+              <td th:text="${i.count}"></td>
+              <td th:text="${subject.subjectId}"></td>
+              <td th:text="${subject.subjectName}"></td>
+              <td th:text="${subject.createAt}"></td>
+              <td th:text="${subject.updateAt}"></td>
+              <td th:if="${subject.hide} eq 0">Hoạt động</td>
+              <td th:unless="${subject.hide} eq 0">Bị khóa</td>
+              <td>
+                <a class="btn btn-info btn-sm me-1" th:href="@{/admin/subject/{id}/class(id=${subject.subjectId})}" role="button">Xem lớp</a>
+                <a class="btn btn-primary btn-sm me-1" th:href="@{/admin/subject/{id}/edit(id=${subject.subjectId})}" role="button">Chỉnh sửa</a>
+                <a th:if="${subject.hide} eq 0" class="btn btn-danger btn-sm me-1" th:href="@{/admin/subject/{id}/lock(id=${subject.subjectId})}" role="button">Khóa</a>
+                <a th:unless="${subject.hide} eq 0" class="btn btn-warning btn-sm me-1" th:href="@{/admin/subject/{id}/unlock(id=${subject.subjectId})}" role="button">Mở khóa</a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="card mb-4">
+      <div class="card-body">
+        <h4 class="card-title pb-3 border-bottom">Thêm môn học</h4>
+        <form th:action="@{/admin/subject/add}" method="post" th:object="${subjectAdd}">
+          <div class="row mb-4">
+            <div class="col-md">
+              <label class="form-label">
+                <span class="fw-bold">Mã môn học</span>
+                <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" placeholder="Mã môn học" th:field="*{subjectId}">
+            </div>
+            <div class="col-md">
+              <label class="form-label">
+                <span class="fw-bold">Tên môn học</span>
+                <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" placeholder="Tên môn học" th:field="*{subjectName}">
+            </div>
+          </div>
+          <div class="row mb-4">
+            <div class="col">
+              <button type="submit" class="btn btn-primary">Thêm môn học</button>
+              <button type="reset" class="btn btn-secondary">Reset</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="py-3"></div>
+  </div>
+</main>
+<footer>
+  <div class="text-center fs-6">
+    <div>PTITHCM Online Judge</div>
+    <div>Copyright &copy; 2022</div>
+  </div>
+</footer>
+<!-- Bootstrap JavaScript Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+        integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+</script>
+
+<script>
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
+</body>
+
+</html>

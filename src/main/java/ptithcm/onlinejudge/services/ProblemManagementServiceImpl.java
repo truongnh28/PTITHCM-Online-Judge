@@ -81,9 +81,9 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
         String url = uploadInfo.get("url").toString();
 
         Optional<Teacher> teacher = teacherRepository.findById(problemRequest.getTeacherId());
-        Problem problem = new Problem(problemId, problemName, problemCloudinaryId, url, score, timeLimit, memoryLimit, (byte) 0, teacher.get(), level);
-        problem = problemRepository.save(problem);
-        return new ResponseObject(HttpStatus.OK, "Success", problem);
+//        Problem problem = new Problem(problemId, problemName, problemCloudinaryId, url, score, timeLimit, memoryLimit, (byte) 0, teacher.get(), level);
+//        problem = problemRepository.save(problem);
+        return new ResponseObject(HttpStatus.OK, "Success", null);
     }
 
     @Override

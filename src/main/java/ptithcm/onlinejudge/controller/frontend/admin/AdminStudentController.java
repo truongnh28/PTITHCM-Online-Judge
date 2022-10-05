@@ -1,85 +1,96 @@
 package ptithcm.onlinejudge.controller.frontend.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ptithcm.onlinejudge.data.Data;
 import ptithcm.onlinejudge.dto.StudentDTO;
-import ptithcm.onlinejudge.dto.StudentShowDTO;
+import ptithcm.onlinejudge.mapper.StudentMapper;
+import ptithcm.onlinejudge.model.entity.Student;
+import ptithcm.onlinejudge.model.response.ResponseObject;
+import ptithcm.onlinejudge.services.StudentManagementService;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
-@RequestMapping("/teacher/student")
+@RequestMapping("/admin/student")
 public class AdminStudentController {
-    private Optional<StudentDTO> findStudentByStudentId(String studentId) {
-        StudentDTO studentDTO = new StudentDTO();
-        boolean isExisted = false;
-        for (StudentDTO student: Data.studentList) {
-            if (student.getStudentId().equals(studentId)) {
-                studentDTO = student;
-                isExisted = true;
-                break;
-            }
-        }
-        return (isExisted) ? Optional.of(studentDTO) : Optional.empty();
-    }
-    @GetMapping("")
-    public String showStudentListPage(Model model) {
-        model.addAttribute("pageTitle", "Danh sách sinh viên");
-        List<StudentDTO> studentList = new ArrayList<>();
-        for (StudentDTO student : Data.studentList)
-            if (student.isActive())
-                studentList.add(student);
-        model.addAttribute("students", studentList);
-        return "/teacher/student";
-    }
+    @Autowired
+    private StudentMapper studentMapper;
+    @Autowired
+    private StudentManagementService studentManagementService;
 
-    @GetMapping("/add")
-    public String showStudentAddPage(Model model) {
-        model.addAttribute("pageTitle", "Thêm sinh viên");
-        StudentDTO student = new StudentShowDTO();
-        model.addAttribute("student", student);
-        return "/teacher/student-add";
+    @GetMapping("")
+    public String showStudentManagementPage(Model model) {
+        model.addAttribute("pageTitle", "Sinh viên");
+        List<StudentDTO> students = ((List<Student>) studentManagementService.getAllStudent().getData())
+                .stream().map(item -> studentMapper.entityToDTO(item)).toList();
+        model.addAttribute("students", students);
+        model.addAttribute("studentAdd", new StudentDTO());
+        return "/admin/student/student";
     }
 
     @PostMapping("/add")
-    public String addStudent(@ModelAttribute("student") StudentDTO student) {
-        student.setActive(true);
-        Data.studentList.add(student);
-        return "redirect:/teacher/student";
+    public String addStudent(@ModelAttribute("studentAdd") StudentDTO student) {
+        ResponseObject addStudentResponse = studentManagementService.addStudent(student);
+        if (!addStudentResponse.getStatus().equals(HttpStatus.OK))
+            return "redirect:/error";
+        return "redirect:/admin/student";
     }
 
-    @GetMapping("/{studentId}/edit")
-    public String showAddStudentForm(@PathVariable("studentId") String studentId, Model model) {
-        model.addAttribute("pageTitle", "Chỉnh sửa sinh viên");
-        Optional<StudentDTO> foundStudent = findStudentByStudentId(studentId);
-        if (foundStudent.isEmpty())
-            return "redirect:/error";
-        model.addAttribute("student", foundStudent.get());
-        return "/teacher/student-edit";
+    @PostMapping("")
+    public String searchStudent(Model model, @RequestParam("keyword") String keyword) {
+        model.addAttribute("pageTitle", "Sinh viên");
+        List<StudentDTO> students = ((List<Student>) studentManagementService.getAllStudent().getData())
+                .stream().map(item -> studentMapper.entityToDTO(item)).toList();
+        model.addAttribute("students", students);
+        model.addAttribute("studentAdd", new StudentDTO());
+        return "/admin/student/student";
     }
 
-    @PostMapping("/{studentId}/edit")
-    public String editStudent(@PathVariable("studentId") String studentId, @ModelAttribute("student") StudentDTO student) {
-        Optional<StudentDTO> foundStudent = findStudentByStudentId(studentId);
-        if (foundStudent.isEmpty())
+    // show edit page
+    @GetMapping("/{id}/edit")
+    public String showEditStudentPage(@PathVariable("id") String studentId, Model model) {
+        model.addAttribute("pageTitle", "Cập nhật sinh viên");
+        ResponseObject getStudentByIdResponse = studentManagementService.getStudentById(studentId);
+        if (!getStudentByIdResponse.getStatus().equals(HttpStatus.OK))
             return "redirect:/error";
-        StudentDTO newStudent = foundStudent.get();
-        newStudent.setStudentFirstName(student.getStudentFirstName());
-        newStudent.setStudentLastName(student.getStudentLastName());
-        return "redirect:/teacher/student";
+        StudentDTO student = studentMapper.entityToDTO((Student) getStudentByIdResponse.getData());
+        model.addAttribute("student", student);
+        return "/admin/student/student-edit";
     }
 
-    @GetMapping("/{studentId}/delete")
-    public String deleteStudent(@PathVariable("studentId") String studentId) {
-        Optional<StudentDTO> foundStudent = findStudentByStudentId(studentId);
-        if (foundStudent.isEmpty())
+    // edit
+    @PostMapping("/{id}/edit")
+    public String editStudent(@PathVariable("id") String studentId, @ModelAttribute("student") StudentDTO student) {
+        ResponseObject editStudentResponse = studentManagementService.editStudent(studentId, student);
+        if (!editStudentResponse.getStatus().equals(HttpStatus.OK))
             return "redirect:/error";
-        StudentDTO deleteStudent = foundStudent.get();
-        deleteStudent.setActive(false);
-        return "redirect:/teacher/student";
+        return "redirect:/admin/student";
+    }
+
+    @GetMapping("/{id}/reset")
+    public String resetPasswordStudent(@PathVariable("id") String studentId) {
+        ResponseObject resetPasswordStudentResponse = studentManagementService.resetPassword(studentId);
+        if (!resetPasswordStudentResponse.getStatus().equals(HttpStatus.OK))
+            return "redirect:/error";
+        return "redirect:/admin/student";
+    }
+
+    @GetMapping("/{id}/lock")
+    public String lockStudent(@PathVariable("id") String studentId) {
+        ResponseObject lockStudentResponse = studentManagementService.lockStudent(studentId);
+        if (!lockStudentResponse.getStatus().equals(HttpStatus.OK))
+            return "redirect:/error";
+        return "redirect:/admin/student";
+    }
+
+    @GetMapping("/{id}/unlock")
+    public String unlockStudent(@PathVariable("id") String studentId) {
+        ResponseObject unlockStudentResponse = studentManagementService.unlockStudent(studentId);
+        if (!unlockStudentResponse.getStatus().equals(HttpStatus.OK))
+            return "redirect:/error";
+        return "redirect:/admin/student";
     }
 }

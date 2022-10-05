@@ -27,8 +27,8 @@ public class TeacherProblemController {
     @GetMapping("")
     public String showProblemListPage(Model model, HttpSession session) {
         model.addAttribute("pageTitle", "Problem list");
-        Login login = (Login) session.getAttribute("user");
-        List<ProblemDTO> problems = ((List<Problem>) problemManagementService.getAllProblemsCreateByTeacher(login.getUsername()).getData())
+        LoginDTO loginDTO = (LoginDTO) session.getAttribute("user");
+        List<ProblemDTO> problems = ((List<Problem>) problemManagementService.getAllProblemsCreateByTeacher(loginDTO.getUsername()).getData())
                 .stream().map(item -> problemMapper.entityToDTO(item)).toList();
         model.addAttribute("problems", problems);
         return "/teacher/problem/problem";
@@ -54,7 +54,7 @@ public class TeacherProblemController {
                              @RequestParam("testCasesOut") MultipartFile[] outputs,
                              @RequestParam("problemTypeIds") String[] typeIds,
                              HttpSession session) {
-        String teacherId = ((Login) session.getAttribute("user")).getUsername();
+        String teacherId = ((LoginDTO) session.getAttribute("user")).getUsername();
         ResponseObject responseAddProblem = problemManagementService.addProblemWithTestCasesAndTypes(problem, teacherId, levelId, description, inputs, outputs, typeIds);
         if (!responseAddProblem.getStatus().equals(HttpStatus.OK))
             return "redirect:/error";

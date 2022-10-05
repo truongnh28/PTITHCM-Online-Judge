@@ -8,7 +8,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubjectClassGroupDTO {
-    private String subjectClassGroupId;
-    private String subjectClassGroupName;
+    private String groupId;
+    private String groupName;
+    private String createAt;
+    private String updateAt;
+    private Byte hide;
     private SubjectClassDTO subjectClass;
 }

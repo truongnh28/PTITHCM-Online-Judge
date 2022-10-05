@@ -13,5 +13,8 @@ public class TeacherDTO {
     private String teacherFirstName;
     private String teacherLastName;
     private boolean active;
+    private String createAt;
+    private String updateAt;
+    private String lastLogin;
     private RoleDTO role;
 }

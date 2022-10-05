@@ -1,14 +1,7 @@
 package ptithcm.onlinejudge.controller.frontend.student;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import ptithcm.onlinejudge.data.Data;
 import ptithcm.onlinejudge.dto.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,14 +16,9 @@ import ptithcm.onlinejudge.model.entity.Submission;
 import ptithcm.onlinejudge.model.response.ResponseObject;
 import ptithcm.onlinejudge.services.ContestManagementService;
 import ptithcm.onlinejudge.services.ProblemManagementService;
-import ptithcm.onlinejudge.services.StorageFileService;
 import ptithcm.onlinejudge.services.SubmitService;
 
 import javax.servlet.http.HttpSession;
-import java.io.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/student/contest/{contestId}/submit")
@@ -67,7 +55,7 @@ public class StudentSubmitController {
                              @RequestParam("file") MultipartFile file,
                              @RequestParam("language") String language,
                              HttpSession session) throws InterruptedException {
-        String studentId = ((Login) session.getAttribute("user")).getUsername();
+        String studentId = ((LoginDTO) session.getAttribute("user")).getUsername();
         ResponseObject getContestByIdResponse = contestManagementService.getContestById(contestId);
         if (!getContestByIdResponse.getStatus().equals(HttpStatus.OK))
             return "redirect:/error";

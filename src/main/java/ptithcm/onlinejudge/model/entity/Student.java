@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.Instant;
 
 @Data
 @AllArgsConstructor
@@ -27,6 +28,15 @@ public class Student {
 
     @Column(name = "student_last_name", nullable = false, length = 100)
     private String studentLastName;
+
+    @Column(name = "create_at", nullable = false)
+    private Instant createAt;
+
+    @Column(name = "update_at", nullable = false)
+    private Instant updateAt;
+
+    @Column(name = "last_login", nullable = false)
+    private Instant lastLogin;
 
     @Column(name = "active")
     private Byte active;

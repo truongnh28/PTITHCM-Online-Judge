@@ -15,18 +15,18 @@ public class Data {
 
     public static List<StudentDTO> studentList = new ArrayList<>();
 
-    static {
-        studentList.add(new StudentDTO("N19DCCN190", "26102001", "Thanh", "Nguyễn Nhật", true));
-        studentList.add(new StudentDTO("N19DCCN221", "28022001", "Trưởng", "Nguyễn Hữu", true));
-        studentList.add(new StudentDTO("N19DCCN132", "01012001", "Nhơn", "Trần Quốc", true));
-        studentList.add(new StudentDTO("N19DCCN031", "02012001", "Hân", "Trần Thái", true));
-    }
+//    static {
+//        studentList.add(new StudentDTO("N19DCCN190", "26102001", "Thanh", "Nguyễn Nhật", true));
+//        studentList.add(new StudentDTO("N19DCCN221", "28022001", "Trưởng", "Nguyễn Hữu", true));
+//        studentList.add(new StudentDTO("N19DCCN132", "01012001", "Nhơn", "Trần Quốc", true));
+//        studentList.add(new StudentDTO("N19DCCN031", "02012001", "Hân", "Trần Thái", true));
+//    }
 
     public static List<TeacherDTO> teacherList = new ArrayList<>();
 
-    static {
-        teacherList.add(new TeacherDTO("admin", "admin", "Kỳ Thư", "Lưu Nguyễn Kỳ Thư", true, roleList.get(0)));
-    }
+//    static {
+//        teacherList.add(new TeacherDTO("admin", "admin", "Kỳ Thư", "Lưu Nguyễn Kỳ Thư", true, roleList.get(0)));
+//    }
 
     public static List<ProblemTypeDTO> problemTypeList = new ArrayList<>();
 
@@ -60,10 +60,10 @@ public class Data {
 
     public static List<SubjectDTO> subjectList = new ArrayList<>();
 
-    static {
-        subjectList.add(new SubjectDTO("INT13162", "Lập trình với python"));
-        subjectList.add(new SubjectDTO("INT1332", "Lập trình hướng đối tượng"));
-    }
+//    static {
+//        subjectList.add(new SubjectDTO("INT13162", "Lập trình với python"));
+//        subjectList.add(new SubjectDTO("INT1332", "Lập trình hướng đối tượng"));
+//    }
 
     public static List<SubjectClassDTO> subjectClassList = new ArrayList<>();
 

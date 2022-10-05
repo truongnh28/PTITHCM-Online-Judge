@@ -26,6 +26,12 @@ public class Contest {
     @Column(name = "contest_end", nullable = false)
     private Instant contestEnd;
 
+    @Column(name = "create_at", nullable = false)
+    private Instant createAt;
+
+    @Column(name = "update_at", nullable = false)
+    private Instant updateAt;
+
     @Column(name = "hide")
     private Byte hide;
 

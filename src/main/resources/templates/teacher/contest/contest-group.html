@@ -29,10 +29,10 @@
                 <tr th:each="group, i: ${groups}">
                     <td></td>
                     <td th:text="${i.count}"></td>
-                    <td th:text="${group.subjectClassGroupId}"></td>
-                    <td th:text="${group.subjectClassGroupName}"></td>
+                    <td th:text="${group.getGroupId}"></td>
+                    <td th:text="${group.getGroupName}"></td>
                     <td>
-                        <a th:href="@{/teacher/contest/group/{groupId}(groupId=${group.subjectClassGroupId})}" type="button" class="btn btn-info btn-sm me-2">
+                        <a th:href="@{/teacher/contest/group/{groupId}(groupId=${group.getGroupId})}" type="button" class="btn btn-info btn-sm me-2">
                             Chi tiết
                         </a>
                     </td>

@@ -46,7 +46,7 @@
                                 </div>
                             </td>
                             <td>
-                                <a th:href="@{/student/problem/{problemId}(problemId=${submission.problem.problemId})}" th:text="${submission.problem.problemId}" class="text-decoration-none"></a>
+                                <a th:href="@{/student/contest/{contestId}/problem/{problemId}(contestId=${contestId},problemId=${submission.problem.problemId})}" th:text="${submission.problem.problemId}" class="text-decoration-none"></a>
                             </td>
                             <td th:text="${submission.submissionTime}">
                             </td>
