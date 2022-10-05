@@ -234,3 +234,7 @@ WARNING: khugepaged defrag is enabled.
 [2022-09-25 15:46:01 +0000] [50] [INFO] Booting worker with pid: 50
 16:13:01 Cleaning registries for queue: default
 16:40:01 Cleaning registries for queue: default
+17:07:02 Cleaning registries for queue: default
+17:34:02 Cleaning registries for queue: default
+18:01:02 Cleaning registries for queue: default
+18:28:02 Cleaning registries for queue: default

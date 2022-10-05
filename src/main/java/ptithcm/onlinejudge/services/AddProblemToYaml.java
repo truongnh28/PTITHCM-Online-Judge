@@ -11,4 +11,6 @@ public interface AddProblemToYaml {
     ResponseObject addProblemToYaml(ProblemYaml problemYaml);
     ResponseObject addProblemToDir(Info info, MultipartFile[] inputs, MultipartFile[] outputs);
     ResponseObject addProblemInfo(Info info, String problemPath);
+    Info getProblemInfo(String problemPath);
+    List<ProblemYaml> getProblemYaml();
 }

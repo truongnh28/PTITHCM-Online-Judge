@@ -14,6 +14,7 @@ import ptithcm.onlinejudge.model.yaml.Subtask;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 public class AddProblemToYamlImpl implements AddProblemToYaml{
     static final private String problemsPath = System.getProperty("user.dir") + "/problem_info/problems.yml";
@@ -30,6 +31,11 @@ public class AddProblemToYamlImpl implements AddProblemToYaml{
         }
 
         List<ProblemYaml> problemList = problemsYamlObjectMap.getGroups().get(0).getProblems();
+        for(int i = 0; i < problemList.size(); i++) {
+            if(Objects.equals(problemList.get(i).getId(), problemYaml.getId())) {
+                problemList.set(i, problemYaml);
+            }
+        }
         problemList.add(problemYaml);
         try {
             objectMapper.writeValue(new File(problemsPath), problemsYamlObjectMap);
@@ -67,6 +73,35 @@ public class AddProblemToYamlImpl implements AddProblemToYaml{
         }
         return new ResponseObject(HttpStatus.OK, "Success", "");
     }
+
+    @Override
+    //info == null -> err.
+    public Info getProblemInfo(String problemPath) {
+        Info info = new Info();
+        ObjectMapper objectMapper = new YAMLMapper();
+        try {
+            info = objectMapper.readValue(new File(problemPath),
+                    new TypeReference<>() {});
+            return info;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    @Override
+    //List<ProblemYaml> == null -> err
+    public List<ProblemYaml> getProblemYaml() {
+        ObjectMapper objectMapper = new YAMLMapper();
+        ProblemsYaml problemsYamlObjectMap = null;
+        try {
+            problemsYamlObjectMap = objectMapper.readValue(new File(problemsPath),
+                    new TypeReference<>() {});
+        } catch (IOException e) {
+            return null;
+        }
+        return problemsYamlObjectMap.getGroups().get(0).getProblems();
+    }
+
 
     public static void main(String []args) {
 
