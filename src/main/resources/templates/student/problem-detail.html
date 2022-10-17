@@ -2,68 +2,70 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="/fragments/head :: head">
 <body class="bg-light">
-<main class="container">
-    <header th:replace="/fragments/student-header :: student-header"></header>
-    <section>
-        <div class="row">
-            <div class="col-9">
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <h2 class="card-title" th:text="${problemDetail.getProblemName}"></h2>
-                        <iframe th:src="@{${problemDetail.getProblemUrl}}" width="100%" height="600"></iframe>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div th:replace="/fragments/right-tab :: right-tab">
-                </div>
-                <div class="card bg-light">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item bg-light">
-                            <div class="d-grid gap-2">
-                                <a class="btn btn-primary" th:href="@{/student/contest/{contestId}/submit/{problemId}(contestId=${contestId},problemId=${problemDetail.problemId})}"
-                                   role="button">Nộp bài</a>
-                            </div>
-                        </li>
-                        <li class="list-group-item bg-light">
-                            <div class="">
-                                <span><img th:src="@{/images/list.svg}" alt="list.svg"></span>
-                                <a th:href="@{/student/submission}" class="text-decoration-none">Danh sách bài nộp</a>
-                            </div>
-                        </li>
-                        <li class="list-group-item bg-light">
-                            <div class="">
-                                <span><img class="pb-1" th:src="@{/images/check2.svg}" alt="check2.svg"></span>
-                                <span class="fw-bold">Điểm: </span>
-                                <span th:text="${problemDetail.getProblemScore}"></span>
-                            </div>
-                            <div class="">
-                                <span><img class="pb-1" th:src="@{/images/clock.svg}" alt="clock.svg"></span>
-                                <span class="fw-bold">Giới hạn thời gian: </span>
-                                <span th:text="${problemDetail.getProblemTimeLimit} + 's'"></span>
-                            </div>
-                            <div class="">
-                                <span><img class="pb-1" th:src="@{/images/memory.svg}" alt="clock.svg"></span>
-                                <span class="fw-bold">Giới hạn bộ nhớ: </span>
-                                <span th:text="${problemDetail.getProblemMemoryLimit} + 'MB'"></span>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+<header th:replace="/fragments/student-header :: student-header"></header>
+<main>
+  <div class="container-fluid">
+    <div class="py-2"></div>
+    <div class="row">
+      <div class="col-9">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title" th:text="${problemDetail.getProblemName}"></h2>
+            <iframe th:src="@{${problemDetail.getProblemUrl}}" width="100%" height="600"></iframe>
+          </div>
         </div>
-    </section>
-    <footer th:replace="/fragments/footer :: footer"></footer>
+      </div>
+      <div class="col-3">
+        <div th:replace="/fragments/right-tab :: right-tab">
+        </div>
+        <div class="card">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <div class="d-grid gap-2">
+                <a class="btn btn-primary" th:href="@{/student/contest/{contestId}/submit/{problemId}(contestId=${contestId},problemId=${problemDetail.problemId})}"
+                   role="button">Nộp bài</a>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div>
+                <span><img th:src="@{/images/list.svg}" alt="list.svg"></span>
+                <a th:href="@{/student/contest/{contestId}/submission(contestId=${contest.contestId})}" class="text-decoration-none">Danh sách bài nộp</a>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div>
+                <span><img class="pb-1" th:src="@{/images/check2.svg}" alt="check2.svg"></span>
+                <span class="fw-bold">Điểm: </span>
+                <span th:text="${problemDetail.getProblemScore}"></span>
+              </div>
+              <div>
+                <span><img class="pb-1" th:src="@{/images/clock.svg}" alt="clock.svg"></span>
+                <span class="fw-bold">Giới hạn thời gian: </span>
+                <span th:text="${problemDetail.getProblemTimeLimit} + 's'"></span>
+              </div>
+              <div>
+                <span><img class="pb-1" th:src="@{/images/memory.svg}" alt="clock.svg"></span>
+                <span class="fw-bold">Giới hạn bộ nhớ: </span>
+                <span th:text="${problemDetail.getProblemMemoryLimit} + 'MB'"></span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="py-2"></div>
+  </div>
 </main>
+<footer th:replace="/fragments/footer :: footer"></footer>
 <script
-        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
-        integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
-        crossorigin="anonymous">
+    src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+    integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+    crossorigin="anonymous">
 </script>
 <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
-        integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
-        crossorigin="anonymous">
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
+    integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+    crossorigin="anonymous">
 </script>
 </body>
 </html>

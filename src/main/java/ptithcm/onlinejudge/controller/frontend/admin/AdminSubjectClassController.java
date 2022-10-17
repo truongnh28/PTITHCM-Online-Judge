@@ -34,7 +34,9 @@ public class AdminSubjectClassController {
         Subject subject = (Subject) subjectManagementService.getSubjectById(subjectId).getData();
         model.addAttribute("classes", classes);
         model.addAttribute("subjectName", subject.getSubjectName());
-        model.addAttribute("classAdd", new SubjectClassDTO());
+        SubjectClassDTO subjectClass = new SubjectClassDTO();
+        subjectClass.setSubjectClassId(subjectId + "-");
+        model.addAttribute("classAdd", subjectClass);
         return "/admin/subject/subject-class";
     }
 
@@ -54,7 +56,9 @@ public class AdminSubjectClassController {
         Subject subject = (Subject) subjectManagementService.getSubjectById(subjectId).getData();
         model.addAttribute("classes", classes);
         model.addAttribute("subjectName", subject.getSubjectName());
-        model.addAttribute("classAdd", new SubjectClassDTO());
+        SubjectClassDTO subjectClass = new SubjectClassDTO();
+        subjectClass.setSubjectClassId(subjectId + "-");
+        model.addAttribute("classAdd", subjectClass);
         return "/admin/subject/subject-class";
     }
 

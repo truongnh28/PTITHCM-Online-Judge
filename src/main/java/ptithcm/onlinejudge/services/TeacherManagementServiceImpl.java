@@ -124,4 +124,28 @@ public class TeacherManagementServiceImpl implements TeacherManagementService {
             return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy teacher", null);
         return new ResponseObject(HttpStatus.OK, "Success", foundTeacher.get());
     }
+
+    @Override
+    public ResponseObject getTeachersOwnClass(String classId) {
+        List<Teacher> teachers = teacherRepository.getTeachersOwnClass(classId);
+        return new ResponseObject(HttpStatus.OK, "Success", teachers);
+    }
+
+    @Override
+    public ResponseObject searchTeachersOwnClassById(String classId, String keyword) {
+        List<Teacher> teachers = teacherRepository.searchTeachersOwnClassById(classId, keyword);
+        return new ResponseObject(HttpStatus.OK, "Success", teachers);
+    }
+
+    @Override
+    public ResponseObject getTeachersNotOwnClass(String classId) {
+        List<Teacher> teachers = teacherRepository.getTeachersNotOwnClass(classId);
+        return new ResponseObject(HttpStatus.OK, "Success", teachers);
+    }
+
+    @Override
+    public ResponseObject searchTeachersNotOwnClassById(String classId, String keyword) {
+        List<Teacher> teachers = teacherRepository.searchTeachersNotOwnClass(classId, keyword);
+        return new ResponseObject(HttpStatus.OK, "Success", teachers);
+    }
 }

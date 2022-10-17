@@ -13,5 +13,6 @@ public class SubmissionDTO {
     private ProblemDTO problem;
     private String submissionTime;
     private Integer submissionScore;
+    private String submissionSourcePath;
     private Byte verdict;
 }

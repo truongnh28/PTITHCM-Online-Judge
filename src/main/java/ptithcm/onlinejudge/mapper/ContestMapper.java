@@ -10,7 +10,5 @@ public interface ContestMapper {
 
     ContestDTO entityToDTO(Contest entity);
 
-    ContestRequest dtoToRequest(ContestDTO dto);
-
     ContestDetailDTO entityToDetailDTO(Contest entity);
 }

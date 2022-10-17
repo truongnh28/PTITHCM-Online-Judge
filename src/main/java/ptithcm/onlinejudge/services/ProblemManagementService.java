@@ -8,22 +8,31 @@ import ptithcm.onlinejudge.model.response.ResponseObject;
 
 @Service
 public interface ProblemManagementService {
-    ResponseObject addProblem(ProblemRequest problemRequest, String descriptionPath);
+    ResponseObject addProblem(ProblemDTO problemDTO, String teacherId, int levelId, MultipartFile description, MultipartFile[] inputs, MultipartFile[] outputs, String[] types);
 
-    ResponseObject editProblem(ProblemRequest problemRequest, String descriptionPath);
+    ResponseObject editProblem(ProblemDTO problemDTO, String teacherId, int levelId, MultipartFile description, String[] types);
 
     ResponseObject deleteProblem(String problemId);
 
     ResponseObject addProblemToContest(String problemId, String contestId);
 
-    ResponseObject addProblemWithTestCasesAndTypes(ProblemDTO problemDTO, String teacherId, int levelId, MultipartFile description, MultipartFile[] inputs, MultipartFile[] outputs, String[] types);
+    ResponseObject getAllProblemsActive();
 
-    ResponseObject getAllProblems();
+    ResponseObject getAllProblemsActiveNotInContest(String contestId);
+
+    ResponseObject searchAllProblemsActiveNotInContest(String contestId, String keyword);
+
     ResponseObject getAllProblemsCreateByTeacher(String teacherId);
+
+    ResponseObject searchAllProblemsCreateByTeacher(String teacherId, String keyword);
 
     ResponseObject getAllProblemsForAddingOrRemovingContest(String contestId);
 
-    ResponseObject getAllProblemsOfContest(String contestId);
+    ResponseObject getAllProblemsActiveOfContest(String contestId);
 
     ResponseObject getProblemById(String problemId);
+
+    ResponseObject lockProblem(String problemId);
+
+    ResponseObject unlockProblem(String problemId);
 }

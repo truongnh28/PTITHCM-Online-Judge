@@ -17,13 +17,15 @@ public class ContestManagementController {
 
     @PostMapping("/contest/addProblem")
     public ResponseEntity<ResponseObject> addProblem(@RequestBody ContestRequest contest) {
-        ResponseObject responseObject = contestManagementService.addContest(contest);
-        return ResponseEntity.status(responseObject.getStatus()).body(responseObject);
+//        ResponseObject responseObject = contestManagementService.addContest(contest);
+//        return ResponseEntity.status(responseObject.getStatus()).body(responseObject);
+        return null;
     }
     @PostMapping("/contest/editProblem")
     public ResponseEntity<ResponseObject> editProblem(@RequestBody ContestRequest contest) {
-        ResponseObject responseObject = contestManagementService.editContest(contest);
-        return ResponseEntity.status(responseObject.getStatus()).body(responseObject);
+//        ResponseObject responseObject = contestManagementService.editContest(contest);
+//        return ResponseEntity.status(responseObject.getStatus()).body(responseObject);
+        return null;
     }
 }
 

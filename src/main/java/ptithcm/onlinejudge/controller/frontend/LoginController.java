@@ -37,7 +37,7 @@ public class LoginController {
             session.setAttribute("user", user.getUsername());
             if (data.getClass().equals(Student.class)) {
                 session.setAttribute("role", "student");
-                return "redirect:/student/contest";
+                return "redirect:/student/home";
             }
             if (data.getClass().equals(Teacher.class)) {
                 Teacher teacher = (Teacher) data;

@@ -23,6 +23,9 @@ public class Submission {
     @Column(name = "submission_score")
     private Integer submissionScore;
 
+    @Column(name = "submission_source_path", nullable = false, length = 100)
+    private String submissionSourcePath;
+
     @Column(name = "verdict")
     private Byte verdict;
 

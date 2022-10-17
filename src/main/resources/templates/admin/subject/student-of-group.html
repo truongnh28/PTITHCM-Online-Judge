@@ -2,49 +2,74 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="/fragments/head :: head">
 <body class="bg-light">
-<main class="container">
-    <header th:replace="/fragments/teacher-header :: teacher-header"></header>
-    <section>
-        <div class="d-flex mb-3">
-            <div>
-                <a th:href="@{/teacher/subject/{subjectId}/class/{classId}/group/{groupId}/student/edit(subjectId=${subjectId},classId=${classId},groupId=${groupId})}" class="btn btn-primary" role="button">Thêm bớt sinh viên</a>
-                <a th:href="@{/teacher/subject/{subjectId}/class/{classId}(subjectId=${subjectId},classId=${classId})}" class="btn btn-secondary" role="button">Về trang nhóm thực hành</a>
+<header th:replace="/fragments/admin-header :: admin-header"></header>
+<main>
+  <div class="container-fluid">
+    <div class="py-2"></div>
+    <a class="btn btn-primary mb-3" th:href="@{/admin/subject/{subjectId}/class/{classId}/group(subjectId=${subjectId},classId=${classId})}" role="button">Về danh sách nhóm</a>
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="border-bottom pb-3 align-items-center">
+          <form class="d-flex" role="search" th:action="@{/admin/subject/{subjectId}/class/{classId}/group/{groupId}(subjetId=${subjectId},classId=${classId})}" method="post">
+            <h4 class="card-title">
+              <span>Danh sách sinh viên nhóm</span>
+              <span th:text="${groupName}" class="fw-bold"></span>
+              <span th:text="'(' + ${groupId} + ')'" class="fw-bold"></span>
+            </h4>
+            <div class="ms-auto d-flex">
+              <input type="text" class="form-control form-control me-2" data-bs-toggle="tooltip" name="keyword" th:value="${keyword}"
+                     data-bs-placement="top" data-bs-title="Nhập mã sinh viên cần tìm" placeholder="Tìm kiếm sinh viên">
+              <button type="submit" class="btn btn-outline-success">Search</button>
             </div>
-            <div class="ms-auto">
-                <form class="col-12 col-lg-auto mb-3 mb-lg-0" role="search">
-                    <input type="search" class="form-control" placeholder="Tìm kiếm lớp môn học..." aria-label="Search"/>
-                </form>
-            </div>
+          </form>
         </div>
-        <div class="card table-responsive mb-3">
-            <table class="table table-hover caption-top text-center">
-                <caption class="bg-secondary bg-opacity-10 ps-4">
-                    <h2 th:text="'Danh sách sinh viên thực hành nhóm ' + ${groupId}"></h2>
-                </caption>
-                <thead class="thead-inverse">
-                <tr>
-                    <th></th>
-                    <th>#</th>
-                    <th>Mã sinh viên</th>
-                    <th>Họ</th>
-                    <th>Tên</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="student, i: ${students}">
-                    <td></td>
-                    <td th:text="${i.count}"></td>
-                    <td th:text="${student.studentId}"></td>
-                    <td th:text="${student.studentLastName}"></td>
-                    <td th:text="${student.studentFirstName}"></td>
-                </tr>
-                </tbody>
-            </table>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>#</th>
+              <th>Mã sinh viên</th>
+              <th>Họ sinh viên</th>
+              <th>Tên sinh viên</th>
+              <th>Thời gian tạo</th>
+              <th>Thời gian cập nhật</th>
+              <th>Đăng nhập gần nhất</th>
+              <th>Trạng thái</th>
+              <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="student, i : ${students}">
+              <td th:text="${i.count}"></td>
+              <td th:text="${student.studentId}"></td>
+              <td th:text="${student.studentLastName}"></td>
+              <td th:text="${student.studentFirstName}"></td>
+              <td th:text="${student.createAt}"></td>
+              <td th:text="${student.updateAt}"></td>
+              <td th:text="${student.lastLogin}"></td>
+              <td th:if="${student.active} eq 0">Bị khóa</td>
+              <td th:unless="${student.active} eq 0">Hoạt động</td>
+              <td>
+                <a class="btn btn-danger btn-sm" th:href="@{/admin/subject/{subjectId}/class/{classId}/group/{groupId}/student/{studentId}/remove(subjectId=${subjectId},classId=${classId},groupId=${groupId},studentId=${student.studentId})}" role="button" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Xóa sinh viên khỏi nhóm thực hành">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                  </svg>
+                </a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </div>
-        <nav th:replace="/fragments/pagination :: pagination"></nav>
-    </section>
-    <footer th:replace="/fragments/footer :: footer"></footer>
+        <div class="d-flex">
+          <a class="btn btn-primary mb-3" th:href="@{/admin/subject/{subjectId}/class/{classId}/group/{groupId}/student/add(subjectId=${subjectId},classId=${classId},groupId=${groupId})}" role="button">Thêm sinh viên vào nhóm</a>
+        </div>
+      </div>
+    </div>
+    <div class="py-2"></div>
+  </div>
 </main>
+<footer th:replace="/fragments/footer :: footer"></footer>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
         integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
         crossorigin="anonymous"></script>

@@ -12,4 +12,10 @@ public interface SubjectClassRepository extends JpaRepository<SubjectClass, Stri
 
     @Query(value = "select * from subject_classes where subject_classes.subject_id = ?1 and (subject_classes.subject_class_id like %?2% or subject_classes.subject_class_name like %?2%)", nativeQuery = true)
     List<SubjectClass> searchSubjectClassOfSubjectByIdOrName(String subjectId, String keyword);
+
+    @Query(value = "select * from subject_classes where subject_classes.hide = 0 and subject_classes.subject_class_id in (select subject_class_has_teacher.subject_class_id from subject_class_has_teacher where subject_class_has_teacher.teacher_id = ?1)", nativeQuery = true)
+    List<SubjectClass> getClassesTeacherOwnActive(String teacherId);
+
+    @Query(value = "select * from subject_classes where subject_classes.hide = 0 and (subject_classes.subject_class_id like %?2% or subject_classes.subject_class_name like %?2%) and subject_classes.subject_class_id in (select subject_class_has_teacher.subject_class_id from subject_class_has_teacher where subject_class_has_teacher.teacher_id = ?1)", nativeQuery = true)
+    List<SubjectClass> searchClassesTeacherOwnActive(String teacherId, String keyword);
 }

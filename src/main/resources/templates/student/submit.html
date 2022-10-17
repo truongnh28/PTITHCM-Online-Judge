@@ -2,62 +2,65 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="/fragments/head :: head">
 <body class="bg-light">
-<main class="container">
-    <header th:replace="/fragments/student-header :: student-header"></header>
-    <section>
-        <div class="row">
-            <div class="col-9">
-                <div class="card text-start bg-light">
-                    <div class="m-3">
-                        <h2 class="card-title" th:text="${problemDetails.getProblemName}"></h2>
-                        <label class="form-label">Mời bạn upload code</label>
-                        <form th:action="@{/student/contest/{contestId}/submit/{problemId}(contestId=${contestId},problemId=${problemDetails.problemId})}" method="post" enctype="multipart/form-data">
-                            <div class="mb-3">
-                                <input type="file" class="form-control" name="file" placeholder="Chọn một file để nộp"/>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Ngôn ngữ</label>
-                                <select class="form-control" name="language">
-                                    <option value="cpp">C++</option>
-                                    <option value="java">Java</option>
-                                    <option value="python">Python</option>
-                                </select>
-                            </div>
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <div th:switch="${contest.verdict}">
-                                    <div th:case="0">
-                                        <button class="btn btn-primary disabled">Nộp code</button>
-                                    </div>
-                                    <div th:case="2">
-                                        <button class="btn btn-primary disabled">Nộp code</button>
-                                    </div>
-                                    <div th:case="1">
-                                        <button type="submit" class="btn btn-primary">Nộp code</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div th:replace="/fragments/right-tab :: right-tab"></div>
-            </div>
+<header th:replace="/fragments/student-header :: student-header"></header>
+<main>
+  <div class="container-fluid">
+    <div class="py-2"></div>
+    <div class="row">
+      <div class="col-9">
+        <div class="card text-start">
+          <div class="m-3">
+            <h2 class="card-title" th:text="${problemDetails.getProblemName}"></h2>
+            <label class="form-label">Mời bạn upload code</label>
+            <form th:action="@{/student/contest/{contestId}/submit/{problemId}(contestId=${contestId},problemId=${problemDetails.problemId})}" method="post" enctype="multipart/form-data">
+              <div class="mb-3">
+                <input type="file" class="form-control" name="file" placeholder="Chọn một file để nộp"/>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Ngôn ngữ</label>
+                <select class="form-control" name="language">
+                  <option value="cpp">C++</option>
+                  <option value="java">Java</option>
+                  <option value="python">Python</option>
+                </select>
+              </div>
+              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+<!--                <div th:switch="${contest.verdict}">-->
+<!--                  <div th:case="0">-->
+<!--                    <button class="btn btn-primary disabled">Nộp code</button>-->
+<!--                  </div>-->
+<!--                  <div th:case="2">-->
+<!--                    <button class="btn btn-primary disabled">Nộp code</button>-->
+<!--                  </div>-->
+<!--                  <div th:case="1">-->
+<!--                    <button type="submit" class="btn btn-primary">Nộp code</button>-->
+<!--                  </div>-->
+<!--                </div>-->
+                <button type="submit" class="btn btn-primary">Nộp code</button>
+              </div>
+            </form>
+          </div>
         </div>
-    </section>
-    <footer th:replace="/fragments/footer :: footer"></footer>
+      </div>
+      <div class="col-3">
+        <div th:replace="/fragments/right-tab :: right-tab"></div>
+      </div>
+    </div>
+    <div class="py-2"></div>
+  </div>
 </main>
+<footer th:replace="/fragments/footer :: footer"></footer>
 <!-- Bootstrap JavaScript Libraries -->
 <script
-        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
-        integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
-        crossorigin="anonymous"
+    src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+    integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+    crossorigin="anonymous"
 ></script>
 
 <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
-        integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
-        crossorigin="anonymous"
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
+    integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+    crossorigin="anonymous"
 ></script>
 </body>
 </html>

@@ -234,6 +234,7 @@ WARNING: khugepaged defrag is enabled.
 [2022-09-25 15:46:01 +0000] [50] [INFO] Booting worker with pid: 50
 16:13:01 Cleaning registries for queue: default
 16:40:01 Cleaning registries for queue: default
+<<<<<<< HEAD
 ------------------JUDGELITE STARTED------------------
 ------------------JUDGELITE STARTED------------------
 ------------------JUDGELITE STARTED------------------
@@ -283,3 +284,9 @@ Checking for transparent hugepage support ... [32mPASS(B[m
 [SJ 09/27 17:33:49] Final verdict: {'verdict': 'AC', 'score': 100, 'max_score': 100, 'time': 21, 'memory': 0.4, 'testcase': 2}
 17:33:49 [32mdefault[39;49;00m: [34mJob OK[39;49;00m (deefe6e4-ce70-4052-b64c-28c7f4328476)
 17:33:49 Result is kept for 2000000000 seconds
+=======
+17:07:02 Cleaning registries for queue: default
+17:34:02 Cleaning registries for queue: default
+18:01:02 Cleaning registries for queue: default
+18:28:02 Cleaning registries for queue: default
+>>>>>>> 61dc142e50aa2ae0decb34abf6f5c312cbc08748

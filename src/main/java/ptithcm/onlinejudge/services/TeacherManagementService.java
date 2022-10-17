@@ -20,4 +20,12 @@ public interface TeacherManagementService {
     ResponseObject resetPasswordTeacher(String teacherId);
 
     ResponseObject getTeacherById(String teacherId);
+
+    ResponseObject getTeachersOwnClass(String classId);
+
+    ResponseObject searchTeachersOwnClassById(String classId, String keyword);
+
+    ResponseObject getTeachersNotOwnClass(String classId);
+
+    ResponseObject searchTeachersNotOwnClassById(String classId, String keyword);
 }

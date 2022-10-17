@@ -32,7 +32,7 @@ public class LoginServiceImpl implements LoginService {
         if (foundStudent.isPresent()) {
             Student student = foundStudent.get();
             String hashPassword = SHA256Helper.hash(password);
-            if (hashPassword.equals(student.getPassword())) {
+            if (hashPassword.equals(student.getPassword()) && student.getActive() == (byte) 1) {
                 student.setLastLogin(TimeHelper.convertStringToInstance(TimeHelper.convertLocalDateTimeToString(LocalDateTime.now())));
                 studentRepository.save(student);
                 return new ResponseObject(HttpStatus.OK, "Success", student);
@@ -43,7 +43,7 @@ public class LoginServiceImpl implements LoginService {
         if (foundTeacher.isPresent()) {
             Teacher teacher = foundTeacher.get();
             String hashPassword = SHA256Helper.hash(password);
-            if (hashPassword.equals(teacher.getPassword())) {
+            if (hashPassword.equals(teacher.getPassword()) && teacher.getActive() == (byte) 1) {
                 teacher.setLastLogin(TimeHelper.convertStringToInstance(TimeHelper.convertLocalDateTimeToString(LocalDateTime.now())));
                 teacherRepository.save(teacher);
                 return new ResponseObject(HttpStatus.OK, "Success", teacher);

@@ -13,5 +13,5 @@ public interface SubmitService {
     ResponseObject getSubmissionSourceAdapter(String jobId);
     ResponseObject getSubmissionsAdapter(int pageNumber, String key);
     ResponseObject submitProblemAdapter(SubmitRequest submitRequest);
-    ResponseObject submitProblemFromController(String studentId, String problemId, String language, MultipartFile file);
+    ResponseObject submitProblemFromController(String studentId, String problemId, String contestId, String language, MultipartFile file);
 }

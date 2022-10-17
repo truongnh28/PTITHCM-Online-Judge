@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import ptithcm.onlinejudge.dto.ContestDTO;
+import org.springframework.web.bind.annotation.*;
 import ptithcm.onlinejudge.dto.ContestDetailDTO;
 import ptithcm.onlinejudge.mapper.ContestMapper;
 import ptithcm.onlinejudge.model.entity.Contest;
@@ -17,7 +14,7 @@ import ptithcm.onlinejudge.services.ContestManagementService;
 import java.util.List;
 
 @Controller
-@RequestMapping("/student/contest")
+@RequestMapping("/student/group/{groupId}/contest")
 public class StudentContestController {
     @Autowired
     private ContestMapper contestMapper;
@@ -25,16 +22,25 @@ public class StudentContestController {
     private ContestManagementService contestManagementService;
 
     @GetMapping("")
-    public String showContestsPage(Model model) {
-        model.addAttribute("pageTitle", "Danh sách bài thực hành");
-        List<ContestDTO> contests = ((List<Contest>) contestManagementService.getAllContestActiveSortByDate().getData())
-                .stream().map(item -> contestMapper.entityToDTO(item)).toList();
+    public String showContestsPage(@PathVariable("groupId") String groupId, Model model) {
+        model.addAttribute("pageTitle", "Bài thực hành");
+        List<ContestDetailDTO> contests = ((List<Contest>) contestManagementService.getContestActiveSortByDate().getData())
+                .stream().map(item -> contestMapper.entityToDetailDTO(item)).toList();
+        model.addAttribute("contests", contests);
+        return "/student/contest";
+    }
+
+    @PostMapping("")
+    public String searchContests(@PathVariable("groupId") String groupId, Model model, @RequestParam("keyword") String keyword) {
+        model.addAttribute("pageTitle", "Bài thực hành");
+        List<ContestDetailDTO> contests = ((List<Contest>) contestManagementService.searchContestsActiveSortByDate(keyword).getData())
+                .stream().map(item -> contestMapper.entityToDetailDTO(item)).toList();
         model.addAttribute("contests", contests);
         return "/student/contest";
     }
 
     @GetMapping("/{contestId}")
-    public String showContestPage(@PathVariable("contestId") String contestId, Model model) {
+    public String showContestPage(@PathVariable("groupId") String groupId, @PathVariable("contestId") String contestId, Model model) {
         model.addAttribute("pageTitle", "Thông tin bài thực hành");
         ResponseObject getContestByIdResponse = contestManagementService.getContestById(contestId);
         if (!getContestByIdResponse.getStatus().equals(HttpStatus.OK))

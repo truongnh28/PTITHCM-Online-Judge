@@ -2,6 +2,7 @@ package ptithcm.onlinejudge.controller.frontend.student;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import ptithcm.onlinejudge.dto.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,12 +17,13 @@ import ptithcm.onlinejudge.model.entity.Submission;
 import ptithcm.onlinejudge.model.response.ResponseObject;
 import ptithcm.onlinejudge.services.ContestManagementService;
 import ptithcm.onlinejudge.services.ProblemManagementService;
+import ptithcm.onlinejudge.services.SubmissionManagementService;
 import ptithcm.onlinejudge.services.SubmitService;
 
 import javax.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/student/contest/{contestId}/submit")
+@RequestMapping("/student/group/{groupId}/contest/{contestId}/submit")
 public class StudentSubmitController {
     @Autowired
     private ContestMapper contestMapper;
@@ -33,8 +35,10 @@ public class StudentSubmitController {
     private ProblemMapper problemMapper;
     @Autowired
     private ProblemManagementService problemManagementService;
+    @Autowired
+    private SubmissionManagementService submissionManagementService;
     @GetMapping("/{problemId}")
-    public String showSubmitPage(@PathVariable("contestId") String contestId, @PathVariable("problemId") String problemId, Model model) {
+    public String showSubmitPage(@PathVariable("groupId") String groupId, @PathVariable("contestId") String contestId, @PathVariable("problemId") String problemId, Model model) {
         model.addAttribute("pageTitle", "Nộp bài");
         ResponseObject getContestByIdResponse = contestManagementService.getContestById(contestId);
         if (!getContestByIdResponse.getStatus().equals(HttpStatus.OK))
@@ -50,28 +54,32 @@ public class StudentSubmitController {
     }
 
     @PostMapping("/{problemId}")
-    public String submitCode(@PathVariable("contestId") String contestId,
+    public String submitCode(@PathVariable("groupId") String groupId,
+                             @PathVariable("contestId") String contestId,
                              @PathVariable("problemId") String problemId,
                              @RequestParam("file") MultipartFile file,
                              @RequestParam("language") String language,
                              HttpSession session) throws InterruptedException {
-        String studentId = ((LoginDTO) session.getAttribute("user")).getUsername();
-        ResponseObject getContestByIdResponse = contestManagementService.getContestById(contestId);
-        if (!getContestByIdResponse.getStatus().equals(HttpStatus.OK))
-            return "redirect:/error";
-        ContestDetailDTO contest = contestMapper.entityToDetailDTO((Contest) getContestByIdResponse.getData());
-        ResponseObject submitProblemResponse = submitService.submitProblemFromController(studentId, problemId, language, file);
+        String studentId = session.getAttribute("user").toString();
+        ResponseObject submitProblemResponse = submitService.submitProblemFromController(studentId, problemId, contestId, language, file);
         if (!submitProblemResponse.getStatus().equals(HttpStatus.OK))
             return "redirect:/error";
         Submission submission = (Submission) submitProblemResponse.getData();
+        updateVerdict(submission);
+        return "redirect:/student/contest/{contestId}/submission/" + submission.getId();
+    }
+
+    @Async
+    public void updateVerdict(Submission submission) throws InterruptedException {
+        String id = submission.getId();
         while(true) {
-            Thread.sleep(200);
-            ResponseObject getStatusResponse = submitService.getStatusAdapter(submission.getId());
+            ResponseObject getStatusResponse = submitService.getStatusAdapter(id);
             GetStatusResponse status = (GetStatusResponse) getStatusResponse.getData();
             if (!(status.getStatus().equals("queued") || status.getStatus().equals("judging"))) {
+                submissionManagementService.getSubmissionById(id);
                 break;
             }
         }
-        return "redirect:/student/contest/{contestId}/submission/" + submission.getId();
+
     }
 }

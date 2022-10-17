@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import ptithcm.onlinejudge.dto.StudentDTO;
 import ptithcm.onlinejudge.model.response.ResponseObject;
 import ptithcm.onlinejudge.model.request.AddStudentToGroupRequest;
-import ptithcm.onlinejudge.model.request.StudentRequest;
 
 @Service
 public interface StudentManagementService {
@@ -17,6 +16,14 @@ public interface StudentManagementService {
     ResponseObject lockStudent(String studentId);
 
     ResponseObject unlockStudent(String studentId);
+
+    ResponseObject getStudentsOfGroup(String groupId);
+
+    ResponseObject searchStudentsOfGroupById(String groupId, String studentId);
+
+    ResponseObject getStudentsNotInClass(String classId);
+
+    ResponseObject searchStudentsNotInClassById(String classId, String keyword);
 
     ResponseObject searchStudentByIdLike(String studentId);
 

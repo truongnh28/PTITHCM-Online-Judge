@@ -2,51 +2,60 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="/fragments/head :: head">
 <body class="bg-light">
-<main class="container">
-  <header th:replace="/fragments/student-header :: student-header"></header>
-  <section>
-    <div class="d-flex mb-3">
-      <form role="search">
-        <input type="search" class="form-control" placeholder="Tìm bài thực hành..." aria-label="Search"/>
-      </form>
+<header th:replace="/fragments/student-header :: student-header"></header>
+<main>
+  <div class="container-fluid">
+    <div class="py-2"></div>
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="border-bottom pb-3 align-items-center">
+          <form class="d-flex" role="search" th:action="@{/student/contest}" method="post">
+            <h4 class="card-title">
+              <span>Danh sách bài thực hành</span>
+            </h4>
+            <div class="ms-auto d-flex">
+              <input class="form-control me-2" data-bs-toggle="tooltip" data-bs-placement="top" name="keyword" th:value="${keyword}"
+                     data-bs-title="Nhập mã hoặc tên bài thực hành muốn tìm" type="search" placeholder="Tìm bài thực hành">
+              <button class="ms-auto btn btn-outline-success" type="submit">Search</button>
+            </div>
+          </form>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>Mã bài thực hành</th>
+              <th>Tên bài thực hành</th>
+              <th>Thời gian bắt đầu</th>
+              <th>Thời gian kết thúc</th>
+              <th>Trạng thái</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="contest : ${contests}">
+              <td>
+                <a th:text="${contest.contestId}" class="text-decoration-none" th:href="@{/student/group/{groupId}/contest/{contestId}(groupId=${groupId},contestId=${contest.contestId})}"></a>
+              </td>
+              <td>
+                <a th:text="${contest.contestName}" class="text-decoration-none" th:href="@{/student/group/{groupId}/contest/{contestId}(groupId=${groupId},contestId=${contest.contestId})}"></a>
+              </td>
+              <td th:text="${contest.contestStart}"></td>
+              <td th:text="${contest.contestEnd}"></td>
+              <td>
+                <div th:if="${contest.verdict} eq 0" class="d-inline-flex rounded-1 border bg-primary border-primary text-light px-1">Sắp diễn ra</div>
+                <div th:if="${contest.verdict} eq 1" class="d-inline-flex rounded-1 border bg-success border-success text-light px-1">Đang diễn ra</div>
+                <div th:if="${contest.verdict} eq 2" class="d-inline-flex rounded-1 border bg-danger border-danger text-light px-1">Đã kết thúc</div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-    <div class="card table-responsive mb-3">
-      <table class="table table-hover caption-top text-center">
-        <caption class="bg-secondary bg-opacity-10 ps-4">
-          <h2>Danh sách các bài thực hành</h2>
-        </caption>
-        <thead class="thead-inverse">
-        <tr>
-          <th></th>
-          <th>#</th>
-          <th>Mã bài thực hành</th>
-          <th>Tên bài thực hành</th>
-          <th>Thời gian bắt đầu</th>
-          <th>Thời gian kết thúc</th>
-          <th>Mã giáo viên</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="contest, i: ${contests}">
-          <td></td>
-          <td th:text="${i.count}"></td>
-          <td>
-            <a th:href="@{/student/contest/{contestId}(contestId=${contest.contestId})}" th:text="${contest.contestId}" class="text-decoration-none"></a>
-          </td>
-          <td>
-            <a th:href="@{/student/contest/{contestId}(contestId=${contest.contestId})}" th:text="${contest.contestName}" class="text-decoration-none"></a>
-          </td>
-          <td th:text="${contest.contestStart}"></td>
-          <td th:text="${contest.contestEnd}"></td>
-          <td th:text="${contest.teacher.teacherId}"></td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-    <nav th:replace="/fragments/pagination :: pagination"></nav>
-  </section>
-  <footer th:replace="/fragments/footer :: footer"></footer>
+    <div class="py-2"></div>
+  </div>
 </main>
+<footer th:replace="/fragments/footer :: footer"></footer>
 <script
     src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
     integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"

@@ -3,121 +3,119 @@
 <head th:replace="/fragments/head :: head">
 </head>
 <body class="bg-light">
-<main class="container">
-    <header th:replace="/fragments/teacher-header :: teacher-header"></header>
-    <section>
-        <div class="card bg-light">
-            <div class="card-body">
-                <form th:action="@{/teacher/problem/add}" method="post" th:object="${problem}" enctype="multipart/form-data">
-                    <h2 class="card-title text-center">Thêm bài tập</h2>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <span class="fw-bold">Mã bài tập</span>
-                            <span class="fw-bold text-danger">*</span>
-                        </label>
-                        <input type="text" class="form-control" th:field="*{problemId}" aria-describedby="helpId" placeholder="Ví dụ: aplusb, maxnumber,..."/>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <span class="fw-bold">Tên bài tập</span>
-                            <span class="fw-bold text-danger">*</span>
-                        </label>
-                        <input type="text" class="form-control" th:field="*{problemName}" aria-describedby="helpId" placeholder="Ví dụ: A cộng B, Số lớn nhất,..."/>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <span class="fw-bold">Mức độ</span>
-                            <span class="fw-bold text-danger">*</span>
-                        </label>
-                        <select class="form-control" name="levelSelect">
-                            <option th:each="level: ${levels}"
-                                    th:value="${level.levelId}"
-                                    th:text="${level.levelName}"></option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <span class="fw-bold">Mô tả bài tập (định dạng pdf)</span>
-                            <span class="fw-bold text-danger">*</span>
-                        </label>
-                        <input type="file" id="fileUpload" class="form-control" name="fileDescription" placeholder="Chọn một file pdf để upload phần mô tả bài tập" accept="application/pdf"/>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <span class="fw-bold">Input (các file có định dạng .in)</span>
-                        </label>
-                        <input type="file" class="form-control" name="testCasesIn" multiple placeholder="Chọn một loạt các file input để upload phần input cho bài tập"/>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <span class="fw-bold">Output (các file có định dạng .out)</span>
-                        </label>
-                        <input type="file" class="form-control" name="testCasesOut" multiple placeholder="Chọn một loạt các file output để upload phần output cho bài tập"/>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <span class="fw-bold">Điểm</span>
-                            <span class="fw-bold text-danger">*</span>
-                        </label>
-                        <input type="number" min="0" class="form-control" th:field="*{problemScore}" placeholder=""/>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <span class="fw-bold">Giới hạn thời gian (Tính bằng giây)</span>
-                            <span class="fw-bold text-danger">*</span>
-                        </label>
-                        <input type="number" min="0" class="form-control" th:field="*{problemTimeLimit}" placeholder=""/>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <span class="fw-bold">Giới hạn bộ nhớ (Tính bằng MB)</span>
-                            <span class="fw-bold text-danger">*</span>
-                        </label>
-                        <input type="number" min="0" class="form-control" th:field="*{problemMemoryLimit}" placeholder=""/>
-                    </div>
-                    <div class="mb-3">
-                        <div>
-                            <label class="form-label">
-                                <span class="fw-bold">Thể loại</span>
-                                <span class="fw-bold text-danger">*</span>
-                            </label>
-                        </div>
-                        <div class="form-check form-check-inline" th:each="problemType: ${problemTypes}">
-                            <input class="form-check-input" type="checkbox" name="problemTypeIds" th:value="${problemType.problemTypeId}">
-                            <label class="form-check-label" th:text="${problemType.problemTypeName}"></label>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Lưu bài tập</button>
-                </form>
+<header th:replace="/fragments/teacher-header :: teacher-header"></header>
+<main>
+  <div class="container-fluid">
+    <div class="py-2"></div>
+    <div class="card mb-4">
+      <div class="card-body">
+        <form th:action="@{/teacher/problem/add}" method="post" th:object="${problem}" enctype="multipart/form-data">
+          <h4 class="card-title pb-3 border-bottom">Thêm bài tập</h4>
+          <div class="row">
+            <div class="col mb-3">
+              <label class="form-label">
+                <span class="fw-bold">Mã bài tập</span>
+                <span class="fw-bold text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" th:field="*{problemId}" aria-describedby="helpId" placeholder="Ví dụ: aplusb, maxnumber,..."/>
             </div>
-        </div>
-    </section>
-    <footer th:replace="/fragments/footer :: footer">
-    </footer>
+            <div class="col mb-3">
+              <label class="form-label">
+                <span class="fw-bold">Tên bài tập</span>
+                <span class="fw-bold text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" th:field="*{problemName}" aria-describedby="helpId" placeholder="Ví dụ: A cộng B, Số lớn nhất,..."/>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">
+              <span class="fw-bold">Mô tả bài tập (định dạng pdf)</span>
+              <span class="fw-bold text-danger">*</span>
+            </label>
+            <input type="file" id="fileUpload" class="form-control" name="fileDescription" placeholder="Chọn một file pdf để upload phần mô tả bài tập" accept="application/pdf"/>
+          </div>
+          <div class="row align-items-center">
+            <div class="col mb-3">
+              <label class="form-label">
+                <span class="fw-bold">Giới hạn thời gian (Tính bằng giây)</span>
+                <span class="fw-bold text-danger">*</span>
+              </label>
+              <input type="number" min="0" class="form-control" th:field="*{problemTimeLimit}" placeholder=""/>
+            </div>
+            <div class="col mb-3">
+              <label class="form-label">
+                <span class="fw-bold">Giới hạn bộ nhớ (Tính bằng MB)</span>
+                <span class="fw-bold text-danger">*</span>
+              </label>
+              <input type="number" min="0" class="form-control" th:field="*{problemMemoryLimit}" placeholder=""/>
+            </div>
+            <div class="col mb-3">
+              <label class="form-label">
+                <span class="fw-bold">Mức độ</span>
+                <span class="fw-bold text-danger">*</span>
+              </label>
+              <select class="form-control" name="levelSelect">
+                <option th:each="level: ${levels}"
+                        th:value="${level.levelId}"
+                        th:text="${level.levelName}"></option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col col-4 mb-3">
+              <label class="form-label">
+                <span class="fw-bold">Điểm</span>
+                <span class="fw-bold text-danger">*</span>
+              </label>
+              <input type="number" min="0" class="form-control" th:field="*{problemScore}" placeholder=""/>
+            </div>
+            <div class="col col-8 mb-3">
+              <div>
+                <label class="form-label">
+                  <span class="fw-bold">Thể loại</span>
+                  <span class="fw-bold text-danger">*</span>
+                </label>
+              </div>
+              <div class="form-check form-check-inline" th:each="problemType: ${problemTypes}">
+                <input class="form-check-input" type="checkbox" name="problemTypeIds" th:value="${problemType.problemTypeId}">
+                <label class="form-check-label" th:text="${problemType.problemTypeName}"></label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col mb-3">
+              <label class="form-label">
+                <span class="fw-bold">Input (các file có định dạng .in)</span>
+              </label>
+              <input type="file" class="form-control" name="testCasesIn" multiple accept=".in"/>
+            </div>
+            <div class="col mb-3">
+              <label class="form-label">
+                <span class="fw-bold">Output (các file có định dạng .out)</span>
+              </label>
+              <input type="file" class="form-control" name="testCasesOut" multiple accept=".out"/>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Lưu bài tập</button>
+        </form>
+      </div>
+    </div>
+    <div class="py-2"></div>
+  </div>
 </main>
-<script type="text/javascript">
-
-    $(function()
-    {
-        $('#fileUpload').on('change',function ()
-        {
-            var filePath = $(this).val();
-            console.log(filePath);
-        });
-    });
-
-</script>
+<footer th:replace="/fragments/footer :: footer">
+</footer>
 <!-- Bootstrap JavaScript Libraries -->
 <script
-        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
-        integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
-        crossorigin="anonymous"
+    src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+    integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+    crossorigin="anonymous"
 ></script>
 
 <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
-        integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
-        crossorigin="anonymous"
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
+    integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+    crossorigin="anonymous"
 ></script>
 </body>
 </html>

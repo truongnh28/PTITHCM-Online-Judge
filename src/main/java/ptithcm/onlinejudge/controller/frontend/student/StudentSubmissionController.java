@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/student/contest/{contestId}/submission")
+@RequestMapping("/student/group/{groupId}/contest/{contestId}/submission")
 public class StudentSubmissionController {
     @Autowired
     private ContestMapper contestMapper;
@@ -35,7 +35,7 @@ public class StudentSubmissionController {
     @Autowired
     private SubmissionManagementService submissionManagementService;
     @GetMapping("")
-    public String showSubmissionsPage(@PathVariable("contestId") String contestId, Model model) {
+    public String showSubmissionsPage(@PathVariable("groupId") String groupId, @PathVariable("contestId") String contestId, Model model) {
         model.addAttribute("pageTitle", "Danh sách bài nộp");
         ResponseObject getContestByIdResponse = contestManagementService.getContestById(contestId);
         if (!getContestByIdResponse.getStatus().equals(HttpStatus.OK))
@@ -49,7 +49,7 @@ public class StudentSubmissionController {
     }
 
     @GetMapping("/{submissionId}")
-    public String showSubmissionDetail(@PathVariable("contestId") String contestId, @PathVariable("submissionId") String submissionId, Model model) {
+    public String showSubmissionDetail(@PathVariable("groupId") String groupId, @PathVariable("contestId") String contestId, @PathVariable("submissionId") String submissionId, Model model) {
         model.addAttribute("pageTitle", "Bài nộp");
         ResponseObject getContestByIdResponse = contestManagementService.getContestById(contestId);
         if (!getContestByIdResponse.getStatus().equals(HttpStatus.OK))

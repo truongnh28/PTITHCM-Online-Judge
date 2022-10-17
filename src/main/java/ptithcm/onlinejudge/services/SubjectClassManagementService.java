@@ -21,4 +21,8 @@ public interface SubjectClassManagementService {
     ResponseObject unlockClass(String classId);
 
     ResponseObject getClassById(String classId);
+
+    ResponseObject getClassesTeacherOwnActive(String teacherId);
+
+    ResponseObject searchClassesTeacherOwnActive(String teacherId, String keyword);
 }

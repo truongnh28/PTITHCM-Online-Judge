@@ -111,6 +111,18 @@ public class SubjectClassManagementServiceImpl implements SubjectClassManagement
         return new ResponseObject(HttpStatus.OK, "Success", foundSubjectClass.get());
     }
 
+    @Override
+    public ResponseObject getClassesTeacherOwnActive(String teacherId) {
+        List<SubjectClass> classes = subjectClassRepository.getClassesTeacherOwnActive(teacherId);
+        return new ResponseObject(HttpStatus.OK, "Success", classes);
+    }
+
+    @Override
+    public ResponseObject searchClassesTeacherOwnActive(String teacherId, String keyword) {
+        List<SubjectClass> classes = subjectClassRepository.searchClassesTeacherOwnActive(teacherId, keyword);
+        return new ResponseObject(HttpStatus.OK, "Success", classes);
+    }
+
     private boolean subjectClassRequestIsValidAddNew(SubjectClassRequest subjectClassRequest) {
         boolean subjectClassNameIsValid = subjectClassRequest.getSubjectClassName().length() > 0;
         boolean subjectIdIsValid = subjectRepository.existsById(subjectClassRequest.getSubjectId());

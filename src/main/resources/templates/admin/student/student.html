@@ -6,17 +6,17 @@
 <header th:replace="/fragments/admin-header :: admin-header">
 </header>
 <main>
-  <div class="container-xxl">
-    <div class="py-3"></div>
-    <div class="card mb-4">
+  <div class="container-fluid">
+    <div class="py-2"></div>
+    <div class="card mb-3">
       <div class="card-body">
         <div class="border-bottom pb-3 align-items-center">
-          <form class="d-flex" role="search" th:action="@{/templates/admin/student}" method="post">
+          <form class="d-flex" role="search" th:action="@{/admin/student}" method="post">
             <h4 class="card-title">Danh sách sinh viên</h4>
             <div class="ms-auto d-flex">
-              <input class="form-control form-control-sm me-2" data-bs-toggle="tooltip" data-bs-placement="top" name="keyword" th:value="${keyword}"
+              <input class="form-control me-2" data-bs-toggle="tooltip" data-bs-placement="top" name="keyword" th:value="${keyword}"
                      data-bs-title="Nhập mã sinh viên cần tìm" type="search" placeholder="Tìm sinh viên">
-              <button class="ms-auto btn btn-outline-success btn-sm" type="submit">Search</button>
+              <button class="ms-auto btn btn-outline-success" type="submit">Search</button>
             </div>
           </form>
         </div>
@@ -26,8 +26,9 @@
             <tr>
               <th>#</th>
               <th>Mã sinh viên</th>
-              <th>Họ</th>
-              <th>Tên</th>
+              <th>Họ sinh viên</th>
+              <th>Tên sinh viên</th>
+              <th>Lớp sinh viên</th>
               <th>Thời gian tạo</th>
               <th>Thời gian cập nhật</th>
               <th>Đăng nhập gần nhất</th>
@@ -41,20 +42,39 @@
               <td th:text="${student.studentId}"></td>
               <td th:text="${student.studentLastName}"></td>
               <td th:text="${student.studentFirstName}"></td>
+              <td th:text="${student.studentClass}"></td>
               <td th:text="${student.createAt}"></td>
               <td th:text="${student.updateAt}"></td>
               <td th:text="${student.lastLogin}"></td>
-              <td th:if="${student.active} eq true">
+              <td th:if="${student.active} eq 1">
                 Hoạt động
               </td>
-              <td th:unless="${student.active} eq true">
+              <td th:unless="${student.active} eq 1">
                 Bị khóa
               </td>
               <td>
-                <a class="btn btn-primary btn-sm me-1" th:href="@{/admin/student/{id}/edit(id=${student.studentId})}" role="button">Chỉnh sửa</a>
-                <a class="btn btn-secondary btn-sm me-1" th:href="@{/admin/student/{id}/reset(id=${student.studentId})}" role="button">Đặt lại mật khẩu</a>
-                <a th:if="${student.active} eq true" class="btn btn-danger btn-sm" th:href="@{/admin/student/{id}/lock(id=${student.studentId})}" role="button">Khóa</a>
-                <a th:unless="${student.active} eq true" class="btn btn-warning btn-sm" th:href="@{/admin/student/{id}/unlock(id=${student.studentId})}" role="button">Mở khóa</a>
+                <a class="btn btn-primary btn-sm me-1" th:href="@{/admin/student/{id}/edit(id=${student.studentId})}" role="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                  </svg>
+                </a>
+                <a class="btn btn-secondary btn-sm me-1" th:href="@{/admin/student/{id}/reset(id=${student.studentId})}" role="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"/>
+                    <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"/>
+                  </svg>
+                </a>
+                <a th:if="${student.active} eq 1" class="btn btn-danger btn-sm" th:href="@{/admin/student/{id}/lock(id=${student.studentId})}" role="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock" viewBox="0 0 16 16">
+                    <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>
+                  </svg>
+                </a>
+                <a th:unless="${student.active} eq 1" class="btn btn-warning btn-sm" th:href="@{/admin/student/{id}/unlock(id=${student.studentId})}" role="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
+                    <path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2zM3 8a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H3z"/>
+                  </svg>
+                </a>
               </td>
             </tr>
             </tbody>
@@ -62,7 +82,7 @@
         </div>
       </div>
     </div>
-    <div class="card mb-4">
+    <div class="card mb-3">
       <div class="card-body">
         <h4 class="card-title border-bottom pb-3">
           Thêm sinh viên
@@ -77,29 +97,35 @@
         </h4>
         <form th:action="@{/admin/student/add}" method="post" th:object="${studentAdd}">
           <div class="row mb-4">
-            <div class="col-md-4">
-              <label for="inputStudentId" class="form-label">
+            <div class="col">
+              <label class="form-label">
                 <span class="fw-bold">Mã sinh viên</span>
                 <span class="text-danger">*</span>
               </label>
-              <input type="text" class="form-control" name="inputStudentId" id="inputStudentId" th:field="*{studentId}"
-                     aria-describedby="helpStudentId" placeholder="Mã sinh viên">
+              <input type="text" class="form-control" th:field="*{studentId}" placeholder="Mã sinh viên">
             </div>
-            <div class="col-md-4">
-              <label for="inputStudentLastName" class="form-label">
+            <div class="col">
+              <label class="form-label">
+                <span class="fw-bold">Lớp sinh viên</span>
+                <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" th:field="*{studentClass}" placeholder="Lớp sinh viên">
+            </div>
+          </div>
+          <div class="row mb-4">
+            <div class="col">
+              <label class="form-label">
                 <span class="fw-bold">Họ sinh viên</span>
                 <span class="text-danger">*</span>
               </label>
-              <input type="text" class="form-control" name="inputStudentLastName" id="inputStudentLastName" th:field="*{studentLastName}"
-                     aria-describedby="helpStudentLastName" placeholder="Họ">
+              <input type="text" class="form-control" th:field="*{studentLastName}" placeholder="Họ sinh viên">
             </div>
-            <div class="col-md-4">
-              <label for="inputStudentFristName" class="form-label">
+            <div class="col">
+              <label class="form-label">
                 <span class="fw-bold">Tên sinh viên</span>
                 <span class="text-danger">*</span>
               </label>
-              <input type="text" class="form-control" name="inputStudentFristName" id="inputStudentFristName" th:field="*{studentFirstName}"
-                     aria-describedby="helpStudentFirstName" placeholder="Tên">
+              <input type="text" class="form-control" th:field="*{studentFirstName}" placeholder="Tên sinh viên">
             </div>
           </div>
           <div class="row mb-4">

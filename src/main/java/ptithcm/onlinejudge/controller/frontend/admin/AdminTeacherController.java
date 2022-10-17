@@ -56,6 +56,7 @@ public class AdminTeacherController {
 
     @GetMapping("/{id}/edit")
     public String showEditTeacherPage(@PathVariable("id") String teacherId, Model model) {
+        model.addAttribute("pageTitle", "Chỉnh sửa giáo viên");
         ResponseObject getTeacherByIdResponse = teacherManagementService.getTeacherById(teacherId);
         if (!getTeacherByIdResponse.getStatus().equals(HttpStatus.OK))
             return "redirect:/error";

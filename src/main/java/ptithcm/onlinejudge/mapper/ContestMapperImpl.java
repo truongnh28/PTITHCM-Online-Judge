@@ -19,10 +19,12 @@ public class ContestMapperImpl implements ContestMapper {
         Contest entity = new Contest();
         entity.setId(dto.getContestId());
         entity.setContestName(dto.getContestName());
-        entity.setHide(dto.isHide() ? Byte.valueOf("1") : Byte.valueOf("0"));
-        entity.setContestStart(TimeHelper.convertStringToInstance(dto.getContestStart()));
-        entity.setContestEnd(TimeHelper.convertStringToInstance(dto.getContestEnd()));
-        entity.setTeacher(teacherMapper.dtoToEntity(dto.getTeacher()));
+        entity.setHide(dto.getHide());
+        if (dto.getContestStart() != null) entity.setContestStart(TimeHelper.convertStringToInstance(dto.getContestStart()));
+        if (dto.getContestEnd() != null) entity.setContestEnd(TimeHelper.convertStringToInstance(dto.getContestEnd()));
+        if (dto.getCreateAt() != null) entity.setCreateAt(TimeHelper.convertStringToInstance(dto.getCreateAt()));
+        if (dto.getUpdateAt() != null) entity.setUpdateAt(TimeHelper.convertStringToInstance(dto.getUpdateAt()));
+        if (dto.getTeacher() != null) entity.setTeacher(teacherMapper.dtoToEntity(dto.getTeacher()));
         return entity;
     }
 
@@ -32,24 +34,13 @@ public class ContestMapperImpl implements ContestMapper {
         ContestDTO dto = new ContestDTO();
         dto.setContestId(entity.getId());
         dto.setContestName(entity.getContestName());
-        dto.setHide(entity.getHide().equals(Byte.valueOf("1")));
-        dto.setContestStart(entity.getContestStart().toString());
-        dto.setContestEnd(entity.getContestEnd().toString());
-        dto.setTeacher(teacherMapper.entityToDTO(entity.getTeacher()));
+        dto.setHide(entity.getHide());
+        if (entity.getContestStart() != null) dto.setContestStart(TimeHelper.convertInstantToString(entity.getContestStart()));
+        if (entity.getContestEnd() != null) dto.setContestEnd(TimeHelper.convertInstantToString(entity.getContestEnd()));
+        if (entity.getCreateAt() != null) dto.setCreateAt(TimeHelper.convertInstantToString(entity.getCreateAt()));
+        if (entity.getUpdateAt() != null) dto.setUpdateAt(TimeHelper.convertInstantToString(entity.getUpdateAt()));
+        if (entity.getTeacher() != null) dto.setTeacher(teacherMapper.entityToDTO(entity.getTeacher()));
         return dto;
-    }
-
-    @Override
-    public ContestRequest dtoToRequest(ContestDTO dto) {
-        if (dto == null) return null;
-        ContestRequest request = new ContestRequest();
-        request.setContestId(dto.getContestId());
-        request.setContestStartTime(TimeHelper.convertStringFormToDateFormatter(dto.getContestStart()));
-        request.setContestEndTime(TimeHelper.convertStringFormToDateFormatter(dto.getContestEnd()));
-        request.setContestName(dto.getContestName());
-        if (dto.getTeacher() != null)
-            request.setTeacherId(dto.getTeacher().getTeacherId());
-        return request;
     }
 
     @Override
@@ -58,16 +49,18 @@ public class ContestMapperImpl implements ContestMapper {
         ContestDetailDTO dto = new ContestDetailDTO();
         dto.setContestId(entity.getId());
         dto.setContestName(entity.getContestName());
-        dto.setHide(entity.getHide() == (byte) 1);
-        dto.setContestStart(entity.getContestStart().toString());
-        dto.setContestEnd(entity.getContestEnd().toString());
+        dto.setHide(entity.getHide());
+        dto.setContestStart(TimeHelper.convertInstantToString(entity.getContestStart()));
+        dto.setContestEnd(TimeHelper.convertInstantToString(entity.getContestEnd()));
         dto.setTeacher(teacherMapper.entityToDTO(entity.getTeacher()));
+        dto.setCreateAt(TimeHelper.convertInstantToString(entity.getCreateAt()));
+        dto.setUpdateAt(TimeHelper.convertInstantToString(entity.getUpdateAt()));
         if (TimeHelper.nowIsAfter(entity.getContestEnd()))
-            dto.setVerdict((byte) 2);
-        if (TimeHelper.nowIsAfter(entity.getContestStart()))
-            dto.setVerdict((byte) 1);
+            dto.setVerdict((byte) 2); // ended
+        else if (TimeHelper.nowIsAfter(entity.getContestStart()))
+            dto.setVerdict((byte) 1); // running
         else
-            dto.setVerdict((byte) 0);
+            dto.setVerdict((byte) 0); // upcoming
         return dto;
     }
 }

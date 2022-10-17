@@ -12,8 +12,9 @@ public class StudentDTO {
     private String studentPassword;
     private String studentFirstName;
     private String studentLastName;
+    private String studentClass;
     private String createAt;
     private String updateAt;
     private String lastLogin;
-    private boolean active;
+    private Byte active;
 }

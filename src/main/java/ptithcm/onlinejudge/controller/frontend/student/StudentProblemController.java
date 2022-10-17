@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/student/contest/{contestId}/problem")
+@RequestMapping("/student/group/{groupId}/contest/{contestId}/problem")
 public class StudentProblemController {
     @Autowired
     private ContestMapper contestMapper;
@@ -32,13 +32,13 @@ public class StudentProblemController {
     @Autowired
     private ProblemManagementService problemManagementService;
     @GetMapping("")
-    public String showProblemListPage(@PathVariable("contestId") String contestId, Model model) {
+    public String showProblemListPage(@PathVariable("groupId") String groupId, @PathVariable("contestId") String contestId, Model model) {
         model.addAttribute("pageTitle", "Bài tập");
         ResponseObject getContestByIdResponse = contestManagementService.getContestById(contestId);
         if (!getContestByIdResponse.getStatus().equals(HttpStatus.OK))
             return "redirect:/error";
         ContestDetailDTO contest = contestMapper.entityToDetailDTO((Contest) getContestByIdResponse.getData());
-        List<ProblemDTO> problems = ((List<Problem>)problemManagementService.getAllProblems().getData())
+        List<ProblemDTO> problems = ((List<Problem>)problemManagementService.getAllProblemsActiveOfContest(contestId).getData())
                 .stream().map(item -> problemMapper.entityToDTO(item)).collect(Collectors.toList());
         model.addAttribute("problems", problems);
         model.addAttribute("contest", contest);
@@ -46,7 +46,7 @@ public class StudentProblemController {
     }
 
     @GetMapping("/{problemId}")
-    public String showProblemDetailPage(@PathVariable("contestId") String contestId, @PathVariable("problemId") String problemId, Model model) {
+    public String showProblemDetailPage(@PathVariable("groupId") String groupId, @PathVariable("contestId") String contestId, @PathVariable("problemId") String problemId, Model model) {
         model.addAttribute("pageTitle", problemId);
         ResponseObject getContestByIdResponse = contestManagementService.getContestById(contestId);
         if (!getContestByIdResponse.getStatus().equals(HttpStatus.OK))

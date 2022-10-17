@@ -6,4 +6,6 @@ public interface SubmissionManagementService {
     ResponseObject getAllSubmission();
 
     ResponseObject getSubmissionById(String submissionId);
+
+    ResponseObject getSubmissionsByContest(String contestId);
 }

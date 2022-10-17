@@ -1,0 +1,12 @@
+---
+problem_id: "oddeven"
+problem_name: "Chẵn lẻ"
+time_limit: 1
+memory_limit: 512
+scoring_method: "minimum"
+checker: "diff"
+max_score: 100
+subtasks:
+- name: "main"
+  score: 100
+  num_samples: 2

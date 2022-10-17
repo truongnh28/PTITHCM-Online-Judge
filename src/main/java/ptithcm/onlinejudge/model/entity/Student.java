@@ -29,6 +29,9 @@ public class Student {
     @Column(name = "student_last_name", nullable = false, length = 100)
     private String studentLastName;
 
+    @Column(name = "student_class", nullable = false, length = 20)
+    private String studentClass;
+
     @Column(name = "create_at", nullable = false)
     private Instant createAt;
 

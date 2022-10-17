@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class StudentOfGroupManagementImpl implements StudentOfGroupManagement{
+public class StudentOfGroupManagementImpl implements StudentOfGroupManagement {
     @Autowired
     private StudentRepository studentRepository;
 
@@ -27,40 +27,33 @@ public class StudentOfGroupManagementImpl implements StudentOfGroupManagement{
     private StudentOfGroupRepository studentOfGroupRepository;
 
     @Override
-    public ResponseObject addStudentOfGroup(StudentOfGroupRequest studentOfGroupRequest) {
-        if (!checkRequestAddingIsValid(studentOfGroupRequest))
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Request data is not valid", "");
-        String studentId = studentOfGroupRequest.getStudentId();
-        String subjectClassGroupId = studentOfGroupRequest.getSubjectClassGroupId();
-
-        Student student = studentRepository.findById(studentId).get();
-        SubjectClassGroup subjectClassGroup = subjectClassGroupRepository.findById(subjectClassGroupId).get();
-
+    public ResponseObject addStudentToGroup(String studentId, String groupId) {
+        Optional<Student> foundStudent = studentRepository.findById(studentId);
+        Optional<SubjectClassGroup> foundGroup = subjectClassGroupRepository.findById(groupId);
+        if (foundStudent.isEmpty() || foundGroup.isEmpty())
+            return new ResponseObject(HttpStatus.FOUND, "Không tồn tại cặp mã sinh viên và nhóm thực hành", null);
+        Student student = foundStudent.get();
+        SubjectClassGroup group = foundGroup.get();
         StudentOfGroup studentOfGroup = new StudentOfGroup();
         studentOfGroup.setStudent(student);
-        studentOfGroup.setSubjectClassGroup(subjectClassGroup);
-        StudentOfGroupId studentOfGroupId = new StudentOfGroupId();
-        studentOfGroupId.setStudentId(studentId);
-        studentOfGroupId.setSubjectClassGroupId(subjectClassGroupId);
-        studentOfGroup.setId(studentOfGroupId);
-
-        studentOfGroupRepository.save(studentOfGroup);
+        studentOfGroup.setSubjectClassGroup(group);
+        studentOfGroup.setId(new StudentOfGroupId(studentId, groupId));
+        studentOfGroup = studentOfGroupRepository.save(studentOfGroup);
         return new ResponseObject(HttpStatus.OK, "Success", studentOfGroup);
     }
 
     @Override
-    public ResponseObject deleteStudentOfGroup(StudentOfGroupRequest studentOfGroupRequest) {
-        if (!checkRequestAddingIsValid(studentOfGroupRequest))
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Request data is not valid", "");
-        String studentId = studentOfGroupRequest.getStudentId();
-        String subjectClassGroupId = studentOfGroupRequest.getSubjectClassGroupId();
-
-        StudentOfGroupId studentOfGroupId = new StudentOfGroupId();
-        studentOfGroupId.setStudentId(studentId);
-        studentOfGroupId.setSubjectClassGroupId(subjectClassGroupId);
-
-        studentOfGroupRepository.deleteById(studentOfGroupId);
-        return new ResponseObject(HttpStatus.OK, "Success", "");
+    public ResponseObject deleteStudentFromGroup(String studentId, String groupId) {
+        Optional<Student> foundStudent = studentRepository.findById(studentId);
+        Optional<SubjectClassGroup> foundGroup = subjectClassGroupRepository.findById(groupId);
+        if (foundStudent.isEmpty() || foundGroup.isEmpty())
+            return new ResponseObject(HttpStatus.BAD_REQUEST, "Không tồn tại sinh viên hoặc nhóm tương ứng", null);
+        StudentOfGroupId id = new StudentOfGroupId(studentId, groupId);
+        Optional<StudentOfGroup> foundStudentOfGroup = studentOfGroupRepository.findById(id);
+        if (foundStudentOfGroup.isEmpty())
+            return new ResponseObject(HttpStatus.FOUND, "Không tồn tại cặp sinh viên, nhóm", null);
+        studentOfGroupRepository.deleteById(id);
+        return new ResponseObject(HttpStatus.OK, "Success", null);
     }
 
     @Override

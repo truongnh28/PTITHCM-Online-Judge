@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ptithcm.onlinejudge.dto.ProblemDTO;
 import ptithcm.onlinejudge.dto.ProblemShowDTO;
+import ptithcm.onlinejudge.helper.TimeHelper;
 import ptithcm.onlinejudge.model.entity.Problem;
 
 @Component
@@ -22,10 +23,12 @@ public class ProblemMapperImpl implements ProblemMapper {
         entity.setProblemCloudinaryId(dto.getProblemCloudinaryId());
         entity.setProblemTimeLimit(dto.getProblemTimeLimit());
         entity.setProblemMemoryLimit(dto.getProblemMemoryLimit());
-        entity.setHide(dto.isHide() ? Byte.valueOf("1") : Byte.valueOf("0"));
+        entity.setHide(dto.getHide());
         entity.setProblemScore(dto.getProblemScore());
-        entity.setLevel(levelMapper.dtoToEntity(dto.getLevel()));
-        entity.setTeacher(teacherMapper.dtoToEntity(dto.getTeacher()));
+        if (dto.getCreateAt() != null) entity.setCreateAt(TimeHelper.convertStringToInstance(dto.getCreateAt()));
+        if (dto.getUpdateAt() != null) entity.setUpdateAt(TimeHelper.convertStringToInstance(dto.getUpdateAt()));
+        if (dto.getLevel() != null) entity.setLevel(levelMapper.dtoToEntity(dto.getLevel()));
+        if (dto.getTeacher() != null) entity.setTeacher(teacherMapper.dtoToEntity(dto.getTeacher()));
         return entity;
     }
 
@@ -40,9 +43,11 @@ public class ProblemMapperImpl implements ProblemMapper {
         dto.setProblemScore(entity.getProblemScore());
         dto.setProblemTimeLimit(entity.getProblemTimeLimit());
         dto.setProblemMemoryLimit(entity.getProblemMemoryLimit());
-        dto.setHide(entity.getHide().equals(Byte.valueOf("1")));
-        dto.setLevel(levelMapper.entityToDTO(entity.getLevel()));
-        dto.setTeacher(teacherMapper.entityToDTO(entity.getTeacher()));
+        dto.setHide(entity.getHide());
+        if (entity.getCreateAt() != null) dto.setCreateAt(TimeHelper.convertInstantToString(entity.getCreateAt()));
+        if (entity.getUpdateAt() != null) dto.setUpdateAt(TimeHelper.convertInstantToString(entity.getUpdateAt()));
+        if (entity.getLevel() != null) dto.setLevel(levelMapper.entityToDTO(entity.getLevel()));
+        if (entity.getTeacher() != null) dto.setTeacher(teacherMapper.entityToDTO(entity.getTeacher()));
         return dto;
     }
 
@@ -54,7 +59,7 @@ public class ProblemMapperImpl implements ProblemMapper {
         problemShowDTO.setProblemName(entity.getProblemName());
         problemShowDTO.setProblemScore(entity.getProblemScore());
         problemShowDTO.setProblemUrl(entity.getProblemUrl());
-        problemShowDTO.setHide(entity.getHide() == (byte) 1);
+        problemShowDTO.setHide(entity.getHide());
         problemShowDTO.setProblemCloudinaryId(entity.getProblemCloudinaryId());
         problemShowDTO.setProblemTimeLimit(entity.getProblemTimeLimit());
         problemShowDTO.setProblemMemoryLimit(entity.getProblemMemoryLimit());

@@ -13,11 +13,13 @@ import org.springframework.web.multipart.MultipartFile;
 import ptithcm.onlinejudge.helper.FileHelper;
 import ptithcm.onlinejudge.helper.TimeHelper;
 import ptithcm.onlinejudge.model.adapter.*;
+import ptithcm.onlinejudge.model.entity.Contest;
 import ptithcm.onlinejudge.model.entity.Problem;
 import ptithcm.onlinejudge.model.entity.Student;
 import ptithcm.onlinejudge.model.entity.Submission;
 import ptithcm.onlinejudge.model.request.SubmitRequest;
 import ptithcm.onlinejudge.model.response.ResponseObject;
+import ptithcm.onlinejudge.repository.ContestRepository;
 import ptithcm.onlinejudge.repository.ProblemRepository;
 import ptithcm.onlinejudge.repository.StudentRepository;
 import ptithcm.onlinejudge.repository.SubmissionRepository;
@@ -28,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,6 +45,9 @@ public class SubmitServiceImpl implements SubmitService {
     private StudentRepository studentRepository;
     @Autowired
     private SubmissionRepository submissionRepository;
+
+    @Autowired
+    private ContestRepository contestRepository;
     @Override
     public ResponseObject getProblemListAdapter() {
         final String url = "http://localhost:80/api/get_problem_list";
@@ -126,7 +132,7 @@ public class SubmitServiceImpl implements SubmitService {
     }
 
     @Override
-    public ResponseObject submitProblemFromController(String studentId, String problemId, String language, MultipartFile file) {
+    public ResponseObject submitProblemFromController(String studentId, String problemId, String contestId, String language, MultipartFile file) {
         if (file == null)
             return new ResponseObject(HttpStatus.FOUND, "File not found", "");
         String originalFileName = file.getOriginalFilename();
@@ -153,15 +159,21 @@ public class SubmitServiceImpl implements SubmitService {
 
         Optional<Problem> foundProblem = problemRepository.findById(problemId);
         if (foundProblem.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Problem not found", "");
+            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy bài tập", null);
 
         Problem problem = foundProblem.get();
 
         Optional<Student> foundStudent = studentRepository.findById(studentId);
         if (foundStudent.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Student not found", "");
+            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy sinh viên", null);
 
         Student student = foundStudent.get();
+
+        Optional<Contest> foundContest = contestRepository.findById(contestId);
+        if (foundContest.isEmpty())
+            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy bài thực hành", null);
+
+        Contest contest = foundContest.get();
 
         SubmitRequest submitRequest = new SubmitRequest();
         submitRequest.setProblemId(problemId);
@@ -171,7 +183,7 @@ public class SubmitServiceImpl implements SubmitService {
         submitRequest.setPath(fullPath);
         ResponseObject responseObject = submitProblemAdapter(submitRequest);
         if (!responseObject.getStatus().equals(HttpStatus.OK))
-            return new ResponseObject(HttpStatus.FOUND, "Failed to submit code", "");
+            return new ResponseObject(HttpStatus.FOUND, "Failed to submit code", null);
 
         SubmitResponse submitResponse = (SubmitResponse) responseObject.getData();
         Submission submission = new Submission();
@@ -179,8 +191,10 @@ public class SubmitServiceImpl implements SubmitService {
         submission.setProblem(problem);
         submission.setStudent(student);
         submission.setVerdict((byte) 0); // PENDING
-        submission.setSubmissionTime(TimeHelper.convertStringToInstance(TimeHelper.convertLocalDateTimeToString(LocalDateTime.now())));
+        submission.setSubmissionTime(Instant.now());
         submission.setSubmissionScore(0);
+        submission.setContest(contest);
+        submission.setSubmissionSourcePath(fullPath);
         submission = submissionRepository.save(submission);
 
         return new ResponseObject(HttpStatus.OK, "Success", submission);

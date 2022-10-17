@@ -17,8 +17,9 @@ public class StudentMapperImpl implements StudentMapper{
         entity.setId(dto.getStudentId());
         entity.setStudentFirstName(dto.getStudentFirstName());
         entity.setStudentLastName(dto.getStudentLastName());
+        entity.setStudentClass(dto.getStudentClass());
         entity.setPassword(dto.getStudentPassword());
-        entity.setActive(Byte.valueOf(dto.isActive() ? "1": "0"));
+        entity.setActive(dto.getActive());
         if (dto.getCreateAt() != null) entity.setCreateAt(TimeHelper.convertStringToInstance(dto.getCreateAt()));
         if (dto.getLastLogin() != null) entity.setLastLogin(TimeHelper.convertStringToInstance(dto.getLastLogin()));
         if (dto.getUpdateAt() != null) entity.setUpdateAt(TimeHelper.convertStringToInstance(dto.getUpdateAt()));
@@ -30,9 +31,10 @@ public class StudentMapperImpl implements StudentMapper{
         if (entity == null) return null;
         StudentDTO dto = new StudentDTO();
         dto.setStudentId(entity.getId());
-        dto.setActive(Objects.equals(entity.getActive(), Byte.valueOf("1")));
+        dto.setActive(entity.getActive());
         dto.setStudentFirstName(entity.getStudentFirstName());
         dto.setStudentLastName(entity.getStudentLastName());
+        dto.setStudentClass(entity.getStudentClass());
         dto.setStudentPassword(entity.getPassword());
         if (entity.getCreateAt() != null) dto.setCreateAt(TimeHelper.convertInstantToString(entity.getCreateAt()));
         if (entity.getUpdateAt() != null) dto.setUpdateAt(TimeHelper.convertInstantToString(entity.getUpdateAt()));
@@ -45,9 +47,10 @@ public class StudentMapperImpl implements StudentMapper{
         if (entity == null) return null;
         StudentShowDTO showDTO = new StudentShowDTO();
         showDTO.setStudentId(entity.getId());
-        showDTO.setActive(Objects.equals(entity.getActive(), Byte.valueOf("1")));
+        showDTO.setActive(entity.getActive());
         showDTO.setStudentFirstName(entity.getStudentFirstName());
         showDTO.setStudentLastName(entity.getStudentLastName());
+        showDTO.setStudentClass(entity.getStudentClass());
         showDTO.setStudentPassword(entity.getPassword());
         if (entity.getCreateAt() != null) showDTO.setCreateAt(TimeHelper.convertInstantToString(entity.getCreateAt()));
         if (entity.getUpdateAt() != null) showDTO.setUpdateAt(TimeHelper.convertInstantToString(entity.getUpdateAt()));

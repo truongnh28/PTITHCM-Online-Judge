@@ -54,12 +54,14 @@ public class StudentManagementServiceImpl implements StudentManagementService {
     public ResponseObject editStudent(String studentId, StudentDTO student) {
         String newFName = student.getStudentFirstName();
         String newLName = student.getStudentLastName();
-        if (newFName == null || newFName.isEmpty() || newLName == null || newLName.isEmpty())
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Họ và tên sinh viên không được để trống", null);
+        String newClass = student.getStudentClass();
+        if (newFName == null || newFName.isEmpty() || newLName == null || newLName.isEmpty() || newClass == null || newClass.isEmpty())
+            return new ResponseObject(HttpStatus.BAD_REQUEST, "Họ, tên và lớp sinh viên không được để trống", null);
         Optional<Student> foundStudent = studentRepository.findById(studentId);
         if (foundStudent.isEmpty())
             return new ResponseObject(HttpStatus.FOUND, "Sinh viên cũ không tồn tại", null);
         Student editedStudent = foundStudent.get();
+        editedStudent.setStudentClass(newClass);
         editedStudent.setStudentFirstName(newFName);
         editedStudent.setStudentLastName(newLName);
         editedStudent.setUpdateAt(Instant.now());
@@ -101,6 +103,30 @@ public class StudentManagementServiceImpl implements StudentManagementService {
         unlockedStudent.setActive((byte) 1);
         unlockedStudent = studentRepository.save(unlockedStudent);
         return new ResponseObject(HttpStatus.OK, "Success", unlockedStudent);
+    }
+
+    @Override
+    public ResponseObject getStudentsOfGroup(String groupId) {
+        List<Student> students = studentRepository.getStudentsOfGroup(groupId);
+        return new ResponseObject(HttpStatus.OK, "Success", students);
+    }
+
+    @Override
+    public ResponseObject searchStudentsOfGroupById(String groupId, String studentId) {
+        List<Student> students = studentRepository.searchStudentsInGroupById(groupId, studentId);
+        return new ResponseObject(HttpStatus.OK, "Success", students);
+    }
+
+    @Override
+    public ResponseObject getStudentsNotInClass(String classId) {
+        List<Student> students = studentRepository.getStudentsNotInClass(classId);
+        return new ResponseObject(HttpStatus.OK, "Success", students);
+    }
+
+    @Override
+    public ResponseObject searchStudentsNotInClassById(String classId, String keyword) {
+        List<Student> students = studentRepository.searchStudentsNotInClassById(classId, keyword);
+        return new ResponseObject(HttpStatus.OK, "Success", students);
     }
 
     @Override

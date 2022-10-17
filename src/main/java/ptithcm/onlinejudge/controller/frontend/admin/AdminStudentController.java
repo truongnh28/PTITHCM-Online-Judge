@@ -52,7 +52,7 @@ public class AdminStudentController {
     // show edit page
     @GetMapping("/{id}/edit")
     public String showEditStudentPage(@PathVariable("id") String studentId, Model model) {
-        model.addAttribute("pageTitle", "Cập nhật sinh viên");
+        model.addAttribute("pageTitle", "Chỉnh sửa sinh viên");
         ResponseObject getStudentByIdResponse = studentManagementService.getStudentById(studentId);
         if (!getStudentByIdResponse.getStatus().equals(HttpStatus.OK))
             return "redirect:/error";

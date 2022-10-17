@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head :: head">
+<body class="bg-light">
+<header th:replace="/fragments/teacher-header :: teacher-header"></header>
+<main>
+  <div class="container-fluid">
+    <div class="py-2"></div>
+    <a class="mb-3 btn btn-primary" role="button" th:href="@{/teacher/class/{classId}/group/{groupId}/contest(classId=${classId},groupId=${groupId})}">Trở lại trang bài thực hành</a>
+    <div class="row">
+      <div class="col-9">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title" th:text="${problemDetail.getProblemName}"></h2>
+            <iframe th:src="@{${problemDetail.getProblemUrl}}" width="100%" height="600"></iframe>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div th:replace="/fragments/right-tab :: right-tab-teacher">
+        </div>
+        <div class="card">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <div>
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="pb-1 bi bi-check2" viewBox="0 0 16 16">
+                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                  </svg>
+                </span>
+                <span class="fw-bold">Điểm: </span>
+                <span th:text="${problemDetail.getProblemScore}"></span>
+              </div>
+              <div>
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="pb-1 bi bi-clock" viewBox="0 0 16 16">
+                    <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                  </svg>
+                </span>
+                <span class="fw-bold">Giới hạn thời gian: </span>
+                <span th:text="${problemDetail.getProblemTimeLimit} + 's'"></span>
+              </div>
+              <div>
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="pb-1 bi bi-memory" viewBox="0 0 16 16">
+                    <path d="M1 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4.586a1 1 0 0 0 .707-.293l.353-.353a.5.5 0 0 1 .708 0l.353.353a1 1 0 0 0 .707.293H15a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H1Zm.5 1h3a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5Zm5 0h3a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5Zm4.5.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-4ZM2 10v2H1v-2h1Zm2 0v2H3v-2h1Zm2 0v2H5v-2h1Zm3 0v2H8v-2h1Zm2 0v2h-1v-2h1Zm2 0v2h-1v-2h1Zm2 0v2h-1v-2h1Z"/>
+                  </svg>
+                </span>
+                <span class="fw-bold">Giới hạn bộ nhớ: </span>
+                <span th:text="${problemDetail.getProblemMemoryLimit} + 'MB'"></span>
+              </div>
+              <div>
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="pb-1 bi bi-person" viewBox="0 0 16 16">
+                    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                  </svg>
+                </span>
+                <span class="fw-bold">Tác giả: </span>
+                <span th:text="${problemDetail.teacher.teacherLastName} + ' ' + ${problemDetail.teacher.teacherFirstName}"></span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="py-2"></div>
+  </div>
+</main>
+<footer th:replace="/fragments/footer :: footer"></footer>
+<script
+    src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+    integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+    crossorigin="anonymous">
+</script>
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
+    integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+    crossorigin="anonymous">
+</script>
+</body>
+</html>

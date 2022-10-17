@@ -27,8 +27,7 @@ public class TimeHelper {
     }
 
     public static boolean nowIsAfter(Instant time) {
-        String stringNow = convertLocalDateTimeToString(LocalDateTime.now());
-        Instant instantNow = convertStringToInstance(stringNow);
+        Instant instantNow = Instant.now();
         return instantNow.isAfter(time);
     }
 

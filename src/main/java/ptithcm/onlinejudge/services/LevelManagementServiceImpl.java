@@ -17,7 +17,7 @@ public class LevelManagementServiceImpl implements LevelManagementService {
     @Autowired
     private LevelRepository levelRepository;
     @Override
-    public ResponseObject getAllLevel() {
+    public ResponseObject getAllLevels() {
         List<Level> levels = levelRepository.findAll();
         return new ResponseObject(HttpStatus.OK, "Success", levels);
     }
