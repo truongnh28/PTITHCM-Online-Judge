@@ -10,18 +10,11 @@
     <div class="card mb-3">
       <div class="card-body">
         <div class="border-bottom pb-3 align-items-center">
-          <form class="d-flex" role="search" th:action="@{/admin/subject/{subjectId}/class/{classId}/teacher(subjetId=${subjectId},classId=${classId})}" method="post">
-            <h4 class="card-title">
-              <span>Danh sách giáo viên quản lý lớp</span>
-              <span th:text="${className}" class="fw-bold"></span>
-              <span th:text="'(' + ${subjectId} + ')'" class="fw-bold"></span>
-            </h4>
-            <div class="ms-auto d-flex">
-              <input type="text" class="form-control form-control me-2" data-bs-toggle="tooltip" name="keyword" th:value="${keyword}"
-                     data-bs-placement="top" data-bs-title="Nhập mã giáo viên cần tìm" placeholder="Tìm kiếm giáo viên">
-              <button type="submit" class="btn btn-outline-success">Search</button>
-            </div>
-          </form>
+          <h4 class="card-title">
+            <span>Danh sách giáo viên quản lý lớp</span>
+            <span th:text="${className}" class="fw-bold"></span>
+            <span th:text="' - ' + ${subjectId}" class="fw-bold"></span>
+          </h4>
         </div>
         <div class="table-responsive">
           <table class="table">
@@ -50,7 +43,7 @@
               <td th:if="${teacher.active} eq 0">Bị khóa</td>
               <td th:unless="${teacher.active} eq 0">Hoạt động</td>
               <td>
-                <a class="btn btn-danger btn-sm" th:href="@{/admin/subject/{subjectId}/class/{classId}/teacher/{teacherId}/remove(subjectId=${subjectId},classId=${classId},teacherId=${teacher.teacherId})}" role="button" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Xóa giáo viên khỏi danh sách quản lý">
+                <a class="btn btn-danger btn-sm" th:data-subject="${subjectId}" th:data-class="${classId}" th:data-teacher="${teacher.teacherId}" role="button" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Xóa giáo viên khỏi danh sách quản lý" onclick="removeTeacher(this.getAttribute('data-subject'), this.getAttribute('data-class'), this.getAttribute('data-teacher'))">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
                     <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
@@ -67,6 +60,8 @@
       </div>
     </div>
     <div class="py-2"></div>
+    <div th:replace="/fragments/modal :: modal-confirm"></div>
+    <div th:replace="/fragments/modal :: modal-notification"></div>
   </div>
 </main>
 <footer th:replace="/fragments/footer :: footer"></footer>
@@ -82,5 +77,6 @@
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 </script>
+<script th:src="@{/js/admin-subject-class-teacher.js}" type="text/javascript"></script>
 </body>
 </html>

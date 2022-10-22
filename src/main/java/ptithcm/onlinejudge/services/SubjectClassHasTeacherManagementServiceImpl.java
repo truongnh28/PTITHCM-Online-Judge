@@ -42,14 +42,7 @@ public class SubjectClassHasTeacherManagementServiceImpl implements SubjectClass
 
     @Override
     public ResponseObject removeTeacherFromClass(String teacherId, String classId) {
-        Optional<Teacher> foundTeacher = teacherRepository.findById(teacherId);
-        Optional<SubjectClass> foundClass = subjectClassRepository.findById(classId);
-        if (foundTeacher.isEmpty() || foundClass.isEmpty())
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Không tìm thấy giáo viên và lớp", null);
         SubjectClassHasTeacherId id = new SubjectClassHasTeacherId(classId, teacherId);
-        Optional<SubjectClassHasTeacher> foundSubjectClassHasTeacher = subjectClassHasTeacherRepository.findById(id);
-        if (foundSubjectClassHasTeacher.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy cặp giáo viên, lớp", null);
         subjectClassHasTeacherRepository.deleteById(id);
         return new ResponseObject(HttpStatus.OK, "Success", null);
     }

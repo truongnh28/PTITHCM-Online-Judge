@@ -8,9 +8,9 @@ import ptithcm.onlinejudge.model.response.ResponseObject;
 public interface SubjectManagementService {
     ResponseObject addSubject(SubjectDTO subject);
 
-    ResponseObject editSubject(String id, SubjectDTO subject);
+    ResponseObject editSubject(SubjectDTO subject);
 
-    ResponseObject searchByIdOrName(String keyword);
+    ResponseObject searchByIdOrName(String keyword, int page);
 
     ResponseObject getSubjectById(String subjectId);
 
@@ -18,5 +18,5 @@ public interface SubjectManagementService {
 
     ResponseObject unlockSubject(String subjectId);
 
-    ResponseObject getAllSubject();
+    ResponseObject getAllSubject(int page);
 }

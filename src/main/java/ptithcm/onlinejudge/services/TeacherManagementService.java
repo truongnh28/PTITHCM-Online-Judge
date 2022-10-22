@@ -5,13 +5,13 @@ import ptithcm.onlinejudge.model.response.ResponseObject;
 
 public interface TeacherManagementService {
 
-    ResponseObject getAllTeachersExceptAdmin();
+    ResponseObject getAllTeachersExceptAdmin(int page);
 
-    ResponseObject searchTeachersByKeyWordExceptAdmin(String keyword);
+    ResponseObject searchTeachersByKeyWordExceptAdmin(String keyword, int page);
 
     ResponseObject addTeacher(TeacherDTO teacherDTO);
 
-    ResponseObject editTeacher(String teacherId, TeacherDTO teacherDTO);
+    ResponseObject editTeacher(TeacherDTO teacherDTO);
 
     ResponseObject lockTeacher(String teacherId);
 
@@ -25,7 +25,7 @@ public interface TeacherManagementService {
 
     ResponseObject searchTeachersOwnClassById(String classId, String keyword);
 
-    ResponseObject getTeachersNotOwnClass(String classId);
+    ResponseObject getTeachersNotOwnClass(String classId, int page);
 
-    ResponseObject searchTeachersNotOwnClassById(String classId, String keyword);
+    ResponseObject searchTeachersNotOwnClassByKeyword(String classId, String keyword, int page);
 }

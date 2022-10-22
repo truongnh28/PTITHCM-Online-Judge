@@ -1,12 +1,14 @@
 package ptithcm.onlinejudge.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ptithcm.onlinejudge.dto.SubjectClassGroupDTO;
 import ptithcm.onlinejudge.mapper.SubjectClassGroupMapper;
+import ptithcm.onlinejudge.model.entity.Student;
 import ptithcm.onlinejudge.model.response.ResponseObject;
-import ptithcm.onlinejudge.model.entity.SubjectClass;
 import ptithcm.onlinejudge.model.entity.SubjectClassGroup;
 import ptithcm.onlinejudge.model.request.SubjectClassGroupRequest;
 import ptithcm.onlinejudge.repository.StudentRepository;
@@ -14,7 +16,9 @@ import ptithcm.onlinejudge.repository.SubjectClassGroupRepository;
 import ptithcm.onlinejudge.repository.SubjectClassRepository;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -29,34 +33,23 @@ public class SubjectClassGroupManagementServiceImpl implements SubjectClassGroup
     private StudentRepository studentRepository;
     @Override
     public ResponseObject addGroupToClass(String classId, SubjectClassGroupDTO group) {
-        String id = group.getGroupId();
-        String name = group.getGroupName();
-        Optional<SubjectClassGroup> foundGroup = subjectClassGroupRepository.findById(id);
-        if (foundGroup.isPresent())
-            return new ResponseObject(HttpStatus.FOUND, "Nhóm thực hành tồn tại", null);
-        if (id.isEmpty() || name == null || name.isEmpty())
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Mã nhóm và tên nhóm không được để trống", null);
-        Optional<SubjectClass> foundClass = subjectClassRepository.findById(classId);
-        if (foundClass.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Lớp không tồn tại", null);
+        String id = group.getGroupId().trim().toUpperCase();
+        String name = group.getGroupName().trim();
         SubjectClassGroup newGroup = subjectClassGroupMapper.dtoToEntity(group);
+        newGroup.setId(id);
+        newGroup.setSubjectClassGroupName(name);
         newGroup.setCreateAt(Instant.now());
         newGroup.setUpdateAt(Instant.now());
         newGroup.setHide((byte) 0);
-        newGroup.setSubjectClass(foundClass.get());
+        newGroup.setSubjectClass(subjectClassRepository.findById(classId).get());
         newGroup = subjectClassGroupRepository.save(newGroup);
         return new ResponseObject(HttpStatus.OK, "Success", newGroup);
     }
 
     @Override
-    public ResponseObject editGroup(String groupId, SubjectClassGroupDTO group) {
-        String name = group.getGroupName();
-        if (name == null || name.isEmpty())
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Tên nhóm không được để trống", null);
-        Optional<SubjectClassGroup> foundOldGroup = subjectClassGroupRepository.findById(groupId);
-        if (foundOldGroup.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Nhóm thực hành không tồn tại", null);
-        SubjectClassGroup editedGroup = foundOldGroup.get();
+    public ResponseObject editGroup(SubjectClassGroupDTO group) {
+        String name = group.getGroupName().trim();
+        SubjectClassGroup editedGroup = subjectClassGroupRepository.findById(group.getGroupId()).get();
         editedGroup.setSubjectClassGroupName(name);
         editedGroup.setUpdateAt(Instant.now());
         editedGroup = subjectClassGroupRepository.save(editedGroup);
@@ -76,17 +69,38 @@ public class SubjectClassGroupManagementServiceImpl implements SubjectClassGroup
     }
 
     @Override
-    public ResponseObject getAllGroupsOfClass(String subjectClassId) {
-        List<SubjectClassGroup> groups = subjectClassGroupRepository.getSubjectClassGroupsBySubjectClass(subjectClassId);
-        return new ResponseObject(HttpStatus.OK, "Success", groups);
+    public ResponseObject getAllGroupsOfClass(String subjectClassId, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<SubjectClassGroup> subjectClassGroups = subjectClassGroupRepository.getGroupsOfClass(subjectClassId, PageRequest.of(page - 1, 10));
+        int totalPage = subjectClassGroups.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", subjectClassGroups.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
+    }
+
+    @Override
+    public ResponseObject searchGroupOfClassByKeyword(String classId, String keyword, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<SubjectClassGroup> subjectClassGroups = subjectClassGroupRepository.searchGroupsOfClassByKeyword(classId, "%" + keyword + "%", PageRequest.of(page - 1, 10));
+        int totalPage = subjectClassGroups.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", subjectClassGroups.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
     public ResponseObject lockGroup(String groupId) {
-        Optional<SubjectClassGroup> foundGroup = subjectClassGroupRepository.findById(groupId);
-        if (foundGroup.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Nhóm thực hành không tồn tại", null);
-        SubjectClassGroup lockedGroup = foundGroup.get();
+        SubjectClassGroup lockedGroup = subjectClassGroupRepository.findById(groupId).get();
         lockedGroup.setUpdateAt(Instant.now());
         lockedGroup.setHide((byte) 1);
         lockedGroup = subjectClassGroupRepository.save(lockedGroup);
@@ -95,21 +109,13 @@ public class SubjectClassGroupManagementServiceImpl implements SubjectClassGroup
 
     @Override
     public ResponseObject unlockGroup(String groupId) {
-        Optional<SubjectClassGroup> foundGroup = subjectClassGroupRepository.findById(groupId);
-        if (foundGroup.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Nhóm thực hành không tồn tại", null);
-        SubjectClassGroup unlockedGroup = foundGroup.get();
+        SubjectClassGroup unlockedGroup = subjectClassGroupRepository.findById(groupId).get();
         unlockedGroup.setUpdateAt(Instant.now());
         unlockedGroup.setHide((byte) 0);
         unlockedGroup = subjectClassGroupRepository.save(unlockedGroup);
         return new ResponseObject(HttpStatus.OK, "Success", unlockedGroup);
     }
 
-    @Override
-    public ResponseObject searchGroupByIdOrName(String classId, String keyword) {
-        List<SubjectClassGroup> groups = subjectClassGroupRepository.searchGroupByIdOrName(classId, keyword);
-        return new ResponseObject(HttpStatus.OK, "Success", groups);
-    }
 
     @Override
     public ResponseObject getGroupById(String subjectClassGroupId) {

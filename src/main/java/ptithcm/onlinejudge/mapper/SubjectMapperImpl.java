@@ -15,7 +15,7 @@ public class SubjectMapperImpl implements SubjectMapper {
         entity.setSubjectName(dto.getSubjectName());
         if (dto.getCreateAt() != null) entity.setCreateAt(TimeHelper.convertStringToInstance(dto.getCreateAt()));
         if (dto.getUpdateAt() != null) entity.setUpdateAt(TimeHelper.convertStringToInstance(dto.getUpdateAt()));
-        entity.setHide(dto.getHide());
+        if (dto.getHide() != null) entity.setHide(dto.getHide());
         return entity;
     }
 
@@ -27,7 +27,7 @@ public class SubjectMapperImpl implements SubjectMapper {
         dto.setSubjectName(entity.getSubjectName());
         if (entity.getCreateAt() != null) dto.setCreateAt(TimeHelper.convertInstantToString(entity.getCreateAt()));
         if (entity.getUpdateAt() != null) dto.setUpdateAt(TimeHelper.convertInstantToString(entity.getUpdateAt()));
-        dto.setHide(entity.getHide());
+        if (entity.getHide() != null) dto.setHide(entity.getHide());
         return dto;
     }
 }

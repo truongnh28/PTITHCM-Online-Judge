@@ -1,6 +1,7 @@
 package ptithcm.onlinejudge.controller.frontend.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +13,7 @@ import ptithcm.onlinejudge.model.response.ResponseObject;
 import ptithcm.onlinejudge.services.StudentManagementService;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/student")
@@ -22,12 +24,26 @@ public class AdminStudentController {
     private StudentManagementService studentManagementService;
 
     @GetMapping("")
-    public String showStudentManagementPage(Model model) {
+    public String showStudentManagementPage() {
+        return "redirect:/admin/student/page/1";
+    }
+
+    @GetMapping("/page/{page}")
+    public String showStudentPaginationPage(@PathVariable("page") int page, @Param("keyword") String keyword, Model model) {
         model.addAttribute("pageTitle", "Sinh viên");
-        List<StudentDTO> students = ((List<Student>) studentManagementService.getAllStudent().getData())
-                .stream().map(item -> studentMapper.entityToDTO(item)).toList();
-        model.addAttribute("students", students);
+        Map<String, Object> response = (Map<String, Object>) studentManagementService.getAllStudent(page).getData();
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            response = (Map<String, Object>) studentManagementService.searchStudentById(keyword, page).getData();
+            model.addAttribute("keyword", keyword);
+        }
+        List<StudentDTO> students = getStudents(response).stream().map(item -> studentMapper.entityToDTO(item)).toList();
+        int currentPage = (int) response.getOrDefault("currentPage", 0);
+        int totalPages = (int) response.getOrDefault("totalPages", 0);
         model.addAttribute("studentAdd", new StudentDTO());
+        model.addAttribute("students", students);
+        model.addAttribute("pageUrlPrefix", "/admin/student");
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalPages);
         return "/admin/student/student";
     }
 
@@ -39,32 +55,10 @@ public class AdminStudentController {
         return "redirect:/admin/student";
     }
 
-    @PostMapping("")
-    public String searchStudent(Model model, @RequestParam("keyword") String keyword) {
-        model.addAttribute("pageTitle", "Sinh viên");
-        List<StudentDTO> students = ((List<Student>) studentManagementService.getAllStudent().getData())
-                .stream().map(item -> studentMapper.entityToDTO(item)).toList();
-        model.addAttribute("students", students);
-        model.addAttribute("studentAdd", new StudentDTO());
-        return "/admin/student/student";
-    }
-
-    // show edit page
-    @GetMapping("/{id}/edit")
-    public String showEditStudentPage(@PathVariable("id") String studentId, Model model) {
-        model.addAttribute("pageTitle", "Chỉnh sửa sinh viên");
-        ResponseObject getStudentByIdResponse = studentManagementService.getStudentById(studentId);
-        if (!getStudentByIdResponse.getStatus().equals(HttpStatus.OK))
-            return "redirect:/error";
-        StudentDTO student = studentMapper.entityToDTO((Student) getStudentByIdResponse.getData());
-        model.addAttribute("student", student);
-        return "/admin/student/student-edit";
-    }
-
     // edit
-    @PostMapping("/{id}/edit")
-    public String editStudent(@PathVariable("id") String studentId, @ModelAttribute("student") StudentDTO student) {
-        ResponseObject editStudentResponse = studentManagementService.editStudent(studentId, student);
+    @PostMapping("/edit")
+    public String editStudent(StudentDTO student) {
+        ResponseObject editStudentResponse = studentManagementService.editStudent(student);
         if (!editStudentResponse.getStatus().equals(HttpStatus.OK))
             return "redirect:/error";
         return "redirect:/admin/student";
@@ -92,5 +86,9 @@ public class AdminStudentController {
         if (!unlockStudentResponse.getStatus().equals(HttpStatus.OK))
             return "redirect:/error";
         return "redirect:/admin/student";
+    }
+
+    private List<Student> getStudents(Map<String, Object> response) {
+        return (List<Student>) response.getOrDefault("data", null);
     }
 }

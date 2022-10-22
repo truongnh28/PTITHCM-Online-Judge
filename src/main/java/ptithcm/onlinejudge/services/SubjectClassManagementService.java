@@ -6,15 +6,13 @@ import ptithcm.onlinejudge.model.response.ResponseObject;
 
 @Service
 public interface SubjectClassManagementService {
-    ResponseObject addSubjectClass(String subjectId, SubjectClassDTO subjectClass);
+    ResponseObject add(String subjectId, SubjectClassDTO subjectClass);
 
-    ResponseObject editSubjectClass(String classId, SubjectClassDTO subjectClass);
+    ResponseObject edit(SubjectClassDTO subjectClass);
 
-    ResponseObject getAllClass();
+    ResponseObject getAllClassesOfSubject(String subjectId, int page);
 
-    ResponseObject getAllClassesBySubjectId(String subjectId);
-
-    ResponseObject searchClassesByIdOrName(String subjectId, String keyword);
+    ResponseObject searchClassesOfSubjectByKeyword(String subjectId, String keyword, int page);
 
     ResponseObject lockClass(String classId);
 

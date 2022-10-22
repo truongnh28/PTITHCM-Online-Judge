@@ -8,19 +8,19 @@ import ptithcm.onlinejudge.model.response.ResponseObject;
 public interface SubjectClassGroupManagementService {
     ResponseObject addGroupToClass(String classId, SubjectClassGroupDTO group);
 
-    ResponseObject editGroup(String groupId, SubjectClassGroupDTO group);
+    ResponseObject editGroup(SubjectClassGroupDTO group);
 
     ResponseObject getGroupsOfClassActive(String classId);
 
     ResponseObject searchGroupOfClassActive(String classId, String keyword);
 
-    ResponseObject getAllGroupsOfClass(String classId);
+    ResponseObject getAllGroupsOfClass(String classId, int page);
+
+    ResponseObject searchGroupOfClassByKeyword(String classId, String keyword, int page);
 
     ResponseObject lockGroup(String groupId);
 
     ResponseObject unlockGroup(String groupId);
-
-    ResponseObject searchGroupByIdOrName(String classId, String keyword);
 
     ResponseObject getGroupById(String groupId);
 

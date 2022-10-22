@@ -1,6 +1,7 @@
 package ptithcm.onlinejudge.controller.frontend.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +13,7 @@ import ptithcm.onlinejudge.model.response.ResponseObject;
 import ptithcm.onlinejudge.services.SubjectManagementService;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/subject")
@@ -24,12 +26,26 @@ public class AdminSubjectController {
 
     // SUBJECT PAGE
     @GetMapping("")
-    public String showSubjectPage(Model model) {
+    public String showSubjectPage() {
+        return "redirect:/admin/subject/page/1";
+    }
+
+    @GetMapping("/page/{page}")
+    public String showSubjectPagePagination(@PathVariable("page") int page, @Param("keyword") String keyword, Model model) {
         model.addAttribute("pageTitle", "Môn học");
-        List<SubjectDTO> subjects = ((List<Subject>) subjectManagementService.getAllSubject().getData())
-                .stream().map(item -> subjectMapper.entityToDTO(item)).toList();
+        Map<String, Object> response = (Map<String, Object>) subjectManagementService.getAllSubject(page).getData();
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            response = (Map<String, Object>) subjectManagementService.searchByIdOrName(keyword, page).getData();
+            model.addAttribute("keyword", keyword);
+        }
+        List<SubjectDTO> subjects = getSubjects(response).stream().map(item -> subjectMapper.entityToDTO(item)).toList();
+        int currentPage = (int) response.getOrDefault("currentPage", 0);
+        int totalPages = (int) response.getOrDefault("totalPages", 0);
         model.addAttribute("subjectAdd", new SubjectDTO());
         model.addAttribute("subjects", subjects);
+        model.addAttribute("pageUrlPrefix", "/admin/subject");
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalPages);
         return "/admin/subject/subject";
     }
 
@@ -42,33 +58,10 @@ public class AdminSubjectController {
         return "redirect:/admin/subject";
     }
 
-    // SEARCH SUBJECT
-    @PostMapping("")
-    public String searchSubject(@RequestParam("keyword") String keyword, Model model) {
-        model.addAttribute("pageTitle", "Môn học");
-        List<SubjectDTO> subjects = ((List<Subject>) subjectManagementService.searchByIdOrName(keyword).getData())
-                .stream().map(item -> subjectMapper.entityToDTO(item)).toList();
-        model.addAttribute("subjectAdd", new SubjectDTO());
-        model.addAttribute("subjects", subjects);
-        return "/admin/subject/subject";
-    }
-
-    // EDIT PAGE
-    @GetMapping("/{id}/edit")
-    public String showEditSubjectPage(@PathVariable("id") String id, Model model) {
-        model.addAttribute("pageTitle", "Chỉnh sửa môn học");
-        ResponseObject getSubjectByIdResponse = subjectManagementService.getSubjectById(id);
-        if (!getSubjectByIdResponse.getStatus().equals(HttpStatus.OK))
-            return "redirect:/error";
-        SubjectDTO subject = subjectMapper.entityToDTO((Subject) getSubjectByIdResponse.getData());
-        model.addAttribute("subject", subject);
-        return "/admin/subject/subject-edit";
-    }
-
     // EDIT SUBJECT
-    @PostMapping("/{id}/edit")
-    public String editSubject(@PathVariable("id") String id, @ModelAttribute("subject") SubjectDTO subject) {
-        ResponseObject editSubjectResponse = subjectManagementService.editSubject(id, subject);
+    @PostMapping("/edit")
+    public String editSubject(SubjectDTO subject) {
+        ResponseObject editSubjectResponse = subjectManagementService.editSubject(subject);
         if (!editSubjectResponse.getStatus().equals(HttpStatus.OK))
             return "redirect:/error";
         return "redirect:/admin/subject";
@@ -90,5 +83,9 @@ public class AdminSubjectController {
         if (!unlockSubjectResponse.getStatus().equals(HttpStatus.OK))
             return "redirect:/error";
         return "redirect:/admin/subject";
+    }
+
+    private List<Subject> getSubjects(Map<String, Object> response) {
+        return (List<Subject>) response.getOrDefault("data", null);
     }
 }

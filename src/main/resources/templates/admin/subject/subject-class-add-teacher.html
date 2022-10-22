@@ -9,8 +9,8 @@
     <a class="btn btn-primary mb-3" th:href="@{/admin/subject/{subjectId}/class/{classId}/teacher(subjectId=${subjectId},classId=${classId})}" role="button">Về danh sách giáo viên quản lý lớp</a>
     <div class="card mb-3">
       <div class="card-body">
-        <div class="border-bottom pb-3 align-items-center">
-          <form class="d-flex" role="search" th:action="@{/admin/subject/{subjectId}/class/{classId}/teacher/add(subjectId=${subjectId},classId=${classId})}" method="post">
+        <div class="border-bottom pb-2 align-items-center">
+          <form class="d-flex" role="search" th:action="@{/admin/subject/{subjectId}/class/{classId}/teacher/add?keyword=${keyword}(subjectId=${subjectId},classId=${classId})}">
             <h4 class="card-title">
               <span>Danh sách giáo viên trong hệ thống</span>
             </h4>
@@ -29,6 +29,10 @@
               <th>Mã giáo viên</th>
               <th>Họ giáo viên</th>
               <th>Tên giáo viên</th>
+              <th>Thời gian tạo</th>
+              <th>Thời gian cập nhật</th>
+              <th>Đăng nhập gần nhất</th>
+              <th>Trạng thái</th>
               <th>Hành động</th>
             </tr>
             </thead>
@@ -38,6 +42,11 @@
               <td th:text="${teacher.teacherId}"></td>
               <td th:text="${teacher.teacherLastName}"></td>
               <td th:text="${teacher.teacherFirstName}"></td>
+              <td th:text="${teacher.createAt}"></td>
+              <td th:text="${teacher.updateAt}"></td>
+              <td th:text="${teacher.lastLogin}"></td>
+              <td th:if="${teacher.active} eq 0">Bị khóa</td>
+              <td th:unless="${teacher.active} eq 0">Hoạt động</td>
               <td>
                 <a class="btn btn-primary btn-sm" th:href="@{/admin/subject/{subjectId}/class/{classId}/teacher/{teacherId}/add(subjectId=${subjectId},classId=${classId},teacherId=${teacher.teacherId})}" role="button" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Thêm giáo viên vào danh sách quản lý lớp">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
@@ -50,6 +59,7 @@
           </table>
         </div>
       </div>
+      <div th:replace="/fragments/pagination :: pagination"></div>
     </div>
     <div class="py-2"></div>
   </div>

@@ -1,6 +1,8 @@
 package ptithcm.onlinejudge.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ptithcm.onlinejudge.dto.SubjectClassDTO;
@@ -13,7 +15,9 @@ import ptithcm.onlinejudge.repository.SubjectClassRepository;
 import ptithcm.onlinejudge.repository.SubjectRepository;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -26,18 +30,13 @@ public class SubjectClassManagementServiceImpl implements SubjectClassManagement
     SubjectRepository subjectRepository;
 
     @Override
-    public ResponseObject addSubjectClass(String subjectId, SubjectClassDTO subjectClass) {
-        String classId = subjectClass.getSubjectClassId();
-        String className = subjectClass.getSubjectClassName();
-        if (subjectClassRepository.existsById(classId))
-            return new ResponseObject(HttpStatus.FOUND, "Lớp tồn tại", null);
-        if (classId.isEmpty() || className == null || className.isEmpty())
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Mã lớp và tên lớp không được để trống", null);
-        Optional<Subject> foundSubject = subjectRepository.findById(subjectId);
-        if (foundSubject.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Môn học không tồn tại", null);
-        Subject subject = foundSubject.get();
+    public ResponseObject add(String subjectId, SubjectClassDTO subjectClass) {
+        String classId = subjectClass.getSubjectClassId().trim().toUpperCase();
+        String className = subjectClass.getSubjectClassName().trim();
+        Subject subject = subjectRepository.findById(subjectId).get();
         SubjectClass newClass = subjectClassMapper.dtoToEntity(subjectClass);
+        newClass.setId(classId);
+        newClass.setSubjectClassName(className);
         newClass.setSubject(subject);
         newClass.setHide((byte) 0);
         newClass.setCreateAt(Instant.now());
@@ -47,14 +46,9 @@ public class SubjectClassManagementServiceImpl implements SubjectClassManagement
     }
 
     @Override
-    public ResponseObject editSubjectClass(String classId, SubjectClassDTO subjectClass) {
-        String newName = subjectClass.getSubjectClassName();
-        if (newName == null || newName.isEmpty())
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Tên lớp không được để trống", null);
-        Optional<SubjectClass> foundOldClass = subjectClassRepository.findById(classId);
-        if (foundOldClass.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Lớp học cũ không tồn tại", null);
-        SubjectClass editedClass = foundOldClass.get();
+    public ResponseObject edit(SubjectClassDTO subjectClass) {
+        String newName = subjectClass.getSubjectClassName().trim();
+        SubjectClass editedClass = subjectClassRepository.findById(subjectClass.getSubjectClassId()).get();
         editedClass.setSubjectClassName(newName);
         editedClass.setUpdateAt(Instant.now());
         editedClass = subjectClassRepository.save(editedClass);
@@ -62,29 +56,38 @@ public class SubjectClassManagementServiceImpl implements SubjectClassManagement
     }
 
     @Override
-    public ResponseObject getAllClass() {
-        List<SubjectClass> SubjectClasses = subjectClassRepository.findAll();
-        return new ResponseObject(HttpStatus.OK, "Success", SubjectClasses);
+    public ResponseObject getAllClassesOfSubject(String subjectId, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<SubjectClass> classes = subjectClassRepository.getSubjectClassOfSubject(subjectId, PageRequest.of(page - 1, 10));
+        int totalPage = classes.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", classes.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
-    public ResponseObject getAllClassesBySubjectId(String subjectId) {
-        List<SubjectClass> subjectClasses = subjectClassRepository.getSubjectClassOfSubject(subjectId);
-        return new ResponseObject(HttpStatus.OK, "Success", subjectClasses);
-    }
-
-    @Override
-    public ResponseObject searchClassesByIdOrName(String subjectId, String keyword) {
-        List<SubjectClass> subjectClasses = subjectClassRepository.searchSubjectClassOfSubjectByIdOrName(subjectId, keyword);
-        return new ResponseObject(HttpStatus.OK, "Succes", subjectClasses);
+    public ResponseObject searchClassesOfSubjectByKeyword(String subjectId, String keyword, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<SubjectClass> classes = subjectClassRepository.searchSubjectClassOfSubjectByKeyword(subjectId, keyword, PageRequest.of(page - 1, 10));
+        int totalPage = classes.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", classes.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
     public ResponseObject lockClass(String classId) {
-        Optional<SubjectClass> foundSubjectClass = subjectClassRepository.findById(classId);
-        if (foundSubjectClass.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Lớp không tồn tại", null);
-        SubjectClass lockedClass = foundSubjectClass.get();
+        SubjectClass lockedClass = subjectClassRepository.findById(classId).get();
         lockedClass.setUpdateAt(Instant.now());
         lockedClass.setHide((byte) 1);
         lockedClass = subjectClassRepository.save(lockedClass);
@@ -93,10 +96,7 @@ public class SubjectClassManagementServiceImpl implements SubjectClassManagement
 
     @Override
     public ResponseObject unlockClass(String classId) {
-        Optional<SubjectClass> foundSubjectClass = subjectClassRepository.findById(classId);
-        if (foundSubjectClass.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Lớp không tồn tại", null);
-        SubjectClass unlockedClass = foundSubjectClass.get();
+        SubjectClass unlockedClass = subjectClassRepository.findById(classId).get();
         unlockedClass.setUpdateAt(Instant.now());
         unlockedClass.setHide((byte) 0);
         unlockedClass = subjectClassRepository.save(unlockedClass);

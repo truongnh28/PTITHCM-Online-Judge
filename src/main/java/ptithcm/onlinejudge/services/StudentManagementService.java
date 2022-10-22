@@ -9,7 +9,7 @@ import ptithcm.onlinejudge.model.request.AddStudentToGroupRequest;
 public interface StudentManagementService {
     ResponseObject addStudent(StudentDTO student);
 
-    ResponseObject editStudent(String studentId, StudentDTO student);
+    ResponseObject editStudent(StudentDTO student);
 
     ResponseObject resetPassword(String studentId);
 
@@ -17,15 +17,17 @@ public interface StudentManagementService {
 
     ResponseObject unlockStudent(String studentId);
 
-    ResponseObject getStudentsOfGroup(String groupId);
+    ResponseObject getAllStudent(int page);
 
-    ResponseObject searchStudentsOfGroupById(String groupId, String studentId);
+    ResponseObject searchStudentById(String keyword, int page);
 
-    ResponseObject getStudentsNotInClass(String classId);
+    ResponseObject getStudentsOfGroup(String groupId, int page);
 
-    ResponseObject searchStudentsNotInClassById(String classId, String keyword);
+    ResponseObject searchStudentsOfGroupByKeyword(String groupId, String keyword, int page);
 
-    ResponseObject searchStudentByIdLike(String studentId);
+    ResponseObject getStudentsNotInClass(String classId, int page);
+
+    ResponseObject searchStudentsNotInClassByKeyword(String classId, String keyword, int page);
 
     ResponseObject deleteStudent(String studentId);
 
@@ -34,8 +36,6 @@ public interface StudentManagementService {
     ResponseObject changeActive(String studentId);
 
     ResponseObject getStudentById(String studentId);
-
-    ResponseObject getAllStudent();
 
     ResponseObject addStudentToClassGroup(AddStudentToGroupRequest addStudentToGroupRequest);
 }

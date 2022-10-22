@@ -1,6 +1,8 @@
 package ptithcm.onlinejudge.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ptithcm.onlinejudge.dto.StudentDTO;
@@ -16,7 +18,8 @@ import ptithcm.onlinejudge.repository.SubjectClassGroupRepository;
 import ptithcm.onlinejudge.repository.SubjectClassRepository;
 
 import java.time.Instant;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 @Service
 public class StudentManagementServiceImpl implements StudentManagementService {
@@ -33,14 +36,11 @@ public class StudentManagementServiceImpl implements StudentManagementService {
 
     @Override
     public ResponseObject addStudent(StudentDTO student) {
-        String id = student.getStudentId();
-        String fName = student.getStudentFirstName();
-        String lName = student.getStudentLastName();
-        if(studentRepository.existsById(id))
-            return new ResponseObject(HttpStatus.FOUND, "Sinh viên tồn tại", null);
-        if (fName == null || fName.isEmpty() || lName == null || lName.isEmpty())
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Họ và tên sinh viên không được trống", null);
         Student newStudent = studentMapper.dtoToEntity(student);
+        newStudent.setId(student.getStudentId().toUpperCase());
+        newStudent.setStudentFirstName(student.getStudentFirstName().trim());
+        newStudent.setStudentLastName(student.getStudentLastName().trim());
+        newStudent.setStudentClass(student.getStudentClass().trim());
         newStudent.setPassword(SHA256Helper.hash("123456"));
         newStudent.setActive((byte) 1);
         newStudent.setCreateAt(Instant.now());
@@ -51,16 +51,12 @@ public class StudentManagementServiceImpl implements StudentManagementService {
     }
 
     @Override
-    public ResponseObject editStudent(String studentId, StudentDTO student) {
-        String newFName = student.getStudentFirstName();
-        String newLName = student.getStudentLastName();
-        String newClass = student.getStudentClass();
-        if (newFName == null || newFName.isEmpty() || newLName == null || newLName.isEmpty() || newClass == null || newClass.isEmpty())
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Họ, tên và lớp sinh viên không được để trống", null);
-        Optional<Student> foundStudent = studentRepository.findById(studentId);
-        if (foundStudent.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Sinh viên cũ không tồn tại", null);
-        Student editedStudent = foundStudent.get();
+    public ResponseObject editStudent(StudentDTO student) {
+        String id = student.getStudentId();
+        String newFName = student.getStudentFirstName().trim();
+        String newLName = student.getStudentLastName().trim();
+        String newClass = student.getStudentClass().trim();
+        Student editedStudent = studentRepository.findById(id).get();
         editedStudent.setStudentClass(newClass);
         editedStudent.setStudentFirstName(newFName);
         editedStudent.setStudentLastName(newLName);
@@ -84,8 +80,6 @@ public class StudentManagementServiceImpl implements StudentManagementService {
     @Override
     public ResponseObject lockStudent(String studentId) {
         Optional<Student> foundStudent = studentRepository.findById(studentId);
-        if (foundStudent.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Sinh viên không tồn tại", null);
         Student lockedStudent = foundStudent.get();
         lockedStudent.setUpdateAt(Instant.now());
         lockedStudent.setActive((byte) 0);
@@ -96,8 +90,6 @@ public class StudentManagementServiceImpl implements StudentManagementService {
     @Override
     public ResponseObject unlockStudent(String studentId) {
         Optional<Student> foundStudent = studentRepository.findById(studentId);
-        if (foundStudent.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Sinh viên không tồn tại", null);
         Student unlockedStudent = foundStudent.get();
         unlockedStudent.setUpdateAt(Instant.now());
         unlockedStudent.setActive((byte) 1);
@@ -106,33 +98,93 @@ public class StudentManagementServiceImpl implements StudentManagementService {
     }
 
     @Override
-    public ResponseObject getStudentsOfGroup(String groupId) {
-        List<Student> students = studentRepository.getStudentsOfGroup(groupId);
-        return new ResponseObject(HttpStatus.OK, "Success", students);
+    public ResponseObject getAllStudent(int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Student> student = studentRepository.findAll(PageRequest.of(page - 1, 10));
+        int totalPage = student.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", student.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
-    public ResponseObject searchStudentsOfGroupById(String groupId, String studentId) {
-        List<Student> students = studentRepository.searchStudentsInGroupById(groupId, studentId);
-        return new ResponseObject(HttpStatus.OK, "Success", students);
+    public ResponseObject searchStudentById(String keyword, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Student> student = studentRepository.searchStudentsById("%" + keyword + "%", PageRequest.of(page - 1, 10));
+        int totalPage = student.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", student.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
-    public ResponseObject getStudentsNotInClass(String classId) {
-        List<Student> students = studentRepository.getStudentsNotInClass(classId);
-        return new ResponseObject(HttpStatus.OK, "Success", students);
+    public ResponseObject getStudentsOfGroup(String groupId, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Student> student = studentRepository.getStudentsOfGroup(groupId, PageRequest.of(page - 1, 10));
+        int totalPage = student.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", student.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
-    public ResponseObject searchStudentsNotInClassById(String classId, String keyword) {
-        List<Student> students = studentRepository.searchStudentsNotInClassById(classId, keyword);
-        return new ResponseObject(HttpStatus.OK, "Success", students);
+    public ResponseObject searchStudentsOfGroupByKeyword(String groupId, String keyword, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Student> student = studentRepository.searchStudentsOfGroupByKeyword(groupId, "%" + keyword + "%", PageRequest.of(page - 1, 10));
+        int totalPage = student.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", student.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
-    public ResponseObject searchStudentByIdLike(String studentId) {
-        List<Student> students = studentRepository.searchStudentByIdLikeIgnoreCase(studentId);
-        return new ResponseObject(HttpStatus.OK, "Success", students);
+    public ResponseObject getStudentsNotInClass(String classId, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Student> student = studentRepository.getStudentsNotInClass(classId, PageRequest.of(page - 1, 10));
+        int totalPage = student.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", student.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
+    }
+
+    @Override
+    public ResponseObject searchStudentsNotInClassByKeyword(String classId, String keyword, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Student> student = studentRepository.searchStudentsNotInClassByKeyword(classId, "%" + keyword + "%", PageRequest.of(page - 1, 10));
+        int totalPage = student.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", student.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
@@ -176,18 +228,9 @@ public class StudentManagementServiceImpl implements StudentManagementService {
     }
 
     @Override
-    public ResponseObject getAllStudent() {
-        List<Student> students = studentRepository.findAll();
-        return new ResponseObject(HttpStatus.OK, "Success", students);
-    }
-
-    @Override
     public ResponseObject addStudentToClassGroup(AddStudentToGroupRequest addStudentToGroupRequest) {
         if (!addStudentToClassGroupIsValid(addStudentToGroupRequest)) {
             return new ResponseObject(HttpStatus.FOUND, "Request data is not valid", "");
-        }
-        if(!checkStudentOfGroup(addStudentToGroupRequest)) {
-            return new ResponseObject(HttpStatus.FOUND, "Student have class group", "");
         }
         Optional<Student> student = studentRepository.findById(addStudentToGroupRequest.getStudentId());
         Optional<SubjectClassGroup> subjectClassGroup = subjectClassGroupRepository.findById(addStudentToGroupRequest.getClassGroupId());
@@ -209,17 +252,5 @@ public class StudentManagementServiceImpl implements StudentManagementService {
         boolean classIdIsValid = subjectClassRepository.existsById(addStudentToGroupRequest.getClassId());
         boolean classGroupIdIsValid = subjectClassGroupRepository.existsById(addStudentToGroupRequest.getClassGroupId());
         return studentIdIsValid && classIdIsValid && classGroupIdIsValid;
-    }
-    private boolean checkStudentOfGroup (AddStudentToGroupRequest addStudentToGroupRequest) {
-        List<StudentOfGroup> studentOfGroups = studentOfGroupRepository.getStudentOfGroupsByStudentId(addStudentToGroupRequest.getStudentId());
-        List<SubjectClassGroup> subjectClassGroups = subjectClassGroupRepository.getSubjectClassGroupsBySubjectClass(addStudentToGroupRequest.getClassId());
-        for(StudentOfGroup studentOfGroup:studentOfGroups) {
-            for(SubjectClassGroup subjectClassGroup:subjectClassGroups) {
-                if(studentOfGroup.getSubjectClassGroup() == subjectClassGroup) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 }

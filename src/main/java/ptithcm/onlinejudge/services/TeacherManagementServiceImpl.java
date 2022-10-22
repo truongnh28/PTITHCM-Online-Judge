@@ -1,6 +1,8 @@
 package ptithcm.onlinejudge.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ptithcm.onlinejudge.dto.TeacherDTO;
@@ -13,7 +15,9 @@ import ptithcm.onlinejudge.repository.RoleRepository;
 import ptithcm.onlinejudge.repository.TeacherRepository;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -26,31 +30,44 @@ public class TeacherManagementServiceImpl implements TeacherManagementService {
     private TeacherRepository teacherRepository;
 
     @Override
-    public ResponseObject getAllTeachersExceptAdmin() {
-        List<Teacher> teachers = teacherRepository.getAllTeacherExceptAdmin();
-        return new ResponseObject(HttpStatus.OK, "Success", teachers);
+    public ResponseObject getAllTeachersExceptAdmin(int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Teacher> teachers = teacherRepository.getAllTeacherExceptAdmin(PageRequest.of(page - 1, 10));
+        int totalPage = teachers.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", teachers.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
-    public ResponseObject searchTeachersByKeyWordExceptAdmin(String keyword) {
-        List<Teacher> teachers = teacherRepository.searchTeachersByKeywordExceptAdmin(keyword);
-        return new ResponseObject(HttpStatus.OK, "Success", teachers);
+    public ResponseObject searchTeachersByKeyWordExceptAdmin(String keyword, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Teacher> teachers = teacherRepository.searchTeachersByKeywordExceptAdmin("%" + keyword + "%",PageRequest.of(page - 1, 10));
+        int totalPage = teachers.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", teachers.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
     public ResponseObject addTeacher(TeacherDTO teacherDTO) {
-        String id = teacherDTO.getTeacherId();
-        String fName = teacherDTO.getTeacherFirstName();
-        String lName = teacherDTO.getTeacherLastName();
-        Optional<Teacher> foundTeacher = teacherRepository.findById(id);
-        if (foundTeacher.isPresent())
-            return new ResponseObject(HttpStatus.FOUND, "Tồn tại teacher", null);
-        if (fName == null || fName.isEmpty() || lName == null || lName.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Họ và tên không được để trống", null);
         Optional<Role> foundRole = roleRepository.findById((byte) 2);
         if (foundRole.isEmpty())
             return new ResponseObject(HttpStatus.FOUND, "Lỗi server", null);
         Teacher teacher = teacherMapper.dtoToEntity(teacherDTO);
+        teacher.setId(teacherDTO.getTeacherId().trim().toUpperCase());
+        teacher.setTeacherFirstName(teacherDTO.getTeacherFirstName().trim());
+        teacher.setTeacherLastName(teacherDTO.getTeacherLastName().trim());
         teacher.setPassword(SHA256Helper.hash("123456"));
         teacher.setActive((byte) 1);
         teacher.setCreateAt(Instant.now());
@@ -62,17 +79,10 @@ public class TeacherManagementServiceImpl implements TeacherManagementService {
     }
 
     @Override
-    public ResponseObject editTeacher(String teacherId, TeacherDTO teacherDTO) {
-        String newFName = teacherDTO.getTeacherFirstName();
-        String newLName = teacherDTO.getTeacherLastName();
-        if (newFName == null || newFName.isEmpty() || newLName == null || newLName.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Họ và tên không được để trống", null);
-        Optional<Teacher> foundOldTeacher = teacherRepository.findById(teacherId);
-        if (foundOldTeacher.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy teacher cũ", null);
-        Teacher newTeacher = foundOldTeacher.get();
-        newTeacher.setTeacherFirstName(newFName);
-        newTeacher.setTeacherLastName(newLName);
+    public ResponseObject editTeacher(TeacherDTO teacherDTO) {
+        Teacher newTeacher = teacherRepository.findById(teacherDTO.getTeacherId()).get();
+        newTeacher.setTeacherFirstName(teacherDTO.getTeacherFirstName().trim());
+        newTeacher.setTeacherLastName(teacherDTO.getTeacherLastName().trim());
         newTeacher.setUpdateAt(Instant.now());
         newTeacher = teacherRepository.save(newTeacher);
         return new ResponseObject(HttpStatus.OK, "Success", newTeacher);
@@ -81,10 +91,7 @@ public class TeacherManagementServiceImpl implements TeacherManagementService {
     // lock
     @Override
     public ResponseObject lockTeacher(String teacherId) {
-        Optional<Teacher> foundTeacher = teacherRepository.findById(teacherId);
-        if (foundTeacher.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy teacher", null);
-        Teacher lockedTeacher = foundTeacher.get();
+        Teacher lockedTeacher = teacherRepository.findById(teacherId).get();
         lockedTeacher.setActive((byte) 0);
         lockedTeacher.setUpdateAt(Instant.now());
         lockedTeacher = teacherRepository.save(lockedTeacher);
@@ -94,10 +101,7 @@ public class TeacherManagementServiceImpl implements TeacherManagementService {
     // unlock
     @Override
     public ResponseObject unlockTeacher(String teacherId) {
-        Optional<Teacher> foundTeacher = teacherRepository.findById(teacherId);
-        if (foundTeacher.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy teacher", null);
-        Teacher unlockedTeacher = foundTeacher.get();
+        Teacher unlockedTeacher = teacherRepository.findById(teacherId).get();
         unlockedTeacher.setActive((byte) 1);
         unlockedTeacher.setUpdateAt(Instant.now());
         unlockedTeacher = teacherRepository.save(unlockedTeacher);
@@ -138,14 +142,32 @@ public class TeacherManagementServiceImpl implements TeacherManagementService {
     }
 
     @Override
-    public ResponseObject getTeachersNotOwnClass(String classId) {
-        List<Teacher> teachers = teacherRepository.getTeachersNotOwnClass(classId);
-        return new ResponseObject(HttpStatus.OK, "Success", teachers);
+    public ResponseObject getTeachersNotOwnClass(String classId, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Teacher> teachers = teacherRepository.getTeachersNotOwnClass(classId, PageRequest.of(page - 1, 10));
+        int totalPage = teachers.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", teachers.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
-    public ResponseObject searchTeachersNotOwnClassById(String classId, String keyword) {
-        List<Teacher> teachers = teacherRepository.searchTeachersNotOwnClass(classId, keyword);
-        return new ResponseObject(HttpStatus.OK, "Success", teachers);
+    public ResponseObject searchTeachersNotOwnClassByKeyword(String classId, String keyword, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Teacher> teachers = teacherRepository.searchTeachersNotOwnClassByKeyword(classId, "%" + keyword + "%", PageRequest.of(page - 1, 10));
+        int totalPage = teachers.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", teachers.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 }

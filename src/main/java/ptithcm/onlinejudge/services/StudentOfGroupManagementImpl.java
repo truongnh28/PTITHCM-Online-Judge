@@ -44,14 +44,7 @@ public class StudentOfGroupManagementImpl implements StudentOfGroupManagement {
 
     @Override
     public ResponseObject deleteStudentFromGroup(String studentId, String groupId) {
-        Optional<Student> foundStudent = studentRepository.findById(studentId);
-        Optional<SubjectClassGroup> foundGroup = subjectClassGroupRepository.findById(groupId);
-        if (foundStudent.isEmpty() || foundGroup.isEmpty())
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Không tồn tại sinh viên hoặc nhóm tương ứng", null);
         StudentOfGroupId id = new StudentOfGroupId(studentId, groupId);
-        Optional<StudentOfGroup> foundStudentOfGroup = studentOfGroupRepository.findById(id);
-        if (foundStudentOfGroup.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Không tồn tại cặp sinh viên, nhóm", null);
         studentOfGroupRepository.deleteById(id);
         return new ResponseObject(HttpStatus.OK, "Success", null);
     }

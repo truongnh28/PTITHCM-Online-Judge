@@ -13,49 +13,49 @@
           <span aria-hidden="true">Trang đầu</span>
         </a>
       </li>
-      <li class="page-item" th:classappend="${currentPage eq 1} ? 'disabled'">
+      <li class="page-item" th:classappend="${currentPage <= 1} ? 'disabled'">
         <a class="page-link"
-           th:href="@{${pageUrlPrefix} + '/page/' + ${currentPage - 1 eq 1 ? 1 : currentPage - 1}}" aria-label="Previous">
+           th:href="@{${pageUrlPrefix} + '/page/' + ${currentPage - 1 <= 1 ? 1 : currentPage - 1} + ${keyword != null && keyword.trim().length() > 0 ? ('?keyword=' + keyword) : ''}}" aria-label="Previous">
           <span aria-hidden="true">Trang trước</span>
         </a>
       </li>
       <th:block th:if="${totalPages <= 10}">
         <li class="page-item" th:classappend="${i eq currentPage} ? 'active'" th:each="i : ${#numbers.sequence(1, totalPages, 1)}">
-          <a class="page-link" th:href="@{${pageUrlPrefix} + '/page/' + ${i}}" th:text="${i}"></a>
+          <a class="page-link" th:href="@{${pageUrlPrefix} + '/page/' + ${i} + ${keyword != null && keyword.trim().length() > 0 ? ('?keyword=' + keyword) : ''}}" th:text="${i}"></a>
         </li>
       </th:block>
       <th:block th:if="${totalPages > 10}">
         <th:block th:if="${currentPage <= 5 || currentPage >= totalPages - 4}">
           <li class="page-item" th:classappend="${i eq currentPage} ? 'active'" th:each="i : ${#numbers.sequence(1, 5, 1)}">
-            <a class="page-link" th:href="@{${pageUrlPrefix} + '/page/' + ${i}}" th:text="${i}"></a>
+            <a class="page-link" th:href="@{${pageUrlPrefix} + '/page/' + ${i} + ${keyword != null && keyword.trim().length() > 0 ? ('?keyword=' + keyword) : ''}}" th:text="${i}"></a>
           </li>
 
           <a class="page-link" th:href="@{${pageUrlPrefix} + '/page/' + 6}">...</a>
 
           <li class="page-item" th:classappend="${i eq currentPage} ? 'active'" th:each="i : ${#numbers.sequence(totalPages - 4, totalPages, 1)}">
-            <a class="page-link" th:href="@{${pageUrlPrefix} + '/page/' + ${i}}" th:text="${i}"></a>
+            <a class="page-link" th:href="@{${pageUrlPrefix} + '/page/' + ${i} + ${keyword != null && keyword.trim().length() > 0 ? ('?keyword=' + keyword) : ''}}" th:text="${i}"></a>
           </li>
         </th:block>
         <th:block th:if="${currentPage > 5 && currentPage < totalPages - 4}">
-          <a class="page-link" th:href="@{${pageUrlPrefix} + '/page/' + ${currentPage - 5}}">...</a>
+          <a class="page-link" th:href="@{${pageUrlPrefix} + '/page/' + ${currentPage - 5} + ${keyword != null && keyword.trim().length() > 0 ? ('?keyword=' + keyword) : ''}}">...</a>
 
           <li class="page-item" th:classappend="${i eq currentPage} ? 'active'" th:each="i : ${#numbers.sequence(currentPage - 4, currentPage + 4, 1)}">
-            <a class="page-link" th:href="@{${pageUrlPrefix} + '/page/' + ${i}}" th:text="${i}"></a>
+            <a class="page-link" th:href="@{${pageUrlPrefix} + '/page/' + ${i} + ${keyword != null && keyword.trim().length() > 0 ? ('?keyword=' + keyword) : ''}}" th:text="${i}"></a>
           </li>
 
-          <a class="page-link" th:href="@{${pageUrlPrefix} + '/page/' + ${currentPage + 5}}">...</a>
+          <a class="page-link" th:href="@{${pageUrlPrefix} + '/page/' + ${currentPage + 5} + ${keyword != null && keyword.trim().length() > 0 ? ('?keyword=' + keyword) : ''}}">...</a>
         </th:block>
 
       </th:block>
       <li class="page-item" th:classappend="${currentPage eq totalPages} ? 'disabled'">
         <a class="page-link"
-           th:href="@{${pageUrlPrefix} + '/page/' + ${currentPage + 1 eq totalPages ? totalPages : currentPage + 1}}"
+           th:href="@{${pageUrlPrefix} + '/page/' + ${currentPage + 1 eq totalPages ? totalPages : currentPage + 1} + ${keyword != null && keyword.trim().length() > 0 ? ('?keyword=' + keyword) : ''}}"
            aria-label="Next">
           <span aria-hidden="true">Trang kế</span>
         </a>
       </li>
       <li class="page-item">
-        <a class="page-link" th:href="@{${pageUrlPrefix} + '/page/' + ${totalPages}}" aria-label="Last">
+        <a class="page-link" th:href="@{${pageUrlPrefix} + '/page/' + ${totalPages} + ${keyword != null && keyword.trim().length() > 0 ? ('?keyword=' + keyword) : ''}}" aria-label="Last">
           <span aria-hidden="true">Trang cuối</span>
         </a>
       </li>
