@@ -9,14 +9,14 @@
     <div class="card mb-4">
       <div class="card-body">
         <div class="border-bottom pb-3 align-items-center">
-          <form class="d-flex" role="search" th:action="@{/student/contest}" method="post">
+          <form class="d-flex" role="search" th:action="@{/student/group/{groupId}/contest/page/1?keyword=${keyword}(groupId=${groupId})}">
             <h4 class="card-title">
               <span>Danh sách bài thực hành</span>
             </h4>
             <div class="ms-auto d-flex">
-              <input class="form-control me-2" data-bs-toggle="tooltip" data-bs-placement="top" name="keyword" th:value="${keyword}"
-                     data-bs-title="Nhập mã hoặc tên bài thực hành muốn tìm" type="search" placeholder="Tìm bài thực hành">
-              <button class="ms-auto btn btn-outline-success" type="submit">Search</button>
+              <input class="form-control me-2" data-bs-toggle="tooltip" data-bs-placement="top" name="keyword" th:value="${keyword}" data-bs-title="Nhập mã hoặc tên bài thực hành muốn tìm" type="search" placeholder="Tìm bài thực hành">
+              <button class="ms-auto btn btn-outline-success me-2" type="submit">Search</button>
+              <button class="btn btn-outline-secondary" type="button" th:data-group="${groupId}" onclick="clearSearch(this.getAttribute('data-group'))">Clear</button>
             </div>
           </form>
         </div>
@@ -50,6 +50,7 @@
             </tbody>
           </table>
         </div>
+        <div th:replace="/fragments/pagination :: pagination"></div>
       </div>
     </div>
     <div class="py-2"></div>
@@ -66,5 +67,10 @@
     integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
     crossorigin="anonymous">
 </script>
+<script>
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
+<script th:src="@{/js/student-group-contest.js}" type="text/javascript"></script>
 </body>
 </html>

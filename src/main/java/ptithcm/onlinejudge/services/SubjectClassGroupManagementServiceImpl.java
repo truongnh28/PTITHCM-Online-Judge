@@ -57,15 +57,33 @@ public class SubjectClassGroupManagementServiceImpl implements SubjectClassGroup
     }
 
     @Override
-    public ResponseObject getGroupsOfClassActive(String classId) {
-        List<SubjectClassGroup> groups = subjectClassGroupRepository.getGroupsOfClassActive(classId);
-        return new ResponseObject(HttpStatus.OK, "Success", groups);
+    public ResponseObject getGroupsOfClassActive(String classId, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<SubjectClassGroup> subjectClassGroups = subjectClassGroupRepository.getGroupsOfClassActive(classId, PageRequest.of(page - 1, 10));
+        int totalPage = subjectClassGroups.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", subjectClassGroups.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
-    public ResponseObject searchGroupOfClassActive(String classId, String keyword) {
-        List<SubjectClassGroup> groups = subjectClassGroupRepository.searchGroupsOfClassActiveByIdOrName(classId, keyword);
-        return new ResponseObject(HttpStatus.OK, "Success", groups);
+    public ResponseObject searchGroupOfClassActive(String classId, String keyword, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<SubjectClassGroup> subjectClassGroups = subjectClassGroupRepository.searchGroupsOfClassByKeywordActive(classId, keyword, PageRequest.of(page - 1, 10));
+        int totalPage = subjectClassGroups.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", subjectClassGroups.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
@@ -126,17 +144,33 @@ public class SubjectClassGroupManagementServiceImpl implements SubjectClassGroup
     }
 
     @Override
-    public ResponseObject getGroupsHaveStudent(String studentId) {
-        if (!studentRepository.existsById(studentId))
-            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy sinh viên", null);
-        return new ResponseObject(HttpStatus.OK, "Success", subjectClassGroupRepository.getGroupsThatHasStudent(studentId));
+    public ResponseObject getGroupsHaveStudent(String studentId, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<SubjectClassGroup> subjectClassGroups = subjectClassGroupRepository.getGroupsThatHasStudent(studentId, PageRequest.of(page - 1, 10));
+        int totalPage = subjectClassGroups.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", subjectClassGroups.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
-    public ResponseObject searchGroupsHaveStudent(String studentId, String keyword) {
-        if (!studentRepository.existsById(studentId))
-            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy sinh viên", null);
-        return new ResponseObject(HttpStatus.OK, "Success", subjectClassGroupRepository.searchGroupsThatHasStudent(studentId, keyword));
+    public ResponseObject searchGroupsHaveStudent(String studentId, String keyword, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<SubjectClassGroup> subjectClassGroups = subjectClassGroupRepository.searchGroupsThatHasStudent(studentId, "%" + keyword + "%", PageRequest.of(page - 1, 10));
+        int totalPage = subjectClassGroups.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", subjectClassGroups.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     private boolean subjectClassGroupRequestIsValid(SubjectClassGroupRequest subjectClassGroupRequest) {

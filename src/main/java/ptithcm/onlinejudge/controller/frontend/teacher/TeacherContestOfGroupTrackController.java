@@ -19,6 +19,7 @@ import ptithcm.onlinejudge.services.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/teacher/class/{classId}/group/{groupId}/contest/{contestId}")
@@ -78,14 +79,28 @@ public class TeacherContestOfGroupTrackController {
     }
 
     @GetMapping("/submission/track")
-    public String showSubmissionPage(@PathVariable("classId") String classId, @PathVariable("groupId") String groupId, @PathVariable("contestId") String contestId, Model model) {
+    public String showSubmissions(@PathVariable("classId") String classId, @PathVariable("groupId") String groupId, @PathVariable("contestId") String contestId) {
+        if (!isValid(classId, groupId, contestId))
+            return "redirect:/error";
+        return "redirect:/teacher/class/{classId}/group/{groupId}/contest/{contestId}/submission/track/page/1";
+    }
+
+    @GetMapping("/submission/track/page/{page}")
+    public String showSubmissionPage(@PathVariable("classId") String classId, @PathVariable("groupId") String groupId, @PathVariable("contestId") String contestId, @PathVariable("page") int page, Model model) {
         if (!isValid(classId, groupId, contestId))
             return "redirect:/error";
         model.addAttribute("pageTitle", "Bài nộp");
         ContestDetailDTO contest = contestMapper.entityToDetailDTO(getContestById(contestId));
-        List<SubmissionDTO> submissions = getSubmissionsByContest(contestId).stream().map(item -> submissionMapper.entityToDTO(item)).toList();
+        Map<String, Object> response = (Map<String, Object>) submissionManagementService.getSubmissionsByContest(contestId, page).getData();
+        List<SubmissionDTO> submissions = getSubmissions(response).stream().map(item -> submissionMapper.entityToDTO(item)).collect(Collectors.toList());
+        int currentPage = (int) response.getOrDefault("currentPage", 0);
+        int totalPages = (int) response.getOrDefault("totalPages", 0);
+        String pageUrlPrefix = String.format("/teacher/class/%s/group/%s/contest/%s/submission/track", classId, groupId, contestId);
         model.addAttribute("submissions", submissions);
         model.addAttribute("contest", contest);
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("pageUrlPrefix", pageUrlPrefix);
         return "/teacher/contest/contest-of-group-submission-track";
     }
 
@@ -151,16 +166,16 @@ public class TeacherContestOfGroupTrackController {
         return getSubmissionByIdResponse.getStatus().equals(HttpStatus.OK);
     }
 
+    private List<Submission> getSubmissions(Map<String, Object> response) {
+        return (List<Submission>) response.getOrDefault("data", null);
+    }
+
     private Map<String, Object> getDataStatistic(String contestId) {
         return (Map<String, Object>) statisticService.statisticContest(contestId).getData();
     }
 
     private Submission getSubmissionById(String submissionId) {
         return (Submission) submissionManagementService.getSubmissionById(submissionId).getData();
-    }
-
-    private List<Submission> getSubmissionsByContest(String contestId) {
-        return (List<Submission>) submissionManagementService.getSubmissionsByContest(contestId).getData();
     }
 
     private Contest getContestById(String contestId) {

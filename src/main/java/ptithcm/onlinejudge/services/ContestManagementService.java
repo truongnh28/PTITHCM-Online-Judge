@@ -14,13 +14,13 @@ public interface ContestManagementService {
 
     ResponseObject deleteContest(String contestId);
 
-    ResponseObject getContestActiveSortByDate();
+    ResponseObject getContestActiveSortByDate(int page);
 
-    ResponseObject searchContestsActiveSortByDate(String keyword);
+    ResponseObject searchContestsActiveSortByDate(String keyword, int page);
 
-    ResponseObject getAllContestsActive();
+    ResponseObject getAllContestsActive(int page);
 
-    ResponseObject searchAllContestsActive(String keyword);
+    ResponseObject searchAllContestsActive(String keyword, int page);
 
     ResponseObject getContestById(String contestId);
 
@@ -30,9 +30,9 @@ public interface ContestManagementService {
 
     ResponseObject unlockContest(String contestId);
 
-    ResponseObject getAllContestsCreateByTeacher(String teacherId);
+    ResponseObject getAllContestsCreateByTeacher(String teacherId, int page);
 
-    ResponseObject searchAllContestsCreateByTeacher(String teacherId, String keyword);
+    ResponseObject searchAllContestsCreateByTeacher(String teacherId, String keyword, int page);
 
     ResponseObject getAllContestsActiveCreatedByTeacher(String teacherId);
 

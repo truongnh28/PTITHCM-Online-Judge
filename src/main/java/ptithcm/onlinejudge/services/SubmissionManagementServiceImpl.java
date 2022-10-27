@@ -1,16 +1,21 @@
 package ptithcm.onlinejudge.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ptithcm.onlinejudge.model.adapter.GetStatusResponse;
+import ptithcm.onlinejudge.model.entity.SubjectClass;
 import ptithcm.onlinejudge.model.entity.Submission;
 import ptithcm.onlinejudge.model.response.ResponseObject;
 import ptithcm.onlinejudge.repository.ContestRepository;
 import ptithcm.onlinejudge.repository.SubmissionRepository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -21,11 +26,6 @@ public class SubmissionManagementServiceImpl implements SubmissionManagementServ
     private SubmissionRepository submissionRepository;
     @Autowired
     private SubmitService submitService;
-    @Override
-    public ResponseObject getAllSubmission() {
-        List<Submission> submissions = submissionRepository.findAll(Sort.by("submissionTime").descending());
-        return new ResponseObject(HttpStatus.OK, "Success", submissions);
-    }
 
     @Override
     public ResponseObject getSubmissionById(String submissionId) {
@@ -94,9 +94,17 @@ public class SubmissionManagementServiceImpl implements SubmissionManagementServ
     }
 
     @Override
-    public ResponseObject getSubmissionsByContest(String contestId) {
-        if (!contestRepository.existsById(contestId))
-            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy bài thực hành", null);
-        return new ResponseObject(HttpStatus.OK, "Success", submissionRepository.getSubmissionsByContestId(contestId));
+    public ResponseObject getSubmissionsByContest(String contestId, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Submission> submissions = submissionRepository.getSubmissionsByContestId(contestId, PageRequest.of(page - 1, 10));
+        int totalPage = submissions.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", submissions.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 }

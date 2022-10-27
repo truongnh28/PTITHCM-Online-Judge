@@ -10,15 +10,17 @@
     <div class="card mb-3">
       <div class="card-body">
         <div class="border-bottom pb-3 align-items-center">
-          <form class="d-flex" role="search" th:action="@{/teacher/class/{classId}/group/{groupId}/contest(classId=${classId},groupId=${groupId})}" method="post">
+          <form class="d-flex" role="search" th:action="@{/teacher/class/{classId}/group/{groupId}/contest/page/1?keyword=${keyword}(classId=${classId},groupId=${groupId})}">
             <h4 class="card-title">
               <span>Danh sách bài thực hành nhóm </span>
               <span class="fw-bold" th:text="${groupName}"></span>
+              <span class="fw-bold" th:text="' - ' + ${groupId}"></span>
             </h4>
             <div class="ms-auto d-flex">
               <input class="form-control me-2" data-bs-toggle="tooltip" data-bs-placement="top" name="keyword" th:value="${keyword}"
                      data-bs-title="Nhập mã hoặc tên bài thực hành muốn tìm" type="search" placeholder="Tìm bài thực hành">
-              <button class="ms-auto btn btn-outline-success" type="submit">Search</button>
+              <button class="ms-auto btn btn-outline-success me-2" type="submit">Search</button>
+              <button class="btn btn-outline-secondary" th:data-class="${classId}" th:data-group="${groupId}" onclick="clearSearch(this.getAttribute('data-class'), this.getAttribute('data-group'))">Clear</button>
             </div>
           </form>
         </div>
@@ -64,12 +66,12 @@
                     <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                   </svg>
                 </a>
-                <a th:if="${contest.hide} eq 0" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Khóa bài thực hành" th:href="@{/teacher/class/{classId}/group/{groupId}/contest/{contestId}/lock(classId=${classId},groupId=${groupId},contestId=${contest.contestId})}" role="button">
+                <a th:if="${contest.hide} eq 0" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Khóa bài thực hành" th:data-class="${classId}" th:data-group="${groupId}" th:data-contest="${contest.contestId}" th:data-action="lock" role="button" onclick="checkGetOne(this.getAttribute('data-class'), this.getAttribute('data-group'), this.getAttribute('data-contest'), this.getAttribute('data-action'))">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock" viewBox="0 0 16 16">
                     <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>
                   </svg>
                 </a>
-                <a th:unless="${contest.hide} eq 0" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Mở khóa bài thực hành" th:href="@{/teacher/class/{classId}/group/{groupId}/contest/{contestId}/unlock(classId=${classId},groupId=${groupId},contestId=${contest.contestId})}" role="button">
+                <a th:unless="${contest.hide} eq 0" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Mở khóa bài thực hành" th:data-class="${classId}" th:data-group="${groupId}" th:data-contest="${contest.contestId}" th:data-action="unlock" role="button" onclick="checkGetOne(this.getAttribute('data-class'), this.getAttribute('data-group'), this.getAttribute('data-contest'), this.getAttribute('data-action'))">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
                     <path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2zM3 8a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H3z"/>
                   </svg>
@@ -81,46 +83,53 @@
         </div>
         <div class="d-flex">
           <a class="btn btn-primary mb-3" th:href="@{/teacher/class/{classId}/group/{groupId}/contest/clone(classId=${classId},groupId=${groupId})}" role="button">Clone bài thực hành khác</a>
+          <div class="ms-auto">
+            <div th:replace="/fragments/pagination :: pagination"></div>
+          </div>
         </div>
       </div>
     </div>
     <div class="card mb-4">
       <div class="card-body">
         <h4 class="card-title pb-3 border-bottom">Thêm bài thực hành</h4>
-        <form th:action="@{/teacher/class/{classId}/group/{groupId}/contest/add(classId=${classId},groupId=${groupId})}" method="post" th:object="${contestAdd}">
-          <div class="row mb-4">
+        <form th:action="@{/teacher/class/{classId}/group/{groupId}/contest/add(classId=${classId},groupId=${groupId})}" th:data-class="${classId}" th:data-group="${groupId}" id="formAddContest" method="post" th:object="${contestAdd}" onsubmit="return checkUniqueContest(this, this.getAttribute('data-class'), this.getAttribute('data-group'))">
+          <div class="row">
             <div class="col-md">
               <label class="form-label">
                 <span class="fw-bold">Mã bài thực hành</span>
                 <span class="text-danger">*</span>
               </label>
-              <input type="text" class="form-control" placeholder="Mã bài thực hành" th:field="*{contestId}">
+              <input type="text" class="form-control" id="contestId" placeholder="Mã bài thực hành" th:field="*{contestId}">
+              <p class="text-danger" id="contestIdValidate"></p>
             </div>
             <div class="col-md">
               <label class="form-label">
                 <span class="fw-bold">Tên bài thực hành</span>
                 <span class="text-danger">*</span>
               </label>
-              <input type="text" class="form-control" placeholder="Tên bài thực hành" th:field="*{contestName}">
+              <input type="text" class="form-control" id="contestName" placeholder="Tên bài thực hành" th:field="*{contestName}">
+              <p class="text-danger" id="contestNameValidate"></p>
             </div>
           </div>
-          <div class="row mb-4">
+          <div class="row">
             <div class="col-md">
               <label class="form-label">
                 <span class="fw-bold">Thời gian bắt đầu</span>
                 <span class="text-danger">*</span>
               </label>
-              <input type="datetime-local" class="form-control" th:field="*{contestStart}">
+              <input type="datetime-local" id="contestStart" class="form-control" th:field="*{contestStart}">
+              <p class="text-danger" id="contestStartValidate"></p>
             </div>
             <div class="col-md">
               <label class="form-label">
                 <span class="fw-bold">Thời gian kết thúc</span>
                 <span class="text-danger">*</span>
               </label>
-              <input type="datetime-local" class="form-control" th:field="*{contestEnd}">
+              <input type="datetime-local" id="contestEnd" class="form-control" th:field="*{contestEnd}">
+              <p class="text-danger" id="contestEndValidate"></p>
             </div>
           </div>
-          <div class="row mb-4">
+          <div class="row">
             <div class="col">
               <button type="submit" class="btn btn-primary">Thêm bài thực hành</button>
               <button type="reset" class="btn btn-secondary">Reset</button>
@@ -129,6 +138,8 @@
         </form>
       </div>
     </div>
+    <div th:replace="/fragments/modal :: modal-notification"></div>
+    <div th:replace="/fragments/modal :: modal-confirm"></div>
     <div class="py-2"></div>
   </div>
 </main>
@@ -145,5 +156,6 @@
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 </script>
+<script th:src="@{/js/teacher-class-group-contest.js}" type="text/javascript"></script>
 </body>
 </html>

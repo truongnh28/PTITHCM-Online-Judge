@@ -1,6 +1,8 @@
 package ptithcm.onlinejudge.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ptithcm.onlinejudge.dto.ContestDTO;
@@ -13,7 +15,9 @@ import ptithcm.onlinejudge.repository.*;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -41,28 +45,12 @@ public class ContestManagementServiceImpl implements ContestManagementService {
 
     @Override
     public ResponseObject addContest(ContestDTO contest, String teacherId, String groupId) {
-        String id = contest.getContestId();
-        String name = contest.getContestName();
-        if (id == null || id.isEmpty() || name == null || name.isEmpty())
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Tên và mã không được để trống", null);
-        String contestStart = contest.getContestStart();
-        String contestEnd = contest.getContestEnd();
-        if (contestStart == null || contestStart.isEmpty() || contestEnd == null || contestEnd.isEmpty())
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Thời gian bắt đầu và kết thúc không được để trống", null);
-        contestStart = TimeHelper.convertStringFormToDateFormatter(contest.getContestStart());
-        contestEnd = TimeHelper.convertStringFormToDateFormatter(contest.getContestEnd());
-        Optional<Teacher> foundTeacher = teacherRepository.findById(teacherId);
-        if (foundTeacher.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Không tồn tại giáo viên", null);
-        Optional<SubjectClassGroup> foundGroup = subjectClassGroupRepository.findById(groupId);
-        if (foundGroup.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Không tồn tại nhóm thực hành", null);
-        if (contestRepository.existsById(id))
-            return new ResponseObject(HttpStatus.FOUND, "Đã tồn tại bài thực hành", null);
+        String id = contest.getContestId().trim().toUpperCase();
+        String name = contest.getContestName().trim();
+        String contestStart = TimeHelper.convertStringFormToDateFormatter(contest.getContestStart());
+        String contestEnd = TimeHelper.convertStringFormToDateFormatter(contest.getContestEnd());
         Instant start = TimeHelper.convertStringToInstance(contestStart).minus(7, ChronoUnit.HOURS);
         Instant end = TimeHelper.convertStringToInstance(contestEnd).minus(7, ChronoUnit.HOURS);
-        if (!end.isAfter(start))
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Thời gian bắt đầu và kết thúc không hợp lệ", null);
 
         Contest newContest = new Contest();
         newContest.setId(id);
@@ -72,14 +60,14 @@ public class ContestManagementServiceImpl implements ContestManagementService {
         newContest.setHide((byte) 0);
         newContest.setCreateAt(Instant.now());
         newContest.setUpdateAt(Instant.now());
-        newContest.setTeacher(foundTeacher.get());
+        newContest.setTeacher(teacherRepository.findById(teacherId).get());
         newContest = contestRepository.save(newContest);
 
         GroupHasContest groupHasContest = new GroupHasContest();
         GroupHasContestId groupHasContestId = new GroupHasContestId(id, groupId);
         groupHasContest.setId(groupHasContestId);
         groupHasContest.setContest(newContest);
-        groupHasContest.setSubjectClassGroup(foundGroup.get());
+        groupHasContest.setSubjectClassGroup(subjectClassGroupRepository.findById(groupId).get());
         groupHasContestRepository.save(groupHasContest);
 
         return new ResponseObject(HttpStatus.OK, "Success", newContest);
@@ -141,27 +129,63 @@ public class ContestManagementServiceImpl implements ContestManagementService {
     }
 
     @Override
-    public ResponseObject getContestActiveSortByDate() {
-        List<Contest> contests = contestRepository.getContestsActiveDescByDate();
-        return new ResponseObject(HttpStatus.OK, "Success", contests);
+    public ResponseObject getContestActiveSortByDate(int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Contest> contests = contestRepository.getContestsActiveDescByDate(PageRequest.of(page - 1, 10));
+        int totalPage = contests.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", contests.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
-    public ResponseObject searchContestsActiveSortByDate(String keyword) {
-        List<Contest> contests = contestRepository.searchContestsActiveDescByDate(keyword);
-        return new ResponseObject(HttpStatus.OK, "Success", contests);
+    public ResponseObject searchContestsActiveSortByDate(String keyword, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Contest> contests = contestRepository.searchContestsActiveDescByDate("%" + keyword.trim() + "%", PageRequest.of(page - 1, 10));
+        int totalPage = contests.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", contests.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
-    public ResponseObject getAllContestsActive() {
-        List<Contest> contests = contestRepository.getContestsActive();
-        return new ResponseObject(HttpStatus.OK, "Success", contests);
+    public ResponseObject getAllContestsActive(int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Contest> contests = contestRepository.getContestsActive(PageRequest.of(page - 1, 10));
+        int totalPage = contests.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", contests.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
-    public ResponseObject searchAllContestsActive(String keyword) {
-        List<Contest> contests = contestRepository.searchContestsActive(keyword);
-        return new ResponseObject(HttpStatus.OK, "Success", contests);
+    public ResponseObject searchAllContestsActive(String keyword, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Contest> contests = contestRepository.searchContestsActive("%" + keyword.trim() + "%", PageRequest.of(page - 1, 10));
+        int totalPage = contests.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", contests.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
@@ -182,10 +206,7 @@ public class ContestManagementServiceImpl implements ContestManagementService {
 
     @Override
     public ResponseObject lockContest(String contestId) {
-        Optional<Contest> foundContest = contestRepository.findById(contestId);
-        if (foundContest.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy bài thực hành", null);
-        Contest contest = foundContest.get();
+        Contest contest = contestRepository.findById(contestId).get();
         contest.setHide((byte) 1);
         contest.setUpdateAt(Instant.now());
         contest = contestRepository.save(contest);
@@ -194,10 +215,7 @@ public class ContestManagementServiceImpl implements ContestManagementService {
 
     @Override
     public ResponseObject unlockContest(String contestId) {
-        Optional<Contest> foundContest = contestRepository.findById(contestId);
-        if (foundContest.isEmpty())
-            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy bài thực hành", null);
-        Contest contest = foundContest.get();
+        Contest contest = contestRepository.findById(contestId).get();
         contest.setHide((byte) 0);
         contest.setUpdateAt(Instant.now());
         contest = contestRepository.save(contest);
@@ -205,17 +223,33 @@ public class ContestManagementServiceImpl implements ContestManagementService {
     }
 
     @Override
-    public ResponseObject getAllContestsCreateByTeacher(String teacherId) {
-        if (!teacherRepository.existsById(teacherId))
-            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy giáo viên", null);
-        return new ResponseObject(HttpStatus.OK, "Success", contestRepository.getAllContestsCreateByTeacher(teacherId));
+    public ResponseObject getAllContestsCreateByTeacher(String teacherId, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Contest> contests = contestRepository.getAllContestsCreateByTeacher(teacherId, PageRequest.of(page - 1, 10));
+        int totalPage = contests.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", contests.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
-    public ResponseObject searchAllContestsCreateByTeacher(String teacherId, String keyword) {
-        if (!teacherRepository.existsById(teacherId))
-            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy giáo viên", null);
-        return new ResponseObject(HttpStatus.OK, "Success", contestRepository.searchContestsCreateByTeacher(teacherId, keyword));
+    public ResponseObject searchAllContestsCreateByTeacher(String teacherId, String keyword, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Contest> contests = contestRepository.searchContestsCreateByTeacher(teacherId, "%" + keyword.trim() + "%", PageRequest.of(page - 1, 10));
+        int totalPage = contests.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", contests.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
@@ -227,15 +261,5 @@ public class ContestManagementServiceImpl implements ContestManagementService {
     @Override
     public ResponseObject getAllContestActiveCreatedByTeacherOfGroupId(String teacherId, String groupId) {
         return null;
-    }
-
-    private boolean contestRequestIsValid(ContestRequest contestRequest) {
-        boolean teacherIdIsValid = teacherRepository.existsById(contestRequest.getTeacherId());
-        boolean problemNameIsValid = contestRequest.getContestName().length() > 0;
-        Instant sTime = TimeHelper.convertStringToInstance(contestRequest.getContestStartTime());
-        Instant eTime = TimeHelper.convertStringToInstance(contestRequest.getContestEndTime());
-        boolean timeStartIsValid = sTime.isAfter(Instant.now());
-        boolean timeEndIsValid = eTime.isAfter(sTime);
-        return problemNameIsValid && timeStartIsValid && timeEndIsValid && teacherIdIsValid;
     }
 }

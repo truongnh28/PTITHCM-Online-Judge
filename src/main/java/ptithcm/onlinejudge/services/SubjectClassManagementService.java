@@ -20,7 +20,7 @@ public interface SubjectClassManagementService {
 
     ResponseObject getClassById(String classId);
 
-    ResponseObject getClassesTeacherOwnActive(String teacherId);
+    ResponseObject getClassesTeacherOwnActive(String teacherId, int page);
 
-    ResponseObject searchClassesTeacherOwnActive(String teacherId, String keyword);
+    ResponseObject searchClassesTeacherOwnActive(String teacherId, String keyword, int page);
 }

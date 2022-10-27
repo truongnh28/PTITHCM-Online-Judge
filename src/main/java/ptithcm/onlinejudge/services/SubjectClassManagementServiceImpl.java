@@ -112,15 +112,33 @@ public class SubjectClassManagementServiceImpl implements SubjectClassManagement
     }
 
     @Override
-    public ResponseObject getClassesTeacherOwnActive(String teacherId) {
-        List<SubjectClass> classes = subjectClassRepository.getClassesTeacherOwnActive(teacherId);
-        return new ResponseObject(HttpStatus.OK, "Success", classes);
+    public ResponseObject getClassesTeacherOwnActive(String teacherId, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<SubjectClass> classes = subjectClassRepository.getClassesTeacherOwnActive(teacherId, PageRequest.of(page - 1, 10));
+        int totalPage = classes.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", classes.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
-    public ResponseObject searchClassesTeacherOwnActive(String teacherId, String keyword) {
-        List<SubjectClass> classes = subjectClassRepository.searchClassesTeacherOwnActive(teacherId, keyword);
-        return new ResponseObject(HttpStatus.OK, "Success", classes);
+    public ResponseObject searchClassesTeacherOwnActive(String teacherId, String keyword, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<SubjectClass> classes = subjectClassRepository.searchClassesTeacherOwnByKeywordActive(teacherId, "%" + keyword + "%", PageRequest.of(page - 1, 10));
+        int totalPage = classes.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", classes.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     private boolean subjectClassRequestIsValidAddNew(SubjectClassRequest subjectClassRequest) {

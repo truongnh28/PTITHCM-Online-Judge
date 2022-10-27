@@ -28,10 +28,10 @@
                 <tr th:each="problem : ${problems}">
                   <td></td>
                   <td>
-                    <a class="text-decoration-none" th:text="${problem.problemId}" th:href="@{/student/contest/{contestId}/problem/{problemId}(contestId=${contestId},problemId=${problem.problemId})}"></a>
+                    <a class="text-decoration-none" th:text="${problem.problemId}" th:href="@{/student/group/{groupId}/contest/{contestId}/problem/{problemId}(groupId=${groupId},contestId=${contestId},problemId=${problem.problemId})}"></a>
                   </td>
                   <td>
-                    <a class="text-decoration-none" th:text="${problem.problemName}" th:href="@{/student/contest/{contestId}/problem/{problemId}(contestId=${contestId},problemId=${problem.problemId})}"></a>
+                    <a class="text-decoration-none" th:text="${problem.problemName}" th:href="@{/student/group/{groupId}/contest/{contestId}/problem/{problemId}(groupId=${groupId},contestId=${contestId},problemId=${problem.problemId})}"></a>
                   </td>
                 </tr>
                 </tbody>

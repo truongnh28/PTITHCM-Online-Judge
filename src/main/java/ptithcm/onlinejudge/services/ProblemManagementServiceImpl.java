@@ -3,6 +3,8 @@ package ptithcm.onlinejudge.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,16 +51,12 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
 
     @Override
     public ResponseObject addProblem(ProblemDTO problemDTO, String teacherId, int levelId, MultipartFile description, MultipartFile[] inputs, MultipartFile[] outputs, String[] types) {
-        Map<String, String> errors = addErrors(problemDTO, teacherId, levelId, description, inputs, outputs, types);
-        if (!errors.isEmpty())
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Có lỗi", errors);
         // store to spring boot server
         String descriptionPath = storageFileService.storeFile(description);
         // upload to cloudinary
         ResponseObject responseUpload = uploadFileService.uploadFile(descriptionPath);
         if (!responseUpload.getStatus().equals(HttpStatus.OK)) {
-            errors.put("server", "Không thể upload file được");
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Có lỗi", errors);
+            return new ResponseObject(HttpStatus.FOUND, "Không thể upload file! Vui lòng kiểm tra lại", null);
         }
         ObjectMapper objectMapper = new ObjectMapper();
         Map uploadInfo = objectMapper.convertValue(responseUpload.getData(), Map.class);
@@ -67,8 +65,7 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
 
         File file = new File(descriptionPath);
         if (!file.delete()) {
-            errors.put("server", "Lỗi server");
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Có lỗi", errors);
+            return new ResponseObject(HttpStatus.FOUND, "Lỗi server! Vui lòng kiểm tra lại", null);
         }
 
         Optional<Level> foundLevel = levelRepository.findById((byte) levelId);
@@ -93,8 +90,7 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
         for (String typeId : types) {
             Optional<ProblemType> foundType = problemTypeRepository.findById(typeId);
             if (foundType.isEmpty()) {
-                errors.put("server", "Không thể tìm thấy loại bài tập");
-                return new ResponseObject(HttpStatus.BAD_REQUEST, "Có lỗi", errors);
+                return new ResponseObject(HttpStatus.BAD_REQUEST, "Mã loại bài tập không tồn tại! Vui lòng kiểm tra lại", null);
             }
             ProblemType problemType = foundType.get();
             ProblemHasType problemHasType = new ProblemHasType();
@@ -112,8 +108,7 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
 
         ResponseObject responseAddProblemToYaml = addProblemToYaml.addProblemToYaml(problemYaml);
         if (!responseAddProblemToYaml.getStatus().equals(HttpStatus.OK)) {
-            errors.put("server", "Thêm bài tập thất bại");
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Thêm bài tập thất bại", errors);
+            return new ResponseObject(HttpStatus.FOUND, "Thêm bài tập thất bại", null);
         }
 
         Info info = new Info();
@@ -137,8 +132,7 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
         info.setSubtasks(subtasks);
         ResponseObject addProblemToDirResponse = addProblemToYaml.addProblemToDir(info, inputs, outputs);
         if (!addProblemToDirResponse.getStatus().equals(HttpStatus.OK)) {
-            errors.put("server", "Thêm bài tập thất bại");
-            return new ResponseObject(HttpStatus.FOUND, "Thêm bài tập thất bại", errors);
+            return new ResponseObject(HttpStatus.FOUND, "Thêm bài tập thất bại", null);
         }
         return new ResponseObject(HttpStatus.OK, "Success", problem);
     }
@@ -146,13 +140,9 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
     @Override
     public ResponseObject editProblem(ProblemDTO problemDTO, String teacherId, int levelId, MultipartFile description, String[] types) {
         String problemId = problemDTO.getProblemId();
-        Map<String, String> errors = editErrors(problemDTO, teacherId, levelId, types);
-        if (!errors.isEmpty())
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Có lỗi", errors);
         Optional<Problem> foundProblem = problemRepository.findById(problemId);
         if (foundProblem.isEmpty()) {
-            errors.put("server", "Không tìm thấy bài tập");
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Có lỗi", errors);
+            return new ResponseObject(HttpStatus.FOUND, "Mã bài tập không tồn tại! Vui lòng kiểm tra lại", null);
         }
         Problem editedProblem = foundProblem.get();
         editedProblem.setProblemName(problemDTO.getProblemName());
@@ -165,8 +155,7 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
             // upload to cloudinary
             ResponseObject responseUpload = uploadFileService.uploadFile(descriptionPath);
             if (!responseUpload.getStatus().equals(HttpStatus.OK)) {
-                errors.put("server", "Không thể upload file được");
-                return new ResponseObject(HttpStatus.BAD_REQUEST, "Có lỗi", errors);
+                return new ResponseObject(HttpStatus.FOUND, "Không thể upload được", null);
             }
             ObjectMapper objectMapper = new ObjectMapper();
             Map uploadInfo = objectMapper.convertValue(responseUpload.getData(), Map.class);
@@ -178,15 +167,13 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
 
         Optional<Level> foundLevel = levelRepository.findById((byte) levelId);
         if (foundLevel.isEmpty()) {
-            errors.put("server", "Không thể tìm thấy mức độ");
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Có lỗi", errors);
+            return new ResponseObject(HttpStatus.FOUND, "Mã mức độ không tồn tại! Vui lòng kiểm tra lại", null);
         }
         Level level = foundLevel.get();
 
         Optional<Teacher> foundTeacher = teacherRepository.findById(teacherId);
         if (foundTeacher.isEmpty()) {
-            errors.put("server", "Không thể tìm thấy giáo viên");
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Có lỗi", errors);
+            return new ResponseObject(HttpStatus.FOUND, "Mã giáo viên không tồn tại! Vui lòng kiểm tra lại", null);
         }
         Teacher teacher = foundTeacher.get();
 
@@ -199,8 +186,7 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
         for (String typeId: types) {
             Optional<ProblemType> foundType = problemTypeRepository.findById(typeId);
             if (foundType.isEmpty()) {
-                errors.put("server", "Không tìm thấy loại bài tập");
-                return new ResponseObject(HttpStatus.FOUND, "Có lỗi", errors);
+                return new ResponseObject(HttpStatus.FOUND, "Không tồn tại mã loại bài tập! Vui lòng kiểm tra lại", null);
             }
             ProblemType problemType = foundType.get();
             ProblemHasType problemHasType = new ProblemHasType();
@@ -218,14 +204,12 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
 
         ResponseObject addProblemToYamlResponse = addProblemToYaml.addProblemToYaml(problemYaml);
         if (!addProblemToYamlResponse.getStatus().equals(HttpStatus.OK)) {
-            errors.put("server", "Thêm bài tập thất bại");
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Có lỗi", errors);
+            return new ResponseObject(HttpStatus.FOUND, "Thêm bài tập thất bại", null);
         }
 
         Info info = addProblemToYaml.getProblemInfo(problemInfoPath + "/" + problemId + "/info.yml");
         if (info == null) {
-            errors.put("server", "Không tìm thấy bài tập trong hệ thống");
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Có lỗi", errors);
+            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy bài tập trong hệ thống", null);
         }
         info.setProblemName(editedProblem.getProblemName());
         info.setTimeLimit(editedProblem.getProblemTimeLimit());
@@ -233,8 +217,7 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
         info.setMaxScore(editedProblem.getProblemScore());
         ResponseObject addProblemInfoResponse = addProblemToYaml.addProblemInfo(info, problemInfoPath + "/" + problemId + "/info.yml");
         if (!addProblemInfoResponse.getStatus().equals(HttpStatus.OK)) {
-            errors.put("server", "Không cập nhật vào hệ thống được");
-            return new ResponseObject(HttpStatus.BAD_REQUEST, "Có lỗi", errors);
+            return new ResponseObject(HttpStatus.FOUND, "Có lỗi", null);
         }
 
         return new ResponseObject(HttpStatus.OK, "Success", editedProblem);
@@ -278,34 +261,63 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
     }
 
     @Override
-    public ResponseObject getAllProblemsActiveNotInContest(String contestId) {
-        if (!contestRepository.existsById(contestId))
-            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy bài thực hành", null);
-        return new ResponseObject(HttpStatus.OK, "Success", problemRepository.getProblemsActiveNotInContest(contestId));
+    public ResponseObject getAllProblemsActiveNotInContest(String contestId, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Problem> problems = problemRepository.getProblemsActiveNotInContest(contestId, PageRequest.of(page - 1, 10));
+        int totalPage = problems.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", problems.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
-    public ResponseObject searchAllProblemsActiveNotInContest(String contestId, String keyword) {
-        if (!contestRepository.existsById(contestId))
-            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy bài thực hành", null);
-        return new ResponseObject(HttpStatus.OK, "Success", problemRepository.searchProblemsActiveNotInContest(contestId, keyword));
+    public ResponseObject searchAllProblemsActiveNotInContest(String contestId, String keyword, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Problem> problems = problemRepository.searchProblemsActiveNotInContest(contestId, "%" + keyword + "%", PageRequest.of(page - 1, 10));
+        int totalPage = problems.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", problems.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
-    public ResponseObject getAllProblemsCreateByTeacher(String teacherId) {
-        if (!teacherRepository.existsById(teacherId)) {
-            return new ResponseObject(HttpStatus.FOUND, "Teacher is not exist", "");
-        }
-        List<Problem> problems = problemRepository.getAllProblemsByTeacher(teacherId);
-        return new ResponseObject(HttpStatus.OK, "Success", problems);
+    public ResponseObject getAllProblemsCreateByTeacher(String teacherId, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Problem> problems = problemRepository.getAllProblemsByTeacher(teacherId, PageRequest.of(page - 1, 10));
+        int totalPage = problems.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", problems.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
-    public ResponseObject searchAllProblemsCreateByTeacher(String teacherId, String keyword) {
-        if (!teacherRepository.existsById(teacherId))
-            return new ResponseObject(HttpStatus.FOUND, "Giáo viên không tồn tại", null);
-        List<Problem> problems = problemRepository.searchAllProblemsByTeacher(teacherId, keyword);
-        return new ResponseObject(HttpStatus.OK, "Success", problems);
+    public ResponseObject searchAllProblemsCreateByTeacher(String teacherId, String keyword, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Problem> problems = problemRepository.searchAllProblemsByTeacher(teacherId, "%" + keyword + "%", PageRequest.of(page - 1, 10));
+        int totalPage = problems.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", problems.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
@@ -359,61 +371,6 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
         problem.setUpdateAt(Instant.now());
         problem = problemRepository.save(problem);
         return new ResponseObject(HttpStatus.OK, "Success", problem);
-    }
-
-    private Map<String, String> addErrors(ProblemDTO problemDTO, String teacherId, int levelId, MultipartFile description, MultipartFile[] inputs, MultipartFile[] outputs, String[] types) {
-        Map<String, String> ret = new HashMap<>();
-        String id = problemDTO.getProblemId();
-        String name = problemDTO.getProblemName();
-        int timeLimit = problemDTO.getProblemTimeLimit();
-        int memoryLimit = problemDTO.getProblemMemoryLimit();
-        int score = problemDTO.getProblemScore();
-        if (id == null || id.isEmpty() || id.length() > 100)
-            ret.put("problemId", "Mã bài tập không được trống và không quá 100 ký tự");
-        if (name == null || name.isEmpty() || name.length() > 100)
-            ret.put("problemName", "Tên bài tập không được trống và không quá 100 ký tự");
-        if (timeLimit == 0 || timeLimit > 1000)
-            ret.put("problemTimeLimit", "Giới hạn thời gian không được 0s và không quá 1000s");
-        if (memoryLimit == 0 || memoryLimit > 1000)
-            ret.put("problemMemoryLimit", "Giới hạn bộ nhớ không được 0MB và không quá 1000MB");
-        if (score < 10 || score > 1000)
-            ret.put("problemScore", "Điểm bài tập nằm trong đoạn 10 đến 1000");
-        if (description == null || description.isEmpty())
-            ret.put("problemDescription", "File mô tả không được upload");
-        if (types.length == 0)
-            ret.put("problemTypes", "Vui lòng chọn ít nhất một loại bài tập");
-        if (id != null && !id.isEmpty() && id.length() <= 100 && problemRepository.existsById(id))
-            ret.put("problemId", "Mã bài tập đã tồn tại, vui lòng chọn mã bài tập khác");
-        if (!inputsOutputsValid(inputs, outputs))
-            ret.put("filesUpload", "Các file upload không hợp lệ");
-        if (!levelRepository.existsById((byte) levelId))
-            ret.put("level", "Không tìm thấy mức độ");
-        if (!teacherRepository.existsById(teacherId))
-            ret.put("server", "Không tìm thấy giáo viên");
-        return ret;
-    }
-
-    private Map<String, String> editErrors(ProblemDTO problemDTO, String teacherId, int levelId, String[] types) {
-        Map<String, String> ret = new HashMap<>();
-        String name = problemDTO.getProblemName();
-        int timeLimit = problemDTO.getProblemTimeLimit();
-        int memoryLimit = problemDTO.getProblemMemoryLimit();
-        int score = problemDTO.getProblemScore();
-        if (name == null || name.isEmpty() || name.length() > 100)
-            ret.put("problemName", "Tên bài tập không được để trống và quá 100 ký tự");
-        if (timeLimit == 0 || timeLimit > 1000)
-            ret.put("problemTimeLimit", "Giới hạn thời gian không được 0s và không quá 1000s");
-        if (memoryLimit == 0 || memoryLimit > 1000)
-            ret.put("problemMemoryLimit", "Giới hạn bộ nhớ không được 0MB và không quá 1000MB");
-        if (score < 10 || score > 1000)
-            ret.put("problemScore", "Điểm bài tập nằm trong đoạn từ 10 đến 1000");
-        if (types.length == 0)
-            ret.put("problemTypes", "Vui lòng chọn ít nhất một loại bài tập");
-        if (!levelRepository.existsById((byte) levelId))
-            ret.put("level", "Không tìm thấy mức độ");
-        if (!teacherRepository.existsById(teacherId))
-            ret.put("server", "Không tìm thấy giáo viên");
-        return ret;
     }
 
     private boolean isUploaded(MultipartFile file) {

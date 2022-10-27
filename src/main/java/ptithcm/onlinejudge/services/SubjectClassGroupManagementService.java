@@ -10,9 +10,9 @@ public interface SubjectClassGroupManagementService {
 
     ResponseObject editGroup(SubjectClassGroupDTO group);
 
-    ResponseObject getGroupsOfClassActive(String classId);
+    ResponseObject getGroupsOfClassActive(String classId, int page);
 
-    ResponseObject searchGroupOfClassActive(String classId, String keyword);
+    ResponseObject searchGroupOfClassActive(String classId, String keyword, int page);
 
     ResponseObject getAllGroupsOfClass(String classId, int page);
 
@@ -24,7 +24,7 @@ public interface SubjectClassGroupManagementService {
 
     ResponseObject getGroupById(String groupId);
 
-    ResponseObject getGroupsHaveStudent(String studentId);
+    ResponseObject getGroupsHaveStudent(String studentId, int page);
 
-    ResponseObject searchGroupsHaveStudent(String studentId, String keyword);
+    ResponseObject searchGroupsHaveStudent(String studentId, String keyword, int page);
 }

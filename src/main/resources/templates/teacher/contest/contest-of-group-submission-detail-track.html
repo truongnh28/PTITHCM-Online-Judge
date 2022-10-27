@@ -6,6 +6,7 @@
 <main>
   <div class="container-fluid">
     <div class="py-2"></div>
+    <a class="mb-3 btn btn-primary" role="button" th:href="@{/teacher/class/{classId}/group/{groupId}/contest(classId=${classId},groupId=${groupId})}">Trở lại trang bài thực hành</a>
     <div class="row">
       <div class="col-9">
         <div class="card">
@@ -39,7 +40,7 @@
         </div>
       </div>
       <div class="col-3">
-        <div th:replace="/fragments/right-tab :: right-tab"></div>
+        <div th:replace="/fragments/right-tab :: right-tab-teacher"></div>
       </div>
     </div>
     <div class="py-2"></div>

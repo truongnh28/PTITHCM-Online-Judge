@@ -1,5 +1,7 @@
 package ptithcm.onlinejudge.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -9,8 +11,10 @@ import java.util.List;
 
 @Repository
 public interface SubmissionRepository extends JpaRepository<Submission, String> {
-    @Query(value = "select * from submissions where submissions.contest_id = ?1 order by submissions.submission_time desc", nativeQuery = true)
-    List<Submission> getSubmissionsByContestId(String contestId);
+    @Query(value = "select * from submissions where submissions.contest_id = ?1 order by submissions.submission_time desc",
+            countQuery = "select count(*) from submissions where submissions.contest_id = ?1 order by submissions.submission_time desc",
+            nativeQuery = true)
+    Page<Submission> getSubmissionsByContestId(String contestId, Pageable pageable);
 
     @Query(value = "select count(*) from submissions where submissions.contest_id = ?1", nativeQuery = true)
     Long countAllSubmissionsByContestId(String contestId);

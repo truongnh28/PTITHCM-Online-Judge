@@ -13,6 +13,7 @@
           <h4 class="card-title">
             <span>Danh sách bài tập của bài thực hành </span>
             <span th:text="${contestName}" class="fw-bold"></span>
+            <span th:text="' - ' + ${contestId}" class="fw-bold"></span>
           </h4>
         </div>
         <div class="table-responsive">
@@ -59,14 +60,15 @@
     <div class="card mb-3">
       <div class="card-body">
         <div class="border-bottom pb-3 align-items-center">
-          <form class="d-flex" role="search" th:action="@{/teacher/class/{classId}/group/{groupId}/contest/{contestId}/problem(classId=${classId},groupId=${groupId})}" method="post">
+          <form class="d-flex" role="search" th:action="@{/teacher/class/{classId}/group/{groupId}/contest/{contestId}/problem/page/1?keyword=${keyword}(classId=${classId},groupId=${groupId},contestId=${contestId})}">
             <h4 class="card-title">
               <span>Danh sách bài tập trong hệ thống</span>
             </h4>
             <div class="ms-auto d-flex">
-              <input class="form-control form-control-sm me-2" data-bs-toggle="tooltip" data-bs-placement="top" name="keyword" th:value="${keyword}"
+              <input class="form-control me-2" data-bs-toggle="tooltip" data-bs-placement="top" name="keyword" th:value="${keyword}"
                      data-bs-title="Nhập mã hoặc tên bài thực hành muốn tìm" type="search" placeholder="Tìm bài thực hành">
-              <button class="ms-auto btn btn-outline-success btn-sm" type="submit">Search</button>
+              <button class="ms-auto btn btn-outline-success me-2" type="submit">Search</button>
+              <button class="btn btn-outline-secondary" th:data-class="${classId}" th:data-group="${groupId}" th:data-contest="${contestId}" onclick="clearSearch(this.getAttribute('data-class'), this.getAttribute('data-group'), this.getAttribute('data-contest'))">Clear</button>
             </div>
           </form>
         </div>
@@ -109,6 +111,7 @@
           </table>
         </div>
       </div>
+      <div th:replace="/fragments/pagination :: pagination"></div>
     </div>
     <div class="py-2"></div>
   </div>
@@ -126,5 +129,6 @@
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 </script>
+<script th:src="@{/js/teacher-class-group-contest-problem.js}" type="text/javascript"></script>
 </body>
 </html>

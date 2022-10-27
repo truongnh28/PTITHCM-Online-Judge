@@ -22,14 +22,14 @@
           <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <div class="d-grid gap-2">
-                <a class="btn btn-primary" th:href="@{/student/contest/{contestId}/submit/{problemId}(contestId=${contestId},problemId=${problemDetail.problemId})}"
+                <a class="btn btn-primary" th:href="@{/student/group/{groupId}/contest/{contestId}/submit/{problemId}(groupId=${groupId},contestId=${contestId},problemId=${problemDetail.problemId})}"
                    role="button">Nộp bài</a>
               </div>
             </li>
             <li class="list-group-item">
               <div>
                 <span><img th:src="@{/images/list.svg}" alt="list.svg"></span>
-                <a th:href="@{/student/contest/{contestId}/submission(contestId=${contest.contestId})}" class="text-decoration-none">Danh sách bài nộp</a>
+                <a th:href="@{/student/group/{groupId}/contest/{contestId}/submission(groupId=${groupId},contestId=${contest.contestId})}" class="text-decoration-none">Danh sách bài nộp</a>
               </div>
             </li>
             <li class="list-group-item">

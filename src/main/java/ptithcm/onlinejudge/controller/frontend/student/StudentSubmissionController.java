@@ -17,15 +17,20 @@ import ptithcm.onlinejudge.model.entity.Contest;
 import ptithcm.onlinejudge.model.entity.Submission;
 import ptithcm.onlinejudge.model.response.ResponseObject;
 import ptithcm.onlinejudge.services.ContestManagementService;
+import ptithcm.onlinejudge.services.SubjectClassGroupManagementService;
 import ptithcm.onlinejudge.services.SubmissionManagementService;
 import ptithcm.onlinejudge.services.SubmitService;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/student/group/{groupId}/contest/{contestId}/submission")
 public class StudentSubmissionController {
+    @Autowired
+    private SubjectClassGroupManagementService subjectClassGroupManagementService;
     @Autowired
     private ContestMapper contestMapper;
     @Autowired
@@ -34,22 +39,45 @@ public class StudentSubmissionController {
     private SubmissionMapper submissionMapper;
     @Autowired
     private SubmissionManagementService submissionManagementService;
+
     @GetMapping("")
-    public String showSubmissionsPage(@PathVariable("groupId") String groupId, @PathVariable("contestId") String contestId, Model model) {
+    public String showSubmissions(@PathVariable("groupId") String groupId, @PathVariable("contestId") String contestId, HttpSession session) {
+        if (isExpired(session))
+            return "redirect:/";
+        if (!isValid(groupId, contestId))
+            return "redirect:/error";
+        return "redirect:/student/group/{groupId}/contest/{contestId}/submission/page/1";
+    }
+    @GetMapping("/page/{page}")
+    public String showSubmissionsPage(@PathVariable("groupId") String groupId, @PathVariable("contestId") String contestId, @PathVariable("page") int page, Model model, HttpSession session) {
+        if (isExpired(session))
+            return "redirect:/";
+        if (!isValid(groupId, contestId))
+            return "redirect:/error";
         model.addAttribute("pageTitle", "Danh sách bài nộp");
         ResponseObject getContestByIdResponse = contestManagementService.getContestById(contestId);
         if (!getContestByIdResponse.getStatus().equals(HttpStatus.OK))
             return "redirect:/error";
         ContestDetailDTO contest = contestMapper.entityToDetailDTO((Contest) getContestByIdResponse.getData());
-        List<SubmissionDTO> submissions = ((List<Submission>) submissionManagementService.getAllSubmission().getData())
-                .stream().map(item -> submissionMapper.entityToDTO(item)).collect(Collectors.toList());
+        Map<String, Object> response = (Map<String, Object>) submissionManagementService.getSubmissionsByContest(contestId, page).getData();
+        List<SubmissionDTO> submissions = getSubmissions(response).stream().map(item -> submissionMapper.entityToDTO(item)).collect(Collectors.toList());
+        int currentPage = (int) response.getOrDefault("currentPage", 0);
+        int totalPages = (int) response.getOrDefault("totalPages", 0);
+        String pageUrlPrefix = String.format("/student/group/%s/contest/%s/submission", groupId, contestId);
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("pageUrlPrefix", pageUrlPrefix);
         model.addAttribute("submissions", submissions);
         model.addAttribute("contest", contest);
         return "/student/submission";
     }
 
     @GetMapping("/{submissionId}")
-    public String showSubmissionDetail(@PathVariable("groupId") String groupId, @PathVariable("contestId") String contestId, @PathVariable("submissionId") String submissionId, Model model) {
+    public String showSubmissionDetail(@PathVariable("groupId") String groupId, @PathVariable("contestId") String contestId, @PathVariable("submissionId") String submissionId, Model model, HttpSession session) {
+        if (isExpired(session))
+            return "redirect:/";
+        if (!isValid(groupId, contestId))
+            return "redirect:/error";
         model.addAttribute("pageTitle", "Bài nộp");
         ResponseObject getContestByIdResponse = contestManagementService.getContestById(contestId);
         if (!getContestByIdResponse.getStatus().equals(HttpStatus.OK))
@@ -62,5 +90,17 @@ public class StudentSubmissionController {
         model.addAttribute("submission", submission);
         model.addAttribute("contest", contest);
         return "student/submission-detail";
+    }
+
+    private boolean isExpired(HttpSession session) {
+        return session.getAttribute("user") == null;
+    }
+
+    private boolean isValid(String groupId, String contestId) {
+        return subjectClassGroupManagementService.getGroupById(groupId).getStatus().equals(HttpStatus.OK) && contestManagementService.getContestById(contestId).getStatus().equals(HttpStatus.OK);
+    }
+
+    private List<Submission> getSubmissions(Map<String, Object> res) {
+        return (List<Submission>) res.getOrDefault("data", null);
     }
 }

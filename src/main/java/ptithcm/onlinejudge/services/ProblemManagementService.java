@@ -18,13 +18,13 @@ public interface ProblemManagementService {
 
     ResponseObject getAllProblemsActive();
 
-    ResponseObject getAllProblemsActiveNotInContest(String contestId);
+    ResponseObject getAllProblemsActiveNotInContest(String contestId, int page);
 
-    ResponseObject searchAllProblemsActiveNotInContest(String contestId, String keyword);
+    ResponseObject searchAllProblemsActiveNotInContest(String contestId, String keyword, int page);
 
-    ResponseObject getAllProblemsCreateByTeacher(String teacherId);
+    ResponseObject getAllProblemsCreateByTeacher(String teacherId, int page);
 
-    ResponseObject searchAllProblemsCreateByTeacher(String teacherId, String keyword);
+    ResponseObject searchAllProblemsCreateByTeacher(String teacherId, String keyword, int page);
 
     ResponseObject getAllProblemsForAddingOrRemovingContest(String contestId);
 

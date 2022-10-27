@@ -10,14 +10,15 @@
     <div class="card mb-3">
       <div class="card-body">
         <div class="border-bottom pb-3 align-items-center">
-          <form class="d-flex" role="search" th:action="@{/teacher/class/{classId}/group/{groupId}/contest/clone(classId=${classId},groupId=${groupId})}" method="post">
+          <form class="d-flex" role="search" th:action="@{/teacher/class/{classId}/group/{groupId}/contest/clone/page/1?keyword=${keyword}(classId=${classId},groupId=${groupId})}">
             <h4 class="card-title">
               <span>Danh sách bài thực hành đang có</span>
             </h4>
             <div class="ms-auto d-flex">
-              <input class="form-control form-control-sm me-2" data-bs-toggle="tooltip" data-bs-placement="top" name="keyword" th:value="${keyword}"
+              <input class="form-control me-2" data-bs-toggle="tooltip" data-bs-placement="top" name="keyword" th:value="${keyword}"
                      data-bs-title="Nhập mã hoặc tên bài thực hành muốn tìm" type="search" placeholder="Tìm bài thực hành">
-              <button class="ms-auto btn btn-outline-success btn-sm" type="submit">Search</button>
+              <button class="ms-auto btn btn-outline-success me-2" type="submit">Search</button>
+              <button class="btn btn-outline-secondary" th:data-class="${classId}" th:data-group="${groupId}" onclick="clearSearch(this.getAttribute('data-class'), this.getAttribute('data-group'))">Clear</button>
             </div>
           </form>
         </div>
@@ -58,6 +59,7 @@
           </table>
         </div>
       </div>
+      <div th:replace="/fragments/pagination :: pagination"></div>
     </div>
     <div class="py-2"></div>
   </div>
@@ -74,6 +76,8 @@
 <script>
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
+<script th:src="@{/js/teacher-class-group-contest-clone.js}" type="text/javascript">
 </script>
 </body>
 </html>
