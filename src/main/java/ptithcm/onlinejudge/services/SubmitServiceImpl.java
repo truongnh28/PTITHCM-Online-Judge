@@ -134,11 +134,14 @@ public class SubmitServiceImpl implements SubmitService {
     @Override
     public ResponseObject submitProblemFromController(String studentId, String problemId, String contestId, String language, MultipartFile file) {
         if (file == null)
-            return new ResponseObject(HttpStatus.FOUND, "File not found", "");
+            return new ResponseObject(HttpStatus.FOUND, "File not found", null);
+        Contest contestFound = contestRepository.findById(contestId).get();
+        if (Instant.now().isAfter(contestFound.getContestEnd())) {
+            return new ResponseObject(HttpStatus.BAD_REQUEST, "Không submit được", null);
+        }
         String originalFileName = file.getOriginalFilename();
-
         if (originalFileName == null)
-            return new ResponseObject(HttpStatus.FOUND, "File upload not valid", "");
+            return new ResponseObject(HttpStatus.FOUND, "File upload not valid", null);
 
         String uploadFileName = StringUtils.cleanPath(originalFileName);
         String extensionFile = FileHelper.getFileExtensionFromPath(uploadFileName);
@@ -148,7 +151,7 @@ public class SubmitServiceImpl implements SubmitService {
         File sourceCodeFolder = new File(folder);
         if (!sourceCodeFolder.exists()) {
             if (!sourceCodeFolder.mkdirs())
-                return new ResponseObject(HttpStatus.FOUND, "Make folder source code failed", "");
+                return new ResponseObject(HttpStatus.FOUND, "Make folder source code failed", null);
         }
         try {
             Path pathSourceCode = Paths.get(fullPath);

@@ -7,14 +7,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ptithcm.onlinejudge.model.entity.Submission;
 
-import java.util.List;
-
 @Repository
 public interface SubmissionRepository extends JpaRepository<Submission, String> {
     @Query(value = "select * from submissions where submissions.contest_id = ?1 order by submissions.submission_time desc",
             countQuery = "select count(*) from submissions where submissions.contest_id = ?1 order by submissions.submission_time desc",
             nativeQuery = true)
-    Page<Submission> getSubmissionsByContestId(String contestId, Pageable pageable);
+    Page<Submission> getSubmissionsOfContest(String contestId, Pageable pageable);
+
+    @Query(value = "select * from submissions where submissions.contest_id = ?1 and lower(submissions.student_id) like lower(?2) order by submissions.submission_time desc",
+            countQuery = "select count(*) from submissions where submissions.contest_id = ?1 and lower(submissions.student_id) like lower(?2) order by submissions.submission_time desc",
+            nativeQuery = true)
+    Page<Submission> searchSubmissionOfContestByKeyword(String contestId, String keyword, Pageable pageable);
 
     @Query(value = "select count(*) from submissions where submissions.contest_id = ?1", nativeQuery = true)
     Long countAllSubmissionsByContestId(String contestId);

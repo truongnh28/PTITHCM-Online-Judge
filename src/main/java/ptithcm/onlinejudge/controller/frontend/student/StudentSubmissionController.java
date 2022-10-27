@@ -1,10 +1,10 @@
 package ptithcm.onlinejudge.controller.frontend.student;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ptithcm.onlinejudge.data.Data;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +19,6 @@ import ptithcm.onlinejudge.model.response.ResponseObject;
 import ptithcm.onlinejudge.services.ContestManagementService;
 import ptithcm.onlinejudge.services.SubjectClassGroupManagementService;
 import ptithcm.onlinejudge.services.SubmissionManagementService;
-import ptithcm.onlinejudge.services.SubmitService;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -49,7 +48,7 @@ public class StudentSubmissionController {
         return "redirect:/student/group/{groupId}/contest/{contestId}/submission/page/1";
     }
     @GetMapping("/page/{page}")
-    public String showSubmissionsPage(@PathVariable("groupId") String groupId, @PathVariable("contestId") String contestId, @PathVariable("page") int page, Model model, HttpSession session) {
+    public String showSubmissionsPage(@PathVariable("groupId") String groupId, @PathVariable("contestId") String contestId, @Param("keyword") String keyword, @PathVariable("page") int page, Model model, HttpSession session) {
         if (isExpired(session))
             return "redirect:/";
         if (!isValid(groupId, contestId))
@@ -59,7 +58,11 @@ public class StudentSubmissionController {
         if (!getContestByIdResponse.getStatus().equals(HttpStatus.OK))
             return "redirect:/error";
         ContestDetailDTO contest = contestMapper.entityToDetailDTO((Contest) getContestByIdResponse.getData());
-        Map<String, Object> response = (Map<String, Object>) submissionManagementService.getSubmissionsByContest(contestId, page).getData();
+        Map<String, Object> response = (Map<String, Object>) submissionManagementService.getSubmissionsOfContest(contestId, page).getData();
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            response = (Map<String, Object>) submissionManagementService.searchSubmissionsOfContestByKeyword(contestId, keyword, page).getData();
+            model.addAttribute("keyword", keyword);
+        }
         List<SubmissionDTO> submissions = getSubmissions(response).stream().map(item -> submissionMapper.entityToDTO(item)).collect(Collectors.toList());
         int currentPage = (int) response.getOrDefault("currentPage", 0);
         int totalPages = (int) response.getOrDefault("totalPages", 0);

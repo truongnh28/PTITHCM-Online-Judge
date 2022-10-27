@@ -3,11 +3,9 @@ package ptithcm.onlinejudge.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ptithcm.onlinejudge.model.adapter.GetStatusResponse;
-import ptithcm.onlinejudge.model.entity.SubjectClass;
 import ptithcm.onlinejudge.model.entity.Submission;
 import ptithcm.onlinejudge.model.response.ResponseObject;
 import ptithcm.onlinejudge.repository.ContestRepository;
@@ -94,10 +92,25 @@ public class SubmissionManagementServiceImpl implements SubmissionManagementServ
     }
 
     @Override
-    public ResponseObject getSubmissionsByContest(String contestId, int page) {
+    public ResponseObject getSubmissionsOfContest(String contestId, int page) {
         if (page <= 0)
             page = 1;
-        Page<Submission> submissions = submissionRepository.getSubmissionsByContestId(contestId, PageRequest.of(page - 1, 10));
+        Page<Submission> submissions = submissionRepository.getSubmissionsOfContest(contestId, PageRequest.of(page - 1, 10));
+        int totalPage = submissions.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", submissions.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
+    }
+
+    @Override
+    public ResponseObject searchSubmissionsOfContestByKeyword(String contestId, String keyword, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Submission> submissions = submissionRepository.searchSubmissionOfContestByKeyword(contestId, "%" + keyword.trim() + "%", PageRequest.of(page - 1, 10));
         int totalPage = submissions.getTotalPages();
         if (page > totalPage)
             page = totalPage;

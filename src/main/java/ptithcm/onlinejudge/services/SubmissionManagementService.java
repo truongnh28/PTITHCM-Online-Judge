@@ -6,5 +6,7 @@ public interface SubmissionManagementService {
 
     ResponseObject getSubmissionById(String submissionId);
 
-    ResponseObject getSubmissionsByContest(String contestId, int page);
+    ResponseObject getSubmissionsOfContest(String contestId, int page);
+
+    ResponseObject searchSubmissionsOfContestByKeyword(String contestId, String keyword, int page);
 }

@@ -69,11 +69,13 @@ public class StudentSubmitController {
             return "redirect:/error";
         String studentId = session.getAttribute("user").toString();
         ResponseObject submitProblemResponse = submitService.submitProblemFromController(studentId, problemId, contestId, language, file);
-        if (!submitProblemResponse.getStatus().equals(HttpStatus.OK))
+        if (submitProblemResponse.getStatus().equals(HttpStatus.BAD_REQUEST))
+            return "redirect:/student/group/{groupId}/contest/{contestId}/submission";
+        else if (submitProblemResponse.getStatus().equals(HttpStatus.FOUND))
             return "redirect:/error";
         Submission submission = (Submission) submitProblemResponse.getData();
         updateVerdict(submission);
-        return "redirect:/student/contest/{contestId}/submission/" + submission.getId();
+        return "redirect:/student/group/{groupId}/contest/{contestId}/submission/" + submission.getId();
     }
 
     @Async

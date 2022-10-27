@@ -1,6 +1,7 @@
 package ptithcm.onlinejudge.controller.frontend.teacher;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -86,12 +87,16 @@ public class TeacherContestOfGroupTrackController {
     }
 
     @GetMapping("/submission/track/page/{page}")
-    public String showSubmissionPage(@PathVariable("classId") String classId, @PathVariable("groupId") String groupId, @PathVariable("contestId") String contestId, @PathVariable("page") int page, Model model) {
+    public String showSubmissionPage(@PathVariable("classId") String classId, @PathVariable("groupId") String groupId, @PathVariable("contestId") String contestId, @Param("keyword") String keyword, @PathVariable("page") int page, Model model) {
         if (!isValid(classId, groupId, contestId))
             return "redirect:/error";
         model.addAttribute("pageTitle", "Bài nộp");
         ContestDetailDTO contest = contestMapper.entityToDetailDTO(getContestById(contestId));
-        Map<String, Object> response = (Map<String, Object>) submissionManagementService.getSubmissionsByContest(contestId, page).getData();
+        Map<String, Object> response = (Map<String, Object>) submissionManagementService.getSubmissionsOfContest(contestId, page).getData();
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            response = (Map<String, Object>) submissionManagementService.searchSubmissionsOfContestByKeyword(contestId, keyword, page).getData();
+            model.addAttribute("keyword", keyword);
+        }
         List<SubmissionDTO> submissions = getSubmissions(response).stream().map(item -> submissionMapper.entityToDTO(item)).collect(Collectors.toList());
         int currentPage = (int) response.getOrDefault("currentPage", 0);
         int totalPages = (int) response.getOrDefault("totalPages", 0);
