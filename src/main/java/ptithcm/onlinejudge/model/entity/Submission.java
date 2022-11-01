@@ -14,8 +14,8 @@ import java.time.Instant;
 @Table(name = "submissions")
 public class Submission {
     @Id
-    @Column(name = "submission_id", nullable = false)
-    private Long id;
+    @Column(name = "submission_id", nullable = false, length = 100)
+    private String id;
 
     @Column(name = "submission_time")
     private Instant submissionTime;
@@ -23,8 +23,15 @@ public class Submission {
     @Column(name = "submission_score")
     private Integer submissionScore;
 
+    @Column(name = "submission_source_path", nullable = false, length = 100)
+    private String submissionSourcePath;
+
     @Column(name = "verdict")
     private Byte verdict;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "contest_id", nullable = false)
+    private Contest contest;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "student_id", nullable = false)

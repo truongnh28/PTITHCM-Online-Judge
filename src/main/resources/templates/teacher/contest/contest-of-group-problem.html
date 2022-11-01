@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head :: head">
+<body class="bg-light">
+<header th:replace="/fragments/teacher-header :: teacher-header"></header>
+<main>
+  <div class="container-fluid">
+    <div class="py-2"></div>
+    <a class="btn btn-primary mb-3" th:href="@{/teacher/class/{classId}/group/{groupId}/contest(classId=${classId},groupId=${groupId})}" role="button">Về danh sách bài thực hành</a>
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="border-bottom pb-3 align-items-center">
+          <h4 class="card-title">
+            <span>Danh sách bài tập của bài thực hành </span>
+            <span th:text="${contestName}" class="fw-bold"></span>
+            <span th:text="' - ' + ${contestId}" class="fw-bold"></span>
+          </h4>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>Mã bài tập</th>
+              <th>Tên bài tập</th>
+              <th>Điểm</th>
+              <th>Giới hạn thời gian</th>
+              <th>Giới hạn bộ nhớ</th>
+              <th>Tác giả</th>
+              <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="problem : ${currProblems}">
+              <td th:text="${problem.problemId}"></td>
+              <td th:text="${problem.problemName}"></td>
+              <td th:text="${problem.problemScore}"></td>
+              <td th:text="${problem.problemTimeLimit} + ' giây'"></td>
+              <td th:text="${problem.problemMemoryLimit} + 'MB'"></td>
+              <td th:text="${problem.teacher.teacherId}"></td>
+              <td>
+                <a class="btn btn-success btn-sm" th:href="@{/teacher/class/{classId}/group/{groupId}/contest/{contestId}/problem/{problemId}/info(classId=${classId},groupId=${groupId},contestId=${contestId},problemId=${problem.problemId})}" role="button" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Xem chi tiết bài tập">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                  </svg>
+                </a>
+                <a class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Xóa bài tập khỏi bài thực hành" th:href="@{/teacher/class/{classId}/group/{groupId}/contest/{contestId}/problem/{problemId}/remove(classId=${classId},groupId=${groupId},contestId=${contestId},problemId=${problem.problemId})}" role="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                  </svg>
+                </a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="border-bottom pb-3 align-items-center">
+          <form class="d-flex" role="search" th:action="@{/teacher/class/{classId}/group/{groupId}/contest/{contestId}/problem/page/1?keyword=${keyword}(classId=${classId},groupId=${groupId},contestId=${contestId})}">
+            <h4 class="card-title">
+              <span>Danh sách bài tập trong hệ thống</span>
+            </h4>
+            <div class="ms-auto d-flex">
+              <input class="form-control me-2" data-bs-toggle="tooltip" data-bs-placement="top" name="keyword" th:value="${keyword}"
+                     data-bs-title="Nhập mã hoặc tên bài thực hành muốn tìm" type="search" placeholder="Tìm bài thực hành">
+              <button class="ms-auto btn btn-outline-success me-2" type="submit">Search</button>
+              <button class="btn btn-outline-secondary" th:data-class="${classId}" th:data-group="${groupId}" th:data-contest="${contestId}" onclick="clearSearch(this.getAttribute('data-class'), this.getAttribute('data-group'), this.getAttribute('data-contest'))">Clear</button>
+            </div>
+          </form>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>Mã bài tập</th>
+              <th>Tên bài tập</th>
+              <th>Điểm</th>
+              <th>Giới hạn thời gian</th>
+              <th>Giới hạn bộ nhớ</th>
+              <th>Tác giả</th>
+              <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="problem : ${problems}">
+              <td th:text="${problem.problemId}"></td>
+              <td th:text="${problem.problemName}"></td>
+              <td th:text="${problem.problemScore}"></td>
+              <td th:text="${problem.problemTimeLimit} + ' giây'"></td>
+              <td th:text="${problem.problemMemoryLimit} + 'MB'"></td>
+              <td th:text="${problem.teacher.teacherId}"></td>
+              <td>
+                <a class="btn btn-success btn-sm" th:href="@{/teacher/class/{classId}/group/{groupId}/contest/{contestId}/problem/{problemId}/info(classId=${classId},groupId=${groupId},contestId=${contestId},problemId=${problem.problemId})}" role="button" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Xem chi tiết bài tập">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                  </svg>
+                </a>
+                <a class="btn btn-primary btn-sm" th:href="@{/teacher/class/{classId}/group/{groupId}/contest/{contestId}/problem/{problemId}/add(classId=${classId},groupId=${groupId},contestId=${contestId},problemId=${problem.problemId})}" role="button" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Thêm bài tập vào bài thực hành">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                  </svg>
+                </a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div th:replace="/fragments/pagination :: pagination"></div>
+    </div>
+    <div class="py-2"></div>
+  </div>
+</main>
+<footer th:replace="/fragments/footer :: footer"></footer>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+        integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+        crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
+        integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+        crossorigin="anonymous"
+></script>
+<script>
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
+<script th:src="@{/js/teacher-class-group-contest-problem.js}" type="text/javascript"></script>
+</body>
+</html>

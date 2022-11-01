@@ -2,39 +2,52 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="/fragments/head :: head">
 <body class="bg-light">
-<main class="container">
-    <header th:replace="/fragments/student-header :: student-header"></header>
-    <section>
-        <div class="card table-responsive">
-            <table class="table table-hover caption-top">
-                <caption class="bg-secondary bg-opacity-10 ps-4">
-                    <h2>Danh sách các bài tập</h2>
-                </caption>
-                <thead class="thead-inverse">
+<header th:replace="/fragments/student-header :: student-header"></header>
+<main>
+  <div class="container-fluid">
+    <div class="py-2"></div>
+    <div class="row">
+      <div class="col-9">
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="border-bottom pb-3 align-items-center">
+              <h4 class="card-title">
+                <span>Danh sách bài tập</span>
+              </h4>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
                 <tr>
-                    <th></th>
-                    <th>#</th>
-                    <th>Tiêu đề</th>
+                  <th></th>
+                  <th>Mã bài tập</th>
+                  <th>Tên bài tập</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="problem : ${problems}">
-                    <td class="text-center">
-                    </td>
-                    <td>
-                        <a th:href="@{/student/problem/{problemId}(problemId=${problem.getProblemId})}" th:text="${problem.getProblemId}" class="text-decoration-none"></a>
-                    </td>
-                    <td>
-                        <a th:href="@{/student/problem/{problemId}(problemId=${problem.getProblemId})}" th:text="${problem.getProblemName}" class="text-decoration-none"></a>
-                    </td>
+                  <td></td>
+                  <td>
+                    <a class="text-decoration-none" th:text="${problem.problemId}" th:href="@{/student/group/{groupId}/contest/{contestId}/problem/{problemId}(groupId=${groupId},contestId=${contestId},problemId=${problem.problemId})}"></a>
+                  </td>
+                  <td>
+                    <a class="text-decoration-none" th:text="${problem.problemName}" th:href="@{/student/group/{groupId}/contest/{contestId}/problem/{problemId}(groupId=${groupId},contestId=${contestId},problemId=${problem.problemId})}"></a>
+                  </td>
                 </tr>
                 </tbody>
-            </table>
+              </table>
+            </div>
+          </div>
         </div>
-    </section>
-    <footer th:replace="/fragments/footer :: footer">
-    </footer>
+      </div>
+      <div class="col-3">
+        <div th:replace="/fragments/right-tab :: right-tab"></div>
+      </div>
+    </div>
+    <div class="py-2"></div>
+  </div>
 </main>
+<footer th:replace="/fragments/footer :: footer"></footer>
 <!-- Bootstrap JavaScript Libraries -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
         integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"

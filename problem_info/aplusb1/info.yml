@@ -1,0 +1,12 @@
+---
+problem_id: "aplusb1"
+problem_name: "A cộng B 1"
+time_limit: 1
+memory_limit: 512
+scoring_method: "minimum"
+checker: "diff"
+max_score: 100
+subtasks:
+- name: "main"
+  score: 100
+  num_samples: 3

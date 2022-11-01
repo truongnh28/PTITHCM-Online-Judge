@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head :: head"></head>
+<body class="bg-light">
+<header th:replace="/fragments/admin-header :: admin-header">
+</header>
+<main>
+  <div class="container-fluid">
+    <div class="py-2"></div>
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="border-bottom pb-3 align-items-center">
+          <form class="d-flex" role="search" th:action="@{/admin/subject/page/1?keyword=${keyword}}">
+            <h4 class="card-title">Danh sách môn học</h4>
+            <div class="ms-auto d-flex">
+              <input type="text" class="form-control me-2" data-bs-toggle="tooltip" data-bs-placement="top" name="keyword" th:value="${keyword}"
+                     data-bs-title="Nhập mã môn học hoặc tên môn học cần tìm" placeholder="Tìm môn học">
+              <button type="submit" class="btn btn-outline-success me-2">Search</button>
+              <button type="button" class="btn btn-outline-secondary" onclick="clearSearch()">Clear</button>
+            </div>
+          </form>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Mã môn học</th>
+              <th scope="col">Tên môn học</th>
+              <th scope="col">Thời gian tạo</th>
+              <th scope="col">Thời gian cập nhật</th>
+              <th scope="col">Trạng thái</th>
+              <th scope="col">Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="subject, i : ${subjects}">
+              <td th:text="${i.count}"></td>
+              <td th:text="${subject.subjectId}"></td>
+              <td th:text="${subject.subjectName}"></td>
+              <td th:text="${subject.createAt}"></td>
+              <td th:text="${subject.updateAt}"></td>
+              <td th:if="${subject.hide} eq 0">Hoạt động</td>
+              <td th:unless="${subject.hide} eq 0">Bị khóa</td>
+              <td>
+                <a class="btn btn-info btn-sm me-1" th:href="@{/admin/subject/{id}/class(id=${subject.subjectId})}" role="button" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Xem danh sách lớp của môn học">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-ol" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z"/>
+                    <path d="M1.713 11.865v-.474H2c.217 0 .363-.137.363-.317 0-.185-.158-.31-.361-.31-.223 0-.367.152-.373.31h-.59c.016-.467.373-.787.986-.787.588-.002.954.291.957.703a.595.595 0 0 1-.492.594v.033a.615.615 0 0 1 .569.631c.003.533-.502.8-1.051.8-.656 0-1-.37-1.008-.794h.582c.008.178.186.306.422.309.254 0 .424-.145.422-.35-.002-.195-.155-.348-.414-.348h-.3zm-.004-4.699h-.604v-.035c0-.408.295-.844.958-.844.583 0 .96.326.96.756 0 .389-.257.617-.476.848l-.537.572v.03h1.054V9H1.143v-.395l.957-.99c.138-.142.293-.304.293-.508 0-.18-.147-.32-.342-.32a.33.33 0 0 0-.342.338v.041zM2.564 5h-.635V2.924h-.031l-.598.42v-.567l.629-.443h.635V5z"/>
+                  </svg>
+                </a>
+                <a class="btn btn-primary btn-sm me-1" th:href="@{/admin/subject/{id}(id=${subject.subjectId})}" role="button" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Chỉnh sửa thông tin môn học">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                  </svg>
+                </a>
+                <a th:if="${subject.hide} eq 0" class="btn btn-danger btn-sm me-1" th:data-id="${subject.subjectId}" th:data-name="lock" role="button" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Khóa môn học" onclick="checkGetOne(this.getAttribute('data-id'), this.getAttribute('data-name'))">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock" viewBox="0 0 16 16">
+                    <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>
+                  </svg>
+                </a>
+                <a th:unless="${subject.hide} eq 0" class="btn btn-warning btn-sm me-1" th:data-id="${subject.subjectId}" th:data-name="unlock" role="button" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Mở khóa môn học" onclick="checkGetOne(this.getAttribute('data-id'), this.getAttribute('data-name'))">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
+                    <path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2zM3 8a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H3z"/>
+                  </svg>
+                </a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div th:replace="/fragments/pagination :: pagination"></div>
+      </div>
+    </div>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h4 class="card-title pb-3 border-bottom">Thêm môn học</h4>
+        <form th:action="@{/admin/subject/add}" id="formAddSubject" method="post" th:object="${subjectAdd}" onsubmit="return checkUniqueSubject(this)">
+          <div class="row mb-2">
+            <div class="col-md">
+              <label class="form-label">
+                <span class="fw-bold">Mã môn học</span>
+                <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" id="subjectId" placeholder="Mã môn học" th:field="*{subjectId}">
+              <p id="subjectIdValidate" class="text-danger"></p>
+            </div>
+            <div class="col-md">
+              <label class="form-label">
+                <span class="fw-bold">Tên môn học</span>
+                <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" id="subjectName" placeholder="Tên môn học" th:field="*{subjectName}">
+              <p id="subjectNameValidate" class="text-danger"></p>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="col">
+              <button type="submit" class="btn btn-primary">Thêm môn học</button>
+              <button type="reset" class="btn btn-secondary">Reset</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="py-2"></div>
+  </div>
+  <div class="modal" tabindex="-1" id="modalNotification">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalNotificationTitle"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="modalNotificationMessage"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Đóng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" tabindex="-1" id="modalConfirm">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalConfirmTitle"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="modalConfirmMessage"></p>
+        </div>
+        <div class="modal-footer">
+          <a id="yes" type="button" class="btn btn-danger">Có</a>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Đóng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" tabindex="-1" id="modalEdit">
+    <div class="modal-dialog">
+      <form th:action="@{/admin/subject/edit}" method="post" onsubmit="return checkInfo(this)">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5">Chỉnh sửa thông tin môn học</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="col-form-label">Mã môn học</label>
+              <input type="text" class="form-control" id="subjectIdEdit" name="subjectId" readonly>
+            </div>
+            <div class="mb-3">
+              <label class="col-form-label">
+                <span>Tên môn học</span>
+                <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" id="subjectNameEdit" placeholder="Tên môn học" name="subjectName">
+              <p class="text-danger" id="subjectNameEditValidate"></p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            <button type="submit" class="btn btn-primary">Xác nhận</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+<footer>
+  <div class="text-center fs-6">
+    <div>PTITHCM Online Judge</div>
+    <div>Copyright &copy; 2022</div>
+  </div>
+</footer>
+<!-- Bootstrap JavaScript Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+        integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+</script>
+
+<script>
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
+<script th:src="@{/js/admin-subject.js}" type="text/javascript"></script>
+</body>
+
+</html>

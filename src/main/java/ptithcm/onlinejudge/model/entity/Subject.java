@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.Instant;
 
 @Data
 @AllArgsConstructor
@@ -21,4 +22,12 @@ public class Subject {
 
     @Column(name = "subject_name", length = 100)
     private String subjectName;
+
+    @Column(name = "create_at", nullable = false)
+    private Instant createAt;
+
+    @Column(name = "update_at", nullable = false)
+    private Instant updateAt;
+
+    private Byte hide;
 }

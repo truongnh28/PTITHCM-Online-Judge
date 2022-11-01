@@ -15,18 +15,18 @@ public class Data {
 
     public static List<StudentDTO> studentList = new ArrayList<>();
 
-    static {
-        studentList.add(new StudentDTO("N19DCCN190", "26102001", "Thanh", "Nguyễn Nhật", true));
-        studentList.add(new StudentDTO("N19DCCN221", "28022001", "Trưởng", "Nguyễn Hữu", true));
-        studentList.add(new StudentDTO("N19DCCN132", "01012001", "Nhơn", "Trần Quốc", true));
-        studentList.add(new StudentDTO("N19DCCN031", "02012001", "Hân", "Trần Thái", true));
-    }
+//    static {
+//        studentList.add(new StudentDTO("N19DCCN190", "26102001", "Thanh", "Nguyễn Nhật", true));
+//        studentList.add(new StudentDTO("N19DCCN221", "28022001", "Trưởng", "Nguyễn Hữu", true));
+//        studentList.add(new StudentDTO("N19DCCN132", "01012001", "Nhơn", "Trần Quốc", true));
+//        studentList.add(new StudentDTO("N19DCCN031", "02012001", "Hân", "Trần Thái", true));
+//    }
 
     public static List<TeacherDTO> teacherList = new ArrayList<>();
 
-    static {
-        teacherList.add(new TeacherDTO("admin", "admin", "Kỳ Thư", "Lưu Nguyễn Kỳ Thư", true, roleList.get(0)));
-    }
+//    static {
+//        teacherList.add(new TeacherDTO("admin", "admin", "Kỳ Thư", "Lưu Nguyễn Kỳ Thư", true, roleList.get(0)));
+//    }
 
     public static List<ProblemTypeDTO> problemTypeList = new ArrayList<>();
 
@@ -60,10 +60,10 @@ public class Data {
 
     public static List<SubjectDTO> subjectList = new ArrayList<>();
 
-    static {
-        subjectList.add(new SubjectDTO("INT13162", "Lập trình với python"));
-        subjectList.add(new SubjectDTO("INT1332", "Lập trình hướng đối tượng"));
-    }
+//    static {
+//        subjectList.add(new SubjectDTO("INT13162", "Lập trình với python"));
+//        subjectList.add(new SubjectDTO("INT1332", "Lập trình hướng đối tượng"));
+//    }
 
     public static List<SubjectClassDTO> subjectClassList = new ArrayList<>();
 
@@ -91,38 +91,38 @@ public class Data {
 
     public static List<ProblemDTO> problemList = new ArrayList<>();
 
-    static {
-        problemList.add(new ProblemDTO("aplusb", "A cộng B", "/problem-pdf/A cộng B.pdf", "", 1000, 512, 100, levelList.get(0), teacherList.get(0), false));
-        problemList.add(new ProblemDTO("findprime", "Tìm số nguyên tố", "/problem-pdf/Tìm số nguyên tố.pdf", "", 1000, 512, 100, levelList.get(1), teacherList.get(0), false));
-    }
+//    static {
+//        problemList.add(new ProblemDTO("aplusb", "A cộng B", "/problem-pdf/A cộng B.pdf", "", 1000, 512, 100, levelList.get(0), teacherList.get(0), false));
+//        problemList.add(new ProblemDTO("findprime", "Tìm số nguyên tố", "/problem-pdf/Tìm số nguyên tố.pdf", "", 1000, 512, 100, levelList.get(1), teacherList.get(0), false));
+//    }
 
     public static List<SubmissionDetailDTO> submissionCodeList = new ArrayList<>();
 
-    static {
-        submissionCodeList.add(new SubmissionDetailDTO("qwertyuiop", """
-                #include <iostream>
-                using namespace std;
-                int main() {
-                    int a, b;
-                    cin >> a >> b;
-                    cout << a + b << "\\n";
-                    return 0;
-                }""", 15, 10, "N19DCCN190", "C++", "Accepted"));
-        submissionCodeList.add(new SubmissionDetailDTO("asdfghjklz", """
-                #include <iostream>
-                using namespace std;
-                int main() {
-                    int a, b;
-                    cin >> a >> b;
-                    cout << a + b <<;
-                    return 0;
-                }""", 0, 0, "N19DCCN221", "C++", "Compile Error"));
-    }
+//    static {
+//        submissionCodeList.add(new SubmissionDetailDTO("qwertyuiop", """
+//                #include <iostream>
+//                using namespace std;
+//                int main() {
+//                    int a, b;
+//                    cin >> a >> b;
+//                    cout << a + b << "\\n";
+//                    return 0;
+//                }""", 15, 10, "N19DCCN190", "C++", "Accepted"));
+//        submissionCodeList.add(new SubmissionDetailDTO("asdfghjklz", """
+//                #include <iostream>
+//                using namespace std;
+//                int main() {
+//                    int a, b;
+//                    cin >> a >> b;
+//                    cout << a + b <<;
+//                    return 0;
+//                }""", 0, 0, "N19DCCN221", "C++", "Compile Error"));
+//    }
 
     public static List<SubmissionDTO> submissionList = new ArrayList<>();
 
-    static {
-        submissionList.add(new SubmissionDTO("N19DCCN190", "aplusb", "20/08/2022 01:10:45", "Accepted", 15, 1, "C++", "qwertyuiop", "/submit-code/1.cpp"));
-        submissionList.add(new SubmissionDTO("N19DCCN221", "aplusb", "19/08/2022 10:12:32", "Compile Error", 0, 0, "C++", "asdfghjklz", "/submit-code/2.cpp"));
-    }
+//    static {
+//        submissionList.add(new SubmissionDTO("N19DCCN190", "aplusb", "20/08/2022 01:10:45", "Accepted", 15, 1, "C++", "qwertyuiop", "/submit-code/1.cpp"));
+//        submissionList.add(new SubmissionDTO("N19DCCN221", "aplusb", "19/08/2022 10:12:32", "Compile Error", 0, 0, "C++", "asdfghjklz", "/submit-code/2.cpp"));
+//    }
 }

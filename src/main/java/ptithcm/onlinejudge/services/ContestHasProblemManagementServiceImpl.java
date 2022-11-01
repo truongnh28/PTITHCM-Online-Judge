@@ -7,47 +7,48 @@ import ptithcm.onlinejudge.model.entity.Contest;
 import ptithcm.onlinejudge.model.entity.ContestHasProblem;
 import ptithcm.onlinejudge.model.entity.ContestHasProblemId;
 import ptithcm.onlinejudge.model.entity.Problem;
-import ptithcm.onlinejudge.model.request.ContestHasProblemRequest;
 import ptithcm.onlinejudge.model.response.ResponseObject;
 import ptithcm.onlinejudge.repository.ContestHasProblemRepository;
+import ptithcm.onlinejudge.repository.ContestRepository;
+import ptithcm.onlinejudge.repository.ProblemRepository;
+
+import java.util.Optional;
 
 @Service
 public class ContestHasProblemManagementServiceImpl implements ContestHasProblemManagementService {
     @Autowired
-    private ProblemManagementService problemManagementService;
+    private ProblemRepository problemRepository;
     @Autowired
-    private ContestManagementService contestManagementService;
+    private ContestRepository contestRepository;
     @Autowired
     private ContestHasProblemRepository contestHasProblemRepository;
+
     @Override
-    public ResponseObject addContestProblem(ContestHasProblemRequest request) {
-        String problemId = request.getProblemId();
-        String contestId = request.getContestId();
-        ResponseObject findProblemResponse = problemManagementService.getProblemById(problemId);
-        ResponseObject findContestResponse = contestManagementService.getContestById(contestId);
-        if (!findContestResponse.getStatus().equals(HttpStatus.OK) || !findProblemResponse.getStatus().equals(HttpStatus.OK))
-            return new ResponseObject(HttpStatus.FOUND, "Contest or problem not exist", "");
-        Problem problem = (Problem) findProblemResponse.getData();
-        Contest contest = (Contest) findContestResponse.getData();
+    public ResponseObject addProblemToContest(String contestId, String problemId) {
+        Optional<Problem> foundProblem = problemRepository.findById(problemId);
+        Optional<Contest> foundContest = contestRepository.findById(contestId);
+        if (foundProblem.isEmpty() || foundContest.isEmpty())
+            return new ResponseObject(HttpStatus.BAD_REQUEST, "Bài tập hoặc bài thực hành không tồn tại", null);
         ContestHasProblem contestHasProblem = new ContestHasProblem();
         ContestHasProblemId contestHasProblemId = new ContestHasProblemId(contestId, problemId);
         contestHasProblem.setId(contestHasProblemId);
-        contestHasProblem.setProblem(problem);
-        contestHasProblem.setContest(contest);
+        contestHasProblem.setProblem(foundProblem.get());
+        contestHasProblem.setContest(foundContest.get());
         contestHasProblem = contestHasProblemRepository.save(contestHasProblem);
         return new ResponseObject(HttpStatus.OK, "Success", contestHasProblem);
     }
 
     @Override
-    public ResponseObject deleteContestProblem(ContestHasProblemRequest request) {
-        String problemId = request.getProblemId();
-        String contestId = request.getContestId();
-        ResponseObject findProblemResponse = problemManagementService.getProblemById(problemId);
-        ResponseObject findContestResponse = contestManagementService.getContestById(contestId);
-        if (!findContestResponse.getStatus().equals(HttpStatus.OK) || !findProblemResponse.getStatus().equals(HttpStatus.OK))
-            return new ResponseObject(HttpStatus.FOUND, "Contest or problem not exist", "");
-        ContestHasProblemId contestHasProblemId = new ContestHasProblemId(contestId, problemId);
-        contestHasProblemRepository.deleteById(contestHasProblemId);
-        return new ResponseObject(HttpStatus.OK, "Success", "");
+    public ResponseObject deleteProblemFromContest(String contestId, String problemId) {
+        Optional<Problem> foundProblem = problemRepository.findById(problemId);
+        Optional<Contest> foundContest = contestRepository.findById(contestId);
+        if (foundProblem.isEmpty() || foundContest.isEmpty())
+            return new ResponseObject(HttpStatus.BAD_REQUEST, "Bài tập hoặc bài thực hành không tồn tại", null);
+        ContestHasProblemId id = new ContestHasProblemId(contestId, problemId);
+        Optional<ContestHasProblem> foundContestHasProblem = contestHasProblemRepository.findById(id);
+        if (foundContestHasProblem.isEmpty())
+            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy bài tập, thực hành tương ứng", null);
+        contestHasProblemRepository.deleteById(id);
+        return new ResponseObject(HttpStatus.OK, "Success", null);
     }
 }

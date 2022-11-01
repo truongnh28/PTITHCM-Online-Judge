@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="admin-header" class="bg-white text-uppercase align-items-center py-2 border-bottom">
+  <div class="container-fluid">
+    <nav class="nav d-flex">
+      <a th:href="@{/admin/home}" class="text-decoration-none pe-3">
+        <img src="/images/ptit-logo.png" width="40" height="45" alt="ptit-logo.png" />Trang chủ
+      </a>
+      <a class="nav-link" th:href="@{/admin/teacher}">Giáo viên</a>
+      <a class="nav-link" th:href="@{/admin/student}">Sinh viên</a>
+      <a class="nav-link" th:href="@{/admin/subject}">Môn học</a>
+      <a class="nav-link ms-auto" href="#" th:text="${session.user}"></a>
+      <a class="nav-link" th:href="@{/logout}">Đăng xuất</a>
+    </nav>
+  </div>
+</header>
+</body>
+</html>

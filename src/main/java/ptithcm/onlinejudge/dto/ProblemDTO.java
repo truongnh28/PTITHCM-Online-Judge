@@ -17,5 +17,7 @@ public class ProblemDTO {
     private int problemScore;
     private LevelDTO level;
     private TeacherDTO teacher;
-    private boolean hide;
+    private String createAt;
+    private String updateAt;
+    private Byte hide;
 }

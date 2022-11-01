@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head :: head">
+<body class="bg-light">
+<header th:replace="/fragments/teacher-header :: teacher-header"></header>
+<main>
+  <div class="container-fluid">
+    <div class="py-2"></div>
+    <a class="mb-3 btn btn-primary" role="button" th:href="@{/teacher/class/{classId}/group/{groupId}/contest(classId=${classId},groupId=${groupId})}">Trở lại trang bài thực hành</a>
+    <div class="row">
+      <div class="col-9">
+        <div class="card">
+          <div class="card-body">
+            <div th:switch="${submission.verdict}">
+              <h4 class="card-title" th:case="0">Pending</h4>
+              <h4 class="card-title" th:case="1">Accepted</h4>
+              <h4 class="card-title" th:case="2">Wrong Answer</h4>
+              <h4 class="card-title" th:case="3">Time Limit Exceeded</h4>
+              <h4 class="card-title" th:case="4">Memory Limit Exceeded</h4>
+              <h4 class="card-title" th:case="5">Runtime Error</h4>
+              <h4 class="card-title" th:case="6">Compile Error</h4>
+            </div>
+            <span th:text="'Bài tập: ' + ${submission.problem.problemId} + ' &NonBreakingSpace;'"></span>
+            <span th:text="'Thời gian nộp: ' + ${submission.submissionTime} + ' &NonBreakingSpace;'"></span>
+            <span th:text="'Tài khoản: ' + ${submission.student.studentId} + ' &NonBreakingSpace;'"></span>
+            <span th:text="'Họ và tên: ' + ${submission.student.studentLastName} + ' ' + ${submission.student.studentFirstName}"></span>
+            <div class="mb-3">
+              <label for="code" class="form-label"></label>
+              <textarea
+                  class="form-control bg-light font-monospace ps-1"
+                  name="code"
+                  id="code"
+                  rows="3"
+                  style="width: 100%; height: 400px"
+                  th:text="${submission.sourceCode}"
+                  readonly>
+                    </textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div th:replace="/fragments/right-tab :: right-tab-teacher"></div>
+      </div>
+    </div>
+    <div class="py-2"></div>
+  </div>
+</main>
+<footer th:replace="/fragments/footer :: footer"></footer>
+<!-- Bootstrap JavaScript Libraries -->
+<script
+    src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+    integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+    crossorigin="anonymous"
+></script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
+    integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+    crossorigin="anonymous"
+></script>
+</body>
+</html>

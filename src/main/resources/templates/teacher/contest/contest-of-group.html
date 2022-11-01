@@ -2,58 +2,148 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="/fragments/head :: head">
 <body class="bg-light">
-<main class="container">
-    <header th:replace="/fragments/teacher-header :: teacher-header"></header>
-    <section>
-        <div class="d-flex flex-wrap justify-content-center mb-3">
-            <a th:href="@{/teacher/contest/group/{groupId}/choose(groupId=${groupId})}" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-decoration-none btn btn-primary" role="button">Chọn bài thực hành</a>
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0" role="search">
-                <input type="search" class="form-control" placeholder="Tìm bài thực hành..." aria-label="Search"/>
-            </form>
+<header th:replace="/fragments/teacher-header :: teacher-header"></header>
+<main>
+  <div class="container-fluid">
+    <div class="py-2"></div>
+    <a class="btn btn-primary mb-3" th:href="@{/teacher/class/{classId}/group(classId=${classId})}" role="button">Về danh sách nhóm</a>
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="border-bottom pb-3 align-items-center">
+          <form class="d-flex" role="search" th:action="@{/teacher/class/{classId}/group/{groupId}/contest/page/1?keyword=${keyword}(classId=${classId},groupId=${groupId})}">
+            <h4 class="card-title">
+              <span>Danh sách bài thực hành nhóm </span>
+              <span class="fw-bold" th:text="${groupName}"></span>
+              <span class="fw-bold" th:text="' - ' + ${groupId}"></span>
+            </h4>
+            <div class="ms-auto d-flex">
+              <input class="form-control me-2" data-bs-toggle="tooltip" data-bs-placement="top" name="keyword" th:value="${keyword}"
+                     data-bs-title="Nhập mã hoặc tên bài thực hành muốn tìm" type="search" placeholder="Tìm bài thực hành">
+              <button class="ms-auto btn btn-outline-success me-2" type="submit">Search</button>
+              <button class="btn btn-outline-secondary" th:data-class="${classId}" th:data-group="${groupId}" onclick="clearSearch(this.getAttribute('data-class'), this.getAttribute('data-group'))">Clear</button>
+            </div>
+          </form>
         </div>
-        <div class="card table-responsive mb-3">
-            <table class="table table-hover caption-top text-center">
-                <caption class="bg-secondary bg-opacity-10 ps-4">
-                    <h2 th:text="'Danh sách các bài thực hành của nhóm ' + ${groupId}"></h2>
-                </caption>
-                <thead class="thead-inverse">
-                <tr>
-                    <th></th>
-                    <th>#</th>
-                    <th>Mã bài thực hành</th>
-                    <th>Tên bài thực hành</th>
-                    <th>Thời gian bắt đầu</th>
-                    <th>Thời gian kết thúc</th>
-                    <th>Mã giáo viên</th>
-                    <th>Hành động</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="contest, i: ${contests}">
-                    <td></td>
-                    <td th:text="${i.count}"></td>
-                    <td th:text="${contest.contestId}"></td>
-                    <td th:text="${contest.contestName}"></td>
-                    <td th:text="${contest.contestStart}"></td>
-                    <td th:text="${contest.contestEnd}"></td>
-                    <td th:text="${contest.teacher.teacherId}"></td>
-                    <td>
-                        <a th:href="@{/teacher/contest/{contestId}/problem/edit(contestId=${contest.contestId})}" type="button" class="btn btn-info btn-sm me-2">Bài tập</a>
-                        <a th:href="@{/teacher/contest/{contestId}/group/{groupId}/edit(contestId=${contest.contestId},groupId=${groupId})}" type="button" class="btn btn-primary btn-sm me-2">
-                            Chỉnh sửa
-                        </a>
-                        <a th:href="@{/teacher/contest/{contestId}/group/{groupId}/delete(contestId=${contest.contestId},groupId=${groupId})}" type="button" class="btn btn-danger btn-sm">
-                            Xóa
-                        </a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>Mã bài thực hành</th>
+              <th>Tên bài thực hành</th>
+              <th>Thời gian tạo</th>
+              <th>Thời gian cập nhật</th>
+              <th>Thời gian bắt đầu</th>
+              <th>Thời gian kết thúc</th>
+              <th>Trạng thái</th>
+              <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="contest : ${contests}">
+              <td th:text="${contest.contestId}"></td>
+              <td th:text="${contest.contestName}"></td>
+              <td th:text="${contest.createAt}"></td>
+              <td th:text="${contest.updateAt}"></td>
+              <td th:text="${contest.contestStart}"></td>
+              <td th:text="${contest.contestEnd}"></td>
+              <td th:if="${contest.hide} eq 0">Hoạt động</td>
+              <td th:unless="${contest.hide} eq 0">Bị khóa</td>
+              <td>
+                <a class="btn btn-info btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Xem danh sách bài tập của bài thực hành" th:href="@{/teacher/class/{classId}/group/{groupId}/contest/{contestId}/problem(classId=${classId},groupId=${groupId},contestId=${contest.contestId})}" role="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-ol" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z"/>
+                    <path d="M1.713 11.865v-.474H2c.217 0 .363-.137.363-.317 0-.185-.158-.31-.361-.31-.223 0-.367.152-.373.31h-.59c.016-.467.373-.787.986-.787.588-.002.954.291.957.703a.595.595 0 0 1-.492.594v.033a.615.615 0 0 1 .569.631c.003.533-.502.8-1.051.8-.656 0-1-.37-1.008-.794h.582c.008.178.186.306.422.309.254 0 .424-.145.422-.35-.002-.195-.155-.348-.414-.348h-.3zm-.004-4.699h-.604v-.035c0-.408.295-.844.958-.844.583 0 .96.326.96.756 0 .389-.257.617-.476.848l-.537.572v.03h1.054V9H1.143v-.395l.957-.99c.138-.142.293-.304.293-.508 0-.18-.147-.32-.342-.32a.33.33 0 0 0-.342.338v.041zM2.564 5h-.635V2.924h-.031l-.598.42v-.567l.629-.443h.635V5z"/>
+                  </svg>
+                </a>
+                <a class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Chỉnh sửa thông tin bài thực hành" th:href="@{/teacher/class/{classId}/group/{groupId}/contest/{contestId}/edit(classId=${classId},groupId=${groupId},contestId=${contest.contestId})}" role="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                  </svg>
+                </a>
+                <a class="btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Theo dõi bài thực hành" th:href="@{/teacher/class/{classId}/group/{groupId}/contest/{contestId}/track(classId=${classId},groupId=${groupId},contestId=${contest.contestId})}" role="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                  </svg>
+                </a>
+                <a th:if="${contest.hide} eq 0" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Khóa bài thực hành" th:data-class="${classId}" th:data-group="${groupId}" th:data-contest="${contest.contestId}" th:data-action="lock" role="button" onclick="checkGetOne(this.getAttribute('data-class'), this.getAttribute('data-group'), this.getAttribute('data-contest'), this.getAttribute('data-action'))">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock" viewBox="0 0 16 16">
+                    <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>
+                  </svg>
+                </a>
+                <a th:unless="${contest.hide} eq 0" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Mở khóa bài thực hành" th:data-class="${classId}" th:data-group="${groupId}" th:data-contest="${contest.contestId}" th:data-action="unlock" role="button" onclick="checkGetOne(this.getAttribute('data-class'), this.getAttribute('data-group'), this.getAttribute('data-contest'), this.getAttribute('data-action'))">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
+                    <path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2zM3 8a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H3z"/>
+                  </svg>
+                </a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </div>
-        <nav th:replace="/fragments/pagination :: pagination"></nav>
-    </section>
-    <footer th:replace="/fragments/footer :: footer"></footer>
+        <div class="d-flex">
+          <a class="btn btn-primary mb-3" th:href="@{/teacher/class/{classId}/group/{groupId}/contest/clone(classId=${classId},groupId=${groupId})}" role="button">Clone bài thực hành khác</a>
+          <div class="ms-auto">
+            <div th:replace="/fragments/pagination :: pagination"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card mb-4">
+      <div class="card-body">
+        <h4 class="card-title pb-3 border-bottom">Thêm bài thực hành</h4>
+        <form th:action="@{/teacher/class/{classId}/group/{groupId}/contest/add(classId=${classId},groupId=${groupId})}" th:data-class="${classId}" th:data-group="${groupId}" id="formAddContest" method="post" th:object="${contestAdd}" onsubmit="return checkUniqueContest(this, this.getAttribute('data-class'), this.getAttribute('data-group'))">
+          <div class="row">
+            <div class="col-md">
+              <label class="form-label">
+                <span class="fw-bold">Mã bài thực hành</span>
+                <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" id="contestId" placeholder="Mã bài thực hành" th:field="*{contestId}">
+              <p class="text-danger" id="contestIdValidate"></p>
+            </div>
+            <div class="col-md">
+              <label class="form-label">
+                <span class="fw-bold">Tên bài thực hành</span>
+                <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" id="contestName" placeholder="Tên bài thực hành" th:field="*{contestName}">
+              <p class="text-danger" id="contestNameValidate"></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md">
+              <label class="form-label">
+                <span class="fw-bold">Thời gian bắt đầu</span>
+                <span class="text-danger">*</span>
+              </label>
+              <input type="datetime-local" id="contestStart" class="form-control" th:field="*{contestStart}">
+              <p class="text-danger" id="contestStartValidate"></p>
+            </div>
+            <div class="col-md">
+              <label class="form-label">
+                <span class="fw-bold">Thời gian kết thúc</span>
+                <span class="text-danger">*</span>
+              </label>
+              <input type="datetime-local" id="contestEnd" class="form-control" th:field="*{contestEnd}">
+              <p class="text-danger" id="contestEndValidate"></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <button type="submit" class="btn btn-primary">Thêm bài thực hành</button>
+              <button type="reset" class="btn btn-secondary">Reset</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div th:replace="/fragments/modal :: modal-notification"></div>
+    <div th:replace="/fragments/modal :: modal-confirm"></div>
+    <div class="py-2"></div>
+  </div>
 </main>
+<footer th:replace="/fragments/footer :: footer"></footer>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
         integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
         crossorigin="anonymous"></script>
@@ -62,5 +152,10 @@
         integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
         crossorigin="anonymous"
 ></script>
+<script>
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
+<script th:src="@{/js/teacher-class-group-contest.js}" type="text/javascript"></script>
 </body>
 </html>

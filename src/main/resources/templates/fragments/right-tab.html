@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="right-tab" class="card mb-3">
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">
+      <a th:href="@{/student/group/{groupId}/contest/{contestId}(groupId=${groupId},contestId=${contest.contestId})}" class="text-decoration-none">Thông tin bài thực hành</a>
+    </li>
+    <li class="list-group-item">
+      <div th:switch="${contest.verdict}">
+        <div th:case="0">
+          Bài tập
+        </div>
+        <div th:case="*">
+          <a th:href="@{/student/group/{groupId}/contest/{contestId}/problem(groupId=${groupId},contestId=${contest.contestId})}" class="text-decoration-none">Bài tập</a>
+        </div>
+      </div>
+    </li>
+    <li class="list-group-item">
+      <a th:href="@{/student/group/{groupId}/contest/{contestId}/submission(groupId=${groupId},contestId=${contest.contestId})}" class="text-decoration-none">Bài nộp</a>
+    </li>
+  </ul>
+</div>
+<div th:fragment="right-tab-teacher" class="card mb-3">
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">
+      <a th:href="@{/teacher/class/{classId}/group/{groupId}/contest/{contestId}/track(classId=${classId},groupId=${groupId},contestId=${contest.contestId})}" class="text-decoration-none">Thông tin bài thực hành</a>
+    </li>
+    <li class="list-group-item">
+      <div th:switch="${contest.verdict}">
+        <div th:case="0">
+          Bài tập
+        </div>
+        <div th:case="*">
+          <a th:href="@{/teacher/class/{classId}/group/{groupId}/contest/{contestId}/problem/track(classId=${classId},groupId=${groupId},contestId=${contest.contestId})}" class="text-decoration-none">Bài tập</a>
+        </div>
+      </div>
+    </li>
+    <li class="list-group-item">
+      <a th:href="@{/teacher/class/{classId}/group/{groupId}/contest/{contestId}/submission/track(classId=${classId},groupId=${groupId},contestId=${contest.contestId})}" class="text-decoration-none">Bài nộp</a>
+    </li>
+    <li class="list-group-item">
+      <a th:href="@{/teacher/class/{classId}/group/{groupId}/contest/{contestId}/statistic/track(classId=${classId},groupId=${groupId},contestId=${contest.contestId})}" class="text-decoration-none">Thống kê</a>
+    </li>
+  </ul>
+</div>
+</body>
+</html>

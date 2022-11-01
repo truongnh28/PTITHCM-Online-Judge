@@ -1,26 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<header th:fragment="student-header" class="d-flex mb-3 py-3 align-items-center border-bottom">
-    <div class="me-auto">
-        <div class="d-flex align-items-center">
-            <div class="me-2">
-                <a th:href="@{/student/problem}"><img th:src="@{/images/ptit-logo.png}" width="40" height="43" alt=""></a>
-            </div>
-            <div class="mx-1">
-                <a th:href="@{/student/problem}" class="nav-link">Bài tập</a>
-            </div>
-            <div class="ms-2">
-                <a th:href="@{/student/submission}" class="nav-link">Bài nộp</a>
-            </div>
-        </div>
-    </div>
-    <div>
-        <div class="d-flex align-items-center">
-            <a href="#" th:text="${session.user.username}" class="text-decoration-none me-2"></a>
-            <a th:href="@{/logout}" class="text-decoration-none">Đăng xuất</a>
-        </div>
-    </div>
+<header th:fragment="student-header" class="bg-white text-uppercase align-items-center py-2 border-bottom">
+  <div class="container-fluid">
+    <nav class="nav d-flex">
+      <a th:href="@{/student/home}" class="text-decoration-none pe-3">
+        <img src="/images/ptit-logo.png" width="40" height="45" alt="ptit-logo.png" />Trang chủ
+      </a>
+      <a class="nav-link" th:href="@{/student/group}">Nhóm thực hành</a>
+      <a class="nav-link ms-auto" href="#" th:text="${session.user}"></a>
+      <a class="nav-link" th:href="@{/logout}">Đăng xuất</a>
+    </nav>
+  </div>
 </header>
 </body>
 </html>

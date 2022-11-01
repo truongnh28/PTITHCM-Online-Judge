@@ -1,29 +1,31 @@
 package ptithcm.onlinejudge.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import ptithcm.onlinejudge.dto.ProblemDTO;
 import ptithcm.onlinejudge.dto.ProblemShowDTO;
+import ptithcm.onlinejudge.helper.FileHelper;
 import ptithcm.onlinejudge.mapper.ProblemMapper;
 import ptithcm.onlinejudge.model.entity.*;
-import ptithcm.onlinejudge.model.request.MultipleProblemTypeRequest;
-import ptithcm.onlinejudge.model.request.ProblemRequest;
 import ptithcm.onlinejudge.model.response.ResponseObject;
+import ptithcm.onlinejudge.model.yaml.Info;
+import ptithcm.onlinejudge.model.yaml.ProblemYaml;
+import ptithcm.onlinejudge.model.yaml.Subtask;
 import ptithcm.onlinejudge.repository.*;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.File;
+import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class ProblemManagementServiceImpl implements ProblemManagementService {
+    static final private String problemInfoPath = System.getProperty("user.dir") + "/problem_info";
     @Autowired
     private ProblemMapper problemMapper;
     @Autowired
@@ -37,92 +39,188 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
     @Autowired
     private ContestRepository contestRepository;
     @Autowired
-    private LevelManagementService levelManagementService;
+    private AddProblemToYaml addProblemToYaml;
     @Autowired
-    private ProblemHasTypeManagementService problemHasTypeManagementService;
+    private LevelRepository levelRepository;
+    @Autowired
+    private ProblemTypeRepository problemTypeRepository;
+    @Autowired
+    private ProblemHasTypeRepository problemHasTypeRepository;
     @Autowired
     private ContestHasProblemRepository contestHasProblemRepository;
 
     @Override
-    public ResponseObject addProblem(ProblemRequest problemRequest, String descriptionPath) {
-        if (checkFile(problemRequest, descriptionPath)) {
-            return new ResponseObject(HttpStatus.FOUND, "Null data error", "");
-        }
-        if (problemRequestIsValid(problemRequest)) {
-            return new ResponseObject(HttpStatus.FOUND, "Problem Found", "");
-        }
-        if (!Files.exists(Path.of(descriptionPath))) {
-            return new ResponseObject(HttpStatus.FOUND, "File is not exists", "");
-        }
+    public ResponseObject addProblem(ProblemDTO problemDTO, String teacherId, int levelId, MultipartFile description, MultipartFile[] inputs, MultipartFile[] outputs, String[] types) {
+        // store to spring boot server
+        String descriptionPath = storageFileService.storeFile(description);
+        // upload to cloudinary
         ResponseObject responseUpload = uploadFileService.uploadFile(descriptionPath);
-        if (responseUpload.getStatus() == HttpStatus.FOUND) {
-            return new ResponseObject(HttpStatus.FOUND, "Found upload", "");
+        if (!responseUpload.getStatus().equals(HttpStatus.OK)) {
+            return new ResponseObject(HttpStatus.FOUND, "Không thể upload file! Vui lòng kiểm tra lại", null);
         }
-        if (problemRepository.existsById(problemRequest.getProblemId())) {
-            return new ResponseObject(HttpStatus.FOUND, "Problem id is exist", "");
-        }
-        String problemId = problemRequest.getProblemId();
-        String problemName = problemRequest.getProblemName();
-        int score = problemRequest.getScore();
-        int timeLimit = problemRequest.getTimeLimit();
-        int memoryLimit = problemRequest.getMemoryLimit();
-        // level
-        ResponseObject responseGetLevelById = levelManagementService.getLevelById((byte) problemRequest.getLevelId());
-        if (!responseGetLevelById.getStatus().equals(HttpStatus.OK))
-            return new ResponseObject(HttpStatus.FOUND, "Level id not exist", "");
-        Level level = (Level) responseGetLevelById.getData();
-        // file description
         ObjectMapper objectMapper = new ObjectMapper();
         Map uploadInfo = objectMapper.convertValue(responseUpload.getData(), Map.class);
         String problemCloudinaryId = uploadInfo.get("public_id").toString();
         String url = uploadInfo.get("url").toString();
 
-        Optional<Teacher> teacher = teacherRepository.findById(problemRequest.getTeacherId());
-        Problem problem = new Problem(problemId, problemName, problemCloudinaryId, url, score, timeLimit, memoryLimit, (byte) 0, teacher.get(), level);
+        File file = new File(descriptionPath);
+        if (!file.delete()) {
+            return new ResponseObject(HttpStatus.FOUND, "Lỗi server! Vui lòng kiểm tra lại", null);
+        }
+
+        Optional<Level> foundLevel = levelRepository.findById((byte) levelId);
+        Level level = foundLevel.get();
+
+        Optional<Teacher> foundTeacher = teacherRepository.findById(teacherId);
+        Teacher teacher = foundTeacher.get();
+
+        Problem problem = problemMapper.dtoToEntity(problemDTO);
+        problem.setProblemCloudinaryId(problemCloudinaryId);
+        problem.setProblemUrl(url);
+        problem.setCreateAt(Instant.now());
+        problem.setUpdateAt(Instant.now());
+        problem.setHide((byte) 0);
+        problem.setLevel(level);
+        problem.setTeacher(teacher);
         problem = problemRepository.save(problem);
+
+        String problemId = problem.getId();
+        String problemName = problem.getProblemName();
+
+        for (String typeId : types) {
+            Optional<ProblemType> foundType = problemTypeRepository.findById(typeId);
+            if (foundType.isEmpty()) {
+                return new ResponseObject(HttpStatus.BAD_REQUEST, "Mã loại bài tập không tồn tại! Vui lòng kiểm tra lại", null);
+            }
+            ProblemType problemType = foundType.get();
+            ProblemHasType problemHasType = new ProblemHasType();
+            ProblemHasTypeId id = new ProblemHasTypeId(problemId, problemType.getId());
+            problemHasType.setId(id);
+            problemHasType.setProblem(problem);
+            problemHasType.setProblemType(problemType);
+            problemHasTypeRepository.save(problemHasType);
+        }
+
+        ProblemYaml problemYaml = new ProblemYaml();
+        problemYaml.setId(problemId);
+        problemYaml.setName(problemName);
+        problemYaml.setStatus("up");
+
+        ResponseObject responseAddProblemToYaml = addProblemToYaml.addProblemToYaml(problemYaml);
+        if (!responseAddProblemToYaml.getStatus().equals(HttpStatus.OK)) {
+            return new ResponseObject(HttpStatus.FOUND, "Thêm bài tập thất bại", null);
+        }
+
+        Info info = new Info();
+        info.setProblemId(problem.getId());
+        info.setProblemName(problem.getProblemName());
+        info.setTimeLimit(problem.getProblemTimeLimit());
+        info.setMemoryLimit(problem.getProblemMemoryLimit());
+        info.setMaxScore(problem.getProblemScore());
+        info.setScoringMethod("minimum");
+        info.setChecker("diff");
+
+        List<Subtask> subtasks = new ArrayList<>();
+        Subtask subtask = new Subtask();
+        subtask.setName("main");
+        subtask.setScore(problem.getProblemScore());
+        subtask.setNumSamples(inputs.length);
+        if (inputs.length == 1 && !isUploaded(inputs[0]) && !isUploaded(outputs[0]))
+            subtask.setNumSamples(0);
+        subtasks.add(subtask);
+
+        info.setSubtasks(subtasks);
+        ResponseObject addProblemToDirResponse = addProblemToYaml.addProblemToDir(info, inputs, outputs);
+        if (!addProblemToDirResponse.getStatus().equals(HttpStatus.OK)) {
+            return new ResponseObject(HttpStatus.FOUND, "Thêm bài tập thất bại", null);
+        }
         return new ResponseObject(HttpStatus.OK, "Success", problem);
     }
 
     @Override
-    public ResponseObject editProblem(ProblemRequest problemRequest, String descriptionPath) {
-        if (checkFile(problemRequest, descriptionPath)) {
-            return new ResponseObject(HttpStatus.FOUND, "Null data error", "");
+    public ResponseObject editProblem(ProblemDTO problemDTO, String teacherId, int levelId, MultipartFile description, String[] types) {
+        String problemId = problemDTO.getProblemId();
+        Optional<Problem> foundProblem = problemRepository.findById(problemId);
+        if (foundProblem.isEmpty()) {
+            return new ResponseObject(HttpStatus.FOUND, "Mã bài tập không tồn tại! Vui lòng kiểm tra lại", null);
         }
-        if (problemRequestIsValid(problemRequest)) {
-            return new ResponseObject(HttpStatus.FOUND, "Problem Found", "");
+        Problem editedProblem = foundProblem.get();
+        editedProblem.setProblemName(problemDTO.getProblemName());
+        editedProblem.setProblemTimeLimit(problemDTO.getProblemTimeLimit());
+        editedProblem.setProblemMemoryLimit(problemDTO.getProblemMemoryLimit());
+        editedProblem.setProblemScore(problemDTO.getProblemScore());
+        if (description != null && !description.isEmpty()) {
+            // upload to server spring boot
+            String descriptionPath = storageFileService.storeFile(description);
+            // upload to cloudinary
+            ResponseObject responseUpload = uploadFileService.uploadFile(descriptionPath);
+            if (!responseUpload.getStatus().equals(HttpStatus.OK)) {
+                return new ResponseObject(HttpStatus.FOUND, "Không thể upload được", null);
+            }
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map uploadInfo = objectMapper.convertValue(responseUpload.getData(), Map.class);
+            String problemCloudinaryId = uploadInfo.get("public_id").toString();
+            String url = uploadInfo.get("url").toString();
+            editedProblem.setProblemUrl(url);
+            editedProblem.setProblemCloudinaryId(problemCloudinaryId);
         }
-        if (!Files.exists(Path.of(descriptionPath))) {
-            return new ResponseObject(HttpStatus.FOUND, "File is not exists", "");
+
+        Optional<Level> foundLevel = levelRepository.findById((byte) levelId);
+        if (foundLevel.isEmpty()) {
+            return new ResponseObject(HttpStatus.FOUND, "Mã mức độ không tồn tại! Vui lòng kiểm tra lại", null);
         }
-        ResponseObject responseUpload = uploadFileService.uploadFile(descriptionPath);
-        if (responseUpload.getStatus() == HttpStatus.FOUND) {
-            return new ResponseObject(HttpStatus.FOUND, "Found upload", "");
+        Level level = foundLevel.get();
+
+        Optional<Teacher> foundTeacher = teacherRepository.findById(teacherId);
+        if (foundTeacher.isEmpty()) {
+            return new ResponseObject(HttpStatus.FOUND, "Mã giáo viên không tồn tại! Vui lòng kiểm tra lại", null);
         }
-        if (!problemRepository.existsById(problemRequest.getProblemId())) {
-            return new ResponseObject(HttpStatus.FOUND, "Problem id is not exist", "");
+        Teacher teacher = foundTeacher.get();
+
+        editedProblem.setLevel(level);
+        editedProblem.setUpdateAt(Instant.now());
+        editedProblem.setTeacher(teacher);
+        editedProblem = problemRepository.save(editedProblem);
+
+        problemHasTypeRepository.deleteByProblem(problemId);
+        for (String typeId: types) {
+            Optional<ProblemType> foundType = problemTypeRepository.findById(typeId);
+            if (foundType.isEmpty()) {
+                return new ResponseObject(HttpStatus.FOUND, "Không tồn tại mã loại bài tập! Vui lòng kiểm tra lại", null);
+            }
+            ProblemType problemType = foundType.get();
+            ProblemHasType problemHasType = new ProblemHasType();
+            ProblemHasTypeId id = new ProblemHasTypeId(problemId, typeId);
+            problemHasType.setId(id);
+            problemHasType.setProblem(editedProblem);
+            problemHasType.setProblemType(problemType);
+            problemHasTypeRepository.save(problemHasType);
         }
-        String problemId = problemRequest.getProblemId();
-        String problemName = problemRequest.getProblemName();
-        int score = problemRequest.getScore();
-        int timeLimit = problemRequest.getTimeLimit();
-        int memoryLimit = problemRequest.getMemoryLimit();
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map uploadInfo = objectMapper.convertValue(responseUpload.getData(), Map.class);
-        String problemCloudinaryId = uploadInfo.get("public_id").toString();
-        String url = uploadInfo.get("url").toString();
-        Optional<Problem> problem = problemRepository.findById(problemId);
-        problem.get().setProblemName(problemName);
-        problem.get().setProblemScore(score);
-        problem.get().setProblemCloudinaryId(problemCloudinaryId);
-        problem.get().setProblemUrl(url);
-        problem.get().setProblemTimeLimit(timeLimit);
-        problem.get().setProblemMemoryLimit(memoryLimit);
-        ResponseObject responseDelete = uploadFileService.deleteFile(problemCloudinaryId);
-        if (responseDelete.getStatus() == HttpStatus.FOUND) {
-            return new ResponseObject(HttpStatus.FOUND, "Found", "");
+
+        ProblemYaml problemYaml = new ProblemYaml();
+        problemYaml.setId(problemId);
+        problemYaml.setName(editedProblem.getProblemName());
+        problemYaml.setStatus("up");
+
+        ResponseObject addProblemToYamlResponse = addProblemToYaml.addProblemToYaml(problemYaml);
+        if (!addProblemToYamlResponse.getStatus().equals(HttpStatus.OK)) {
+            return new ResponseObject(HttpStatus.FOUND, "Thêm bài tập thất bại", null);
         }
-        problemRepository.save(problem.get());
-        return new ResponseObject(HttpStatus.OK, "Success", problem);
+
+        Info info = addProblemToYaml.getProblemInfo(problemInfoPath + "/" + problemId + "/info.yml");
+        if (info == null) {
+            return new ResponseObject(HttpStatus.FOUND, "Không tìm thấy bài tập trong hệ thống", null);
+        }
+        info.setProblemName(editedProblem.getProblemName());
+        info.setTimeLimit(editedProblem.getProblemTimeLimit());
+        info.setMemoryLimit(editedProblem.getProblemMemoryLimit());
+        info.setMaxScore(editedProblem.getProblemScore());
+        ResponseObject addProblemInfoResponse = addProblemToYaml.addProblemInfo(info, problemInfoPath + "/" + problemId + "/info.yml");
+        if (!addProblemInfoResponse.getStatus().equals(HttpStatus.OK)) {
+            return new ResponseObject(HttpStatus.FOUND, "Có lỗi", null);
+        }
+
+        return new ResponseObject(HttpStatus.OK, "Success", editedProblem);
     }
 
     @Override
@@ -157,48 +255,69 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
     }
 
     @Override
-    public ResponseObject addProblemWithTestCasesAndTypes(ProblemDTO problemDTO, String teacherId, int levelId, MultipartFile description, MultipartFile[] inputs, MultipartFile[] outputs, String[] typeIds) {
-        Arrays.sort(inputs);
-        Arrays.sort(outputs);
-        if (!checkInputsAndOutputs(inputs, outputs))
-            return new ResponseObject(HttpStatus.FOUND, "Input test cases and Output test cases not valid", "");
-
-        ProblemRequest problemRequest = new ProblemRequest();
-        problemRequest.setProblemId(problemDTO.getProblemId());
-        problemRequest.setScore(problemDTO.getProblemScore());
-        problemRequest.setProblemName(problemDTO.getProblemName());
-        problemRequest.setTimeLimit(problemDTO.getProblemTimeLimit());
-        problemRequest.setMemoryLimit(problemDTO.getProblemMemoryLimit());
-        problemRequest.setLevelId(levelId);
-        problemRequest.setTeacherId(teacherId);
-
-        String pathDescription = storageFileService.storeFile(description);
-        ResponseObject addProblemWithLevelAndTeacherResponse = addProblem(problemRequest, pathDescription);
-        if (!addProblemWithLevelAndTeacherResponse.getStatus().equals(HttpStatus.OK))
-            return new ResponseObject(HttpStatus.FOUND, "Add problem failed", "");
-
-        Problem problem = (Problem) addProblemWithLevelAndTeacherResponse.getData();
-        ResponseObject addProblemTypesResponse = problemHasTypeManagementService.addMultipleProblemType(new MultipleProblemTypeRequest(typeIds, problem));
-        if (!addProblemTypesResponse.getStatus().equals(HttpStatus.OK))
-            return new ResponseObject(HttpStatus.FOUND, "Add problem types failed", "");
-
-
-        return new ResponseObject(HttpStatus.OK, "Success", "");
-    }
-
-    @Override
-    public ResponseObject getAllProblems() {
-        List<Problem> problems = problemRepository.findAll();
+    public ResponseObject getAllProblemsActive() {
+        List<Problem> problems = problemRepository.getProblemsActive();
         return new ResponseObject(HttpStatus.OK, "Success", problems);
     }
 
     @Override
-    public ResponseObject getAllProblemsCreateByTeacher(String teacherId) {
-        if (!teacherRepository.existsById(teacherId)) {
-            return new ResponseObject(HttpStatus.FOUND, "Teacher is not exist", "");
-        }
-        List<Problem> problems = problemRepository.getProblemsByTeacher(teacherId);
-        return new ResponseObject(HttpStatus.OK, "Success", problems);
+    public ResponseObject getAllProblemsActiveNotInContest(String contestId, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Problem> problems = problemRepository.getProblemsActiveNotInContest(contestId, PageRequest.of(page - 1, 10));
+        int totalPage = problems.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", problems.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
+    }
+
+    @Override
+    public ResponseObject searchAllProblemsActiveNotInContest(String contestId, String keyword, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Problem> problems = problemRepository.searchProblemsActiveNotInContest(contestId, "%" + keyword + "%", PageRequest.of(page - 1, 10));
+        int totalPage = problems.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", problems.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
+    }
+
+    @Override
+    public ResponseObject getAllProblemsCreateByTeacher(String teacherId, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Problem> problems = problemRepository.getAllProblemsByTeacher(teacherId, PageRequest.of(page - 1, 10));
+        int totalPage = problems.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", problems.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
+    }
+
+    @Override
+    public ResponseObject searchAllProblemsCreateByTeacher(String teacherId, String keyword, int page) {
+        if (page <= 0)
+            page = 1;
+        Page<Problem> problems = problemRepository.searchAllProblemsByTeacher(teacherId, "%" + keyword + "%", PageRequest.of(page - 1, 10));
+        int totalPage = problems.getTotalPages();
+        if (page > totalPage)
+            page = totalPage;
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", problems.getContent());
+        data.put("currentPage", page);
+        data.put("totalPages", totalPage);
+        return new ResponseObject(HttpStatus.OK, "Success", data);
     }
 
     @Override
@@ -215,10 +334,10 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
     }
 
     @Override
-    public ResponseObject getAllProblemsOfContest(String contestId) {
+    public ResponseObject getAllProblemsActiveOfContest(String contestId) {
         if (!contestRepository.existsById(contestId))
-            return new ResponseObject(HttpStatus.FOUND, "Contest is not exist", "");
-        List<Problem> problems = problemRepository.getProblemsByContestId(contestId);
+            return new ResponseObject(HttpStatus.FOUND, "Bài thực hành không tồn tại", null);
+        List<Problem> problems = problemRepository.getProblemsActiveOfContest(contestId);
         return new ResponseObject(HttpStatus.OK, "Success", problems);
     }
 
@@ -230,35 +349,57 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
         return new ResponseObject(HttpStatus.OK, "Success", foundProblem.get());
     }
 
-    private boolean problemRequestIsValid(ProblemRequest problem) {
-        boolean problemName = problem.getProblemName().length() > 0;
-        boolean score = problem.getScore() > 0 && problem.getScore() <= 10;
-        return problemName && score;
+    @Override
+    public ResponseObject lockProblem(String problemId) {
+        Optional<Problem> foundProblem = problemRepository.findById(problemId);
+        if (foundProblem.isEmpty())
+            return new ResponseObject(HttpStatus.FOUND, "Bài tập không tồn tại", null);
+        Problem problem = foundProblem.get();
+        problem.setHide((byte) 1);
+        problem.setUpdateAt(Instant.now());
+        problem = problemRepository.save(problem);
+        return new ResponseObject(HttpStatus.OK, "Success", problem);
     }
 
-    private boolean checkFile(ProblemRequest problemRequest, String filePath) {
-        if (filePath == null) return true;
-        return problemRequest == null;
+    @Override
+    public ResponseObject unlockProblem(String problemId) {
+        Optional<Problem> foundProblem = problemRepository.findById(problemId);
+        if (foundProblem.isEmpty())
+            return new ResponseObject(HttpStatus.FOUND, "Bài tập không tồn tại", null);
+        Problem problem = foundProblem.get();
+        problem.setHide((byte) 0);
+        problem.setUpdateAt(Instant.now());
+        problem = problemRepository.save(problem);
+        return new ResponseObject(HttpStatus.OK, "Success", problem);
     }
 
-    private boolean isNotUploaded(MultipartFile file) {
-        return (file == null || file.isEmpty());
+    private boolean isUploaded(MultipartFile file) {
+        return file != null && !file.isEmpty();
     }
 
-    private boolean checkInputsAndOutputs(MultipartFile[] inputs, MultipartFile[] outputs) {
+    private boolean inputsOutputsValid(MultipartFile[] inputs, MultipartFile[] outputs) {
+        // nếu không cùng kích thước thì sai
         if (inputs.length != outputs.length)
             return false;
+        // cùng kích thước nhưng mỗi bên có 1 testcase
         if (inputs.length == 1) {
-            if (isNotUploaded(inputs[0]) && isNotUploaded(outputs[0]))
+            // đều được upload => đúng
+            if (isUploaded(inputs[0]) && isUploaded(outputs[0]))
                 return true;
-            if (isNotUploaded(inputs[0]) || isNotUploaded(outputs[0]))
+            // đều không được upload => đúng
+            if (!isUploaded(inputs[0]) && !isUploaded(outputs[0]))
+                return true;
+            // 1 trong 2 không được upload => sai
+            if (isUploaded(inputs[0]) || isUploaded(outputs[0]))
                 return false;
         }
         for (int i = 0; i < inputs.length; ++i) {
             String fullInputName = inputs[i].getOriginalFilename();
             String fullOutputName = outputs[i].getOriginalFilename();
-            String inputName = StringUtils.cleanPath(fullInputName);
-            String outputName = StringUtils.cleanPath(fullOutputName);
+            if (fullInputName == null || fullOutputName == null)
+                return false;
+            String inputName = FileHelper.getBaseNameFromPath(fullInputName);
+            String outputName = FileHelper.getBaseNameFromPath(fullOutputName);
             if (!inputName.equals(outputName))
                 return false;
             String inputExtension = FilenameUtils.getExtension(fullInputName);

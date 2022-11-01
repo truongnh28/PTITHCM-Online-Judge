@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head :: head">
+<body class="bg-light">
+<header th:replace="/fragments/admin-header :: admin-header"></header>
+<main>
+  <div class="container-fluid">
+    <div class="py-2"></div>
+    <a class="btn btn-primary mb-3" th:href="@{/admin/subject/{subjectId}/class/{classId}/teacher(subjectId=${subjectId},classId=${classId})}" role="button">Về danh sách giáo viên quản lý lớp</a>
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="border-bottom pb-2 align-items-center">
+          <form class="d-flex" role="search" th:action="@{/admin/subject/{subjectId}/class/{classId}/teacher/add?keyword=${keyword}(subjectId=${subjectId},classId=${classId})}">
+            <h4 class="card-title">
+              <span>Danh sách giáo viên trong hệ thống</span>
+            </h4>
+            <div class="ms-auto d-flex">
+              <input type="text" class="form-control form-control me-2" data-bs-toggle="tooltip" name="keyword" th:value="${keyword}"
+                     data-bs-placement="top" data-bs-title="Nhập mã giáo viên cần tìm" placeholder="Tìm kiếm giáo viên">
+              <button type="submit" class="btn btn-outline-success">Search</button>
+            </div>
+          </form>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>#</th>
+              <th>Mã giáo viên</th>
+              <th>Họ giáo viên</th>
+              <th>Tên giáo viên</th>
+              <th>Thời gian tạo</th>
+              <th>Thời gian cập nhật</th>
+              <th>Đăng nhập gần nhất</th>
+              <th>Trạng thái</th>
+              <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="teacher, i : ${teachers}">
+              <td th:text="${i.count}"></td>
+              <td th:text="${teacher.teacherId}"></td>
+              <td th:text="${teacher.teacherLastName}"></td>
+              <td th:text="${teacher.teacherFirstName}"></td>
+              <td th:text="${teacher.createAt}"></td>
+              <td th:text="${teacher.updateAt}"></td>
+              <td th:text="${teacher.lastLogin}"></td>
+              <td th:if="${teacher.active} eq 0">Bị khóa</td>
+              <td th:unless="${teacher.active} eq 0">Hoạt động</td>
+              <td>
+                <a class="btn btn-primary btn-sm" th:href="@{/admin/subject/{subjectId}/class/{classId}/teacher/{teacherId}/add(subjectId=${subjectId},classId=${classId},teacherId=${teacher.teacherId})}" role="button" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Thêm giáo viên vào danh sách quản lý lớp">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                  </svg>
+                </a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div th:replace="/fragments/pagination :: pagination"></div>
+    </div>
+    <div class="py-2"></div>
+  </div>
+</main>
+<footer th:replace="/fragments/footer :: footer"></footer>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+        integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+        crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
+        integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+        crossorigin="anonymous"
+></script>
+<script>
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
+</body>
+</html>

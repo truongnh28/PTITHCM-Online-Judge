@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head :: head">
+<body class="bg-light">
+<header th:replace="/fragments/teacher-header :: teacher-header"></header>
+<main>
+  <div class="container-fluid">
+    <div class="py-2"></div>
+    <a class="btn btn-primary mb-3" th:href="@{/teacher/problem/{problemId}/edit(problemId=${problemId})}" role="button">Về chỉnh sửa bài tập</a>
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="border-bottom pb-3 align-items-center">
+          <h4 class="card-title">
+            <span>Danh sách bộ test cho bài tập </span>
+            <span th:text="${problemName}" class="fw-bold"></span>
+          </h4>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+            <tr>
+              <th></th>
+              <th>#</th>
+              <th>Input</th>
+              <th>Output</th>
+              <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="testcase, i : ${testcases}">
+              <td></td>
+              <td th:text="${i.count}"></td>
+              <td th:text="${i.count} + '.in'"></td>
+              <td th:text="${i.count} + '.out'"></td>
+              <td>
+                <a class="btn btn-primary btn-sm" role="button" th:href="@{/teacher/problem/{problemId}/testcase/{testId}/edit(problemId=${problemId},testId=${testcase.testCaseId})}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Chỉnh sửa test case">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                  </svg>
+                </a>
+                <a class="btn btn-danger btn-sm" role="button" th:href="@{/teacher/problem/{problemId}/testcase/{testId}/delete(problemId=${problemId},testId=${testcase.testCaseId})}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Xóa test case khỏi bài tập">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                  </svg>
+                </a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="card mb-4">
+      <div class="card-body">
+        <h4 class="card-title border-bottom pb-3">Thêm test</h4>
+        <form th:action="@{/teacher/problem/{problemId}/testcase/add(problemId=${problemId})}" id="formAddTestCase" method="post" enctype="multipart/form-data" onsubmit="return checkTestCase(this)">
+          <div class="row">
+            <div class="col">
+              <label class="form-label">
+                <span class="fw-bold">Input (các file có định dạng .in)</span>
+              </label>
+              <input type="file" class="form-control" id="problemTestIn" name="inputs" multiple accept=".in"/>
+              <p class="text-danger" id="problemTestInValidate"></p>
+            </div>
+            <div class="col">
+              <label class="form-label">
+                <span class="fw-bold">Output (các file có định dạng .out)</span>
+              </label>
+              <input type="file" class="form-control" id="problemTestOut" name="outputs" multiple accept=".out"/>
+              <p class="text-danger" id="problemTestOutValidate"></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <button type="submit" class="btn btn-primary">Thêm test case</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="py-2"></div>
+  </div>
+</main>
+<footer th:replace="/fragments/footer :: footer"></footer>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+        integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+        crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
+        integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+        crossorigin="anonymous"
+></script>
+<script>
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
+<script th:src="@{/js/teacher-problem-test-case.js}" type="text/javascript"></script>
+</body>
+</html>

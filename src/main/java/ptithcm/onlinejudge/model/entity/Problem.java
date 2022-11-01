@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -34,6 +35,12 @@ public class Problem {
 
     @Column(name = "problem_memory_limit")
     private Integer problemMemoryLimit;
+
+    @Column(name = "create_at", nullable = false)
+    private Instant createAt;
+
+    @Column(name = "update_at", nullable = false)
+    private Instant updateAt;
 
     @Column(name = "hide")
     private Byte hide;

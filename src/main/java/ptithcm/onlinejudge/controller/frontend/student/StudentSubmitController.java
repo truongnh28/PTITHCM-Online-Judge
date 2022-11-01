@@ -1,107 +1,101 @@
 package ptithcm.onlinejudge.controller.frontend.student;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import ptithcm.onlinejudge.data.Data;
+import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import ptithcm.onlinejudge.dto.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ptithcm.onlinejudge.services.StorageFileService;
+import ptithcm.onlinejudge.mapper.ContestMapper;
+import ptithcm.onlinejudge.mapper.ProblemMapper;
+import ptithcm.onlinejudge.model.adapter.GetStatusResponse;
+import ptithcm.onlinejudge.model.entity.Contest;
+import ptithcm.onlinejudge.model.entity.Problem;
+import ptithcm.onlinejudge.model.entity.Submission;
+import ptithcm.onlinejudge.model.response.ResponseObject;
+import ptithcm.onlinejudge.services.*;
 
 import javax.servlet.http.HttpSession;
-import java.io.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping("/student/group/{groupId}/contest/{contestId}/submit")
 public class StudentSubmitController {
     @Autowired
-    private StorageFileService storageService;
-    @GetMapping("/submit/{problemId}")
-    public String gotoSubmit(@PathVariable("problemId") String problemId, Model model) {
+    private SubjectClassGroupManagementService subjectClassGroupManagementService;
+    @Autowired
+    private ContestMapper contestMapper;
+    @Autowired
+    private ContestManagementService contestManagementService;
+    @Autowired
+    private SubmitService submitService;
+    @Autowired
+    private ProblemMapper problemMapper;
+    @Autowired
+    private ProblemManagementService problemManagementService;
+    @Autowired
+    private SubmissionManagementService submissionManagementService;
+    @GetMapping("/{problemId}")
+    public String showSubmitPage(@PathVariable("groupId") String groupId, @PathVariable("contestId") String contestId, @PathVariable("problemId") String problemId, Model model, HttpSession session) {
+        if (isExpired(session))
+            return "redirect:/";
+        if (!isValid(groupId, contestId))
+            return "redirect:/error";
         model.addAttribute("pageTitle", "Nộp bài");
-        ProblemDTO problemDetails = new ProblemDTO();
-        for (ProblemDTO problemDTO : Data.problemList) {
-            if (problemDTO.getProblemId().equals(problemId)) {
-                problemDetails = problemDTO;
-                break;
-            }
-        }
-        SubmitDTO submit = new SubmitDTO();
+        ResponseObject getContestByIdResponse = contestManagementService.getContestById(contestId);
+        if (!getContestByIdResponse.getStatus().equals(HttpStatus.OK))
+            return "redirect:/error";
+        ContestDetailDTO contest = contestMapper.entityToDetailDTO((Contest) getContestByIdResponse.getData());
+        ResponseObject responseGetProblemById = problemManagementService.getProblemById(problemId);
+        if (!responseGetProblemById.getStatus().equals(HttpStatus.OK))
+            return "redirect:/error";
+        ProblemDTO problemDetails = problemMapper.entityToDTO((Problem) responseGetProblemById.getData());
         model.addAttribute("problemDetails", problemDetails);
-        model.addAttribute("submit", submit);
+        model.addAttribute("contest", contest);
         return "/student/submit";
     }
 
-    @PostMapping("/submit-code/{problemId}")
-    public String submitCode(@PathVariable("problemId") String problemId, @RequestParam("file") MultipartFile multipartFile, @ModelAttribute("submit") SubmitDTO submitDTO, HttpSession session) {
-        try {
-            InputStream inputStream = multipartFile.getInputStream();
-            // lấy source code
-            String sourceCode = new BufferedReader(new InputStreamReader(inputStream))
-                    .lines().collect(Collectors.joining("\n"));
-            // lưu file có đường dẫn là /uploads/a.cpp
-            String filePath = storageService.storeFile(multipartFile);
-            // gọi api
-            Unirest.setTimeouts(0, 0);
-            Login login = (Login) session.getAttribute("user");
-            File file = new File(filePath);
-            HttpResponse<String> response = Unirest.post("http://localhost:80/api/submit")
-                    .field("problem_id", problemId)
-                    .field("username ", login.getUsername())
-                    .field("type", submitDTO.getLanguage())
-                    .field("file", new File(filePath))
-                    .field("secret_key", "default_change_this")
-                    .asString();
-            // hoàn thành gọi api xong thì xóa luôn file đó
-            if (!file.delete())
-                throw new RuntimeException("Không thể xóa file tạm được");
-            JSONParser jsonParser = new JSONParser();
-            try {
-                // parse từ string sang đối tượng json
-                JSONObject jsonObject = (JSONObject) jsonParser.parse(response.getBody());
-                // lấy status, nếu có thì lấy giá trị của nó, không thì giá trị mặc định là error
-                String status = jsonObject.optString("status", "error");
-                // nếu là error thì throw lỗi
-                if (!status.equals("success")) {
-                    throw new RuntimeException("Có vấn đề khi chấm bài");
-                }
-                // lấy mã code được sinh ra
-                String jobId = jsonObject.getString("job_id");
-                // set các dữ liệu cho submission và submissioncode
-                SubmissionDTO submissionDTO = new SubmissionDTO();
-                submissionDTO.setSourceCodeId(jobId);
-                submissionDTO.setProblemId(problemId);
-                submissionDTO.setStatus("Accepted");
-                submissionDTO.setTimeSubmit(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss")));
-                submissionDTO.setTimeExecute(15); // cái này là giả
-                submissionDTO.setLanguage(submitDTO.getLanguage());
-                submissionDTO.setStudentId(login.getUsername());
-                SubmissionDetailDTO submissionDetailDTO = new SubmissionDetailDTO();
-                submissionDetailDTO.setSourceCodeId(submissionDTO.getSourceCodeId());
-                submissionDetailDTO.setStatus(submissionDTO.getStatus());
-                submissionDetailDTO.setLanguage(submissionDTO.getLanguage());
-                submissionDetailDTO.setSourceCode(sourceCode);
-                submissionDetailDTO.setTimeExec(submissionDTO.getTimeExecute());
-                submissionDetailDTO.setStudentId(submissionDTO.getStudentId());
-                submissionDetailDTO.setMemoryUsed(10); // cái này cũng là giả
-                Data.submissionList.add(0, submissionDTO);
-                Data.submissionCodeList.add(0, submissionDetailDTO);
-                return "redirect:/student/submissions";
-            } catch (ParseException e) {
-                e.printStackTrace();
+    @PostMapping("/{problemId}")
+    public String submitCode(@PathVariable("groupId") String groupId,
+                             @PathVariable("contestId") String contestId,
+                             @PathVariable("problemId") String problemId,
+                             @RequestParam("file") MultipartFile file,
+                             @RequestParam("language") String language,
+                             HttpSession session) throws InterruptedException {
+        if (isExpired(session))
+            return "redirect:/";
+        if (!isValid(groupId, contestId))
+            return "redirect:/error";
+        String studentId = session.getAttribute("user").toString();
+        ResponseObject submitProblemResponse = submitService.submitProblemFromController(studentId, problemId, contestId, language, file);
+        if (submitProblemResponse.getStatus().equals(HttpStatus.BAD_REQUEST))
+            return "redirect:/student/group/{groupId}/contest/{contestId}/submission";
+        else if (submitProblemResponse.getStatus().equals(HttpStatus.FOUND))
+            return "redirect:/error";
+        Submission submission = (Submission) submitProblemResponse.getData();
+        updateVerdict(submission);
+        return "redirect:/student/group/{groupId}/contest/{contestId}/submission/" + submission.getId();
+    }
+
+    @Async
+    public void updateVerdict(Submission submission) {
+        String id = submission.getId();
+        while(true) {
+            ResponseObject getStatusResponse = submitService.getStatusAdapter(id);
+            GetStatusResponse status = (GetStatusResponse) getStatusResponse.getData();
+            if (!(status.getStatus().equals("queued") || status.getStatus().equals("judging"))) {
+                submissionManagementService.getSubmissionById(id);
+                break;
             }
-        } catch (IOException | UnirestException e) {
-            throw new RuntimeException(e);
         }
-        return "redirect:/student/submissions";
+    }
+
+    private boolean isExpired(HttpSession session) {
+        return session.getAttribute("user") == null;
+    }
+
+    private boolean isValid(String groupId, String contestId) {
+        return subjectClassGroupManagementService.getGroupById(groupId).getStatus().equals(HttpStatus.OK) && contestManagementService.getContestById(contestId).getStatus().equals(HttpStatus.OK);
     }
 }

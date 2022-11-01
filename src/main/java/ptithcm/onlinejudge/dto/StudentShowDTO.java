@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StudentShowDTO extends StudentDTO {
     private boolean disabledButtonAdding;
+    private boolean disabledButtonRemoving;
 }

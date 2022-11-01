@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head :: head">
+<body class="bg-light">
+<header th:replace="/fragments/teacher-header :: teacher-header"></header>
+<main>
+  <div class="container-fluid">
+    <div class="py-2"></div>
+    <a class="mb-3 btn btn-primary" role="button" th:href="@{/teacher/class/{classId}/group/{groupId}/contest(classId=${classId},groupId=${groupId})}">Trở lại trang bài thực hành</a>
+    <div class="row">
+      <div class="col-9">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex">
+              <h4 class="me-auto" th:text="${contest.contestName}"></h4>
+              <div th:switch="${contest.verdict}">
+                <div th:case="2" class="d-inline-flex rounded-1 border bg-danger border-danger text-light px-1">Đã kết thúc</div>
+                <div th:case="1" class="d-inline-flex rounded-1 border bg-success border-success text-light px-1">Đang diễn ra</div>
+                <div th:case="0" class="d-inline-flex rounded-1 border bg-primary border-primary text-light px-1">Sắp diễn ra</div>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th>Thời gian bắt đầu</th>
+                  <th>Thời gian kết thúc</th>
+                  <th>Mã tác giả</th>
+                  <th>Họ tên tác giả</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td th:text="${contest.contestStart}"></td>
+                  <td th:text="${contest.contestEnd}"></td>
+                  <td th:text="${contest.teacher.teacherId}"></td>
+                  <td th:text="${contest.teacher.teacherLastName} + ' ' + ${contest.teacher.teacherFirstName}"></td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div th:replace="/fragments/right-tab :: right-tab-teacher"></div>
+      </div>
+    </div>
+    <div class="py-2"></div>
+  </div>
+</main>
+<footer th:replace="/fragments/footer :: footer"></footer>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+        integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+        crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
+        integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+        crossorigin="anonymous"
+></script>
+<script>
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
+</body>
+</html>

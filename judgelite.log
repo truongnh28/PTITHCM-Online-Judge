@@ -234,7 +234,59 @@ WARNING: khugepaged defrag is enabled.
 [2022-09-25 15:46:01 +0000] [50] [INFO] Booting worker with pid: 50
 16:13:01 Cleaning registries for queue: default
 16:40:01 Cleaning registries for queue: default
+<<<<<<< HEAD
+------------------JUDGELITE STARTED------------------
+------------------JUDGELITE STARTED------------------
+------------------JUDGELITE STARTED------------------
+"------------------JUDGELITE STARTED------------------" 
+------------------JUDGELITE STARTED------------------
+------------------JUDGELITE STARTED------------------
+Checking for cgroup support for memory ... [32mPASS(B[m
+Checking for cgroup support for cpuacct ... [32mPASS(B[m
+Checking for cgroup support for cpuset ... [32mPASS(B[m
+Checking for swap ... [33mCAUTION(B[m
+WARNING: swap is enabled, and although accounted for, may still give run-time variability under memory pressure.
+Checking for CPU frequency scaling ... SKIPPED (not detected)
+Checking for kernel address space randomisation ... [32mPASS(B[m
+Checking for transparent hugepage support ... [32mPASS(B[m
+20:C 27 Sep 2022 16:47:58.647 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+20:C 27 Sep 2022 16:47:58.648 # Redis version=5.0.7, bits=64, commit=00000000, modified=0, pid=20, just started
+20:C 27 Sep 2022 16:47:58.648 # Configuration loaded
+20:M 27 Sep 2022 16:47:58.662 # Server initialized
+20:M 27 Sep 2022 16:47:58.662 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+16:48:00 Worker rq:worker:8ecdb4857dce4feaaf41de2bac1c6939: started, version 1.6.1
+16:48:00 Subscribing to channel rq:pubsub:8ecdb4857dce4feaaf41de2bac1c6939
+16:48:00 *** Listening on [32mdefault[39;49;00m...
+16:48:00 Cleaning registries for queue: default
+[2022-09-27 16:48:00 +0000] [26] [INFO] Starting gunicorn 20.0.4
+[2022-09-27 16:48:00 +0000] [26] [INFO] Listening at: http://0.0.0.0:80 (26)
+[2022-09-27 16:48:00 +0000] [26] [INFO] Using worker: gthread
+[2022-09-27 16:48:00 +0000] [30] [INFO] Booting worker with pid: 30
+16:56:44 [32mdefault[39;49;00m: [34mjudge_submission.judge_submission('/tmp/judge-tgr27uvs', 'aplusb1', 'a.cpp', 'cpp', 'N19DCCN190', True)[39;49;00m (50510e11-73be-49d9-9ea4-10767685386f)
+[SJ 09/27 16:56:47] Final verdict: {'verdict': 'AC', 'score': 100, 'max_score': 100, 'time': 21, 'memory': 0.9, 'testcase': 2}
+16:56:47 [32mdefault[39;49;00m: [34mJob OK[39;49;00m (50510e11-73be-49d9-9ea4-10767685386f)
+16:56:47 Result is kept for 2000000000 seconds
+17:03:32 Cleaning registries for queue: default
+17:13:07 [32mdefault[39;49;00m: [34mjudge_submission.judge_submission('/tmp/judge-4ndbyty0', 'aplusb1', 'a.cpp', 'cpp', 'N19DCCN190', True)[39;49;00m (ec5c1666-6b7c-43d7-804d-42059d9d2431)
+[SJ 09/27 17:13:12] Final verdict: {'verdict': 'AC', 'score': 100, 'max_score': 100, 'time': 21, 'memory': 0.6, 'testcase': 2}
+17:13:12 [32mdefault[39;49;00m: [34mJob OK[39;49;00m (ec5c1666-6b7c-43d7-804d-42059d9d2431)
+17:13:12 Result is kept for 2000000000 seconds
+17:14:29 [32mdefault[39;49;00m: [34mjudge_submission.judge_submission('/tmp/judge-38lv_6jt', 'aplusb1', '1258f954a95241ca98a3ce06ab6fac42.cpp', 'cpp', 'N19DCCN190', True)[39;49;00m (55e2d1e5-ca0b-40c5-a189-0d5708d7f1fd)
+[SJ 09/27 17:14:33] Final verdict: {'verdict': 'AC', 'score': 100, 'max_score': 100, 'time': 19, 'memory': 0.6, 'testcase': 2}
+17:14:33 [32mdefault[39;49;00m: [34mJob OK[39;49;00m (55e2d1e5-ca0b-40c5-a189-0d5708d7f1fd)
+17:14:33 Result is kept for 2000000000 seconds
+17:25:47 [32mdefault[39;49;00m: [34mjudge_submission.judge_submission('/tmp/judge-2hkaysxz', 'aplusb1', '03f51b711849434ab8cce5091aa7fd08.cpp', 'cpp', 'N19DCCN190', True)[39;49;00m (d30e4e3d-4568-4d64-9605-bfec761d3ee3)
+[SJ 09/27 17:25:51] Final verdict: {'verdict': 'TLE', 'score': 0, 'max_score': 100, 'time': 1000, 'memory': 16, 'testcase': 1}
+17:25:51 [32mdefault[39;49;00m: [34mJob OK[39;49;00m (d30e4e3d-4568-4d64-9605-bfec761d3ee3)
+17:25:51 Result is kept for 2000000000 seconds
+17:25:51 Cleaning registries for queue: default
+17:33:45 [32mdefault[39;49;00m: [34mjudge_submission.judge_submission('/tmp/judge-hv7clefc', 'aplusb1', '70836b33bb574fb19cf657b20390146f.cpp', 'cpp', 'N19DCCN190', True)[39;49;00m (deefe6e4-ce70-4052-b64c-28c7f4328476)
+[SJ 09/27 17:33:49] Final verdict: {'verdict': 'AC', 'score': 100, 'max_score': 100, 'time': 21, 'memory': 0.4, 'testcase': 2}
+17:33:49 [32mdefault[39;49;00m: [34mJob OK[39;49;00m (deefe6e4-ce70-4052-b64c-28c7f4328476)
+17:33:49 Result is kept for 2000000000 seconds
+=======
 17:07:02 Cleaning registries for queue: default
 17:34:02 Cleaning registries for queue: default
 18:01:02 Cleaning registries for queue: default
 18:28:02 Cleaning registries for queue: default
+>>>>>>> 61dc142e50aa2ae0decb34abf6f5c312cbc08748

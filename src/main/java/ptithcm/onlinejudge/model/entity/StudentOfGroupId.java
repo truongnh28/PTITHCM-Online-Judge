@@ -19,6 +19,6 @@ public class StudentOfGroupId implements Serializable {
     @Column(name = "student_id", nullable = false, length = 10)
     private String studentId;
 
-    @Column(name = "subject_class_group_id", nullable = false, length = 10)
+    @Column(name = "subject_class_group_id", nullable = false, length = 50)
     private String subjectClassGroupId;
 }

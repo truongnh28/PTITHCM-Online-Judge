@@ -3,26 +3,38 @@ package ptithcm.onlinejudge.services;
 import org.springframework.stereotype.Service;
 import ptithcm.onlinejudge.dto.ContestDTO;
 import ptithcm.onlinejudge.model.response.ResponseObject;
-import ptithcm.onlinejudge.model.request.ContestRequest;
 
 @Service
 public interface ContestManagementService {
-    ResponseObject addContest(ContestRequest contestRequest);
+    ResponseObject addContest(ContestDTO contest, String teacherId, String groupId);
 
-    ResponseObject editContest(ContestRequest contestRequest);
+    ResponseObject cloneContest(ContestDTO contest, String teacherId, String contestId, String groupId);
+
+    ResponseObject editContest(ContestDTO contest, String contestId);
 
     ResponseObject deleteContest(String contestId);
 
-    ResponseObject addContestDTOAndTeacherId(ContestDTO contest, String teacherId);
+    ResponseObject getContestActiveSortByDate(int page);
 
-    ResponseObject editContestDTO(ContestDTO contest);
+    ResponseObject searchContestsActiveSortByDate(String keyword, int page);
 
-    ResponseObject getAllContestActive();
+    ResponseObject getAllContestsActive(int page);
+
+    ResponseObject searchAllContestsActive(String keyword, int page);
 
     ResponseObject getContestById(String contestId);
-    ResponseObject getAllContestCreateByTeacher(String teacherId);
 
-    ResponseObject getAllContestActiveCreatedByTeacher(String teacherId);
+    ResponseObject searchContestsActiveCreateByTeacher(String teacherId, String keyword);
+
+    ResponseObject lockContest(String contestId);
+
+    ResponseObject unlockContest(String contestId);
+
+    ResponseObject getAllContestsCreateByTeacher(String teacherId, int page);
+
+    ResponseObject searchAllContestsCreateByTeacher(String teacherId, String keyword, int page);
+
+    ResponseObject getAllContestsActiveCreatedByTeacher(String teacherId);
 
     ResponseObject getAllContestActiveCreatedByTeacherOfGroupId(String teacherId, String groupId);
 

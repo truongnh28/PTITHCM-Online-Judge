@@ -10,5 +10,8 @@ import lombok.NoArgsConstructor;
 public class SubjectClassDTO {
     private String subjectClassId;
     private String subjectClassName;
+    private String createAt;
+    private String updateAt;
+    private Byte hide;
     private SubjectDTO subject;
 }

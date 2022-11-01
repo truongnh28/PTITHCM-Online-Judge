@@ -22,4 +22,7 @@ public interface StudentOfGroupRepository extends JpaRepository<StudentOfGroup, 
             "from subject_class_groups " +
             "where subject_class_groups.subject_class_id = ?2)", nativeQuery = true)
     Optional<StudentOfGroup> findByStudentIdAndSubjectClassId(String studentId, String subjectClassId);
+
+    @Query(value = "select * from student_of_group where student_of_group.student_id = ?1 and student_of_group.subject_class_group_id = ?2", nativeQuery = true)
+    Optional<StudentOfGroup> findByStudentIdAndSubjectClassGroupId(String studentId, String subjectClassGroupId);
 }
