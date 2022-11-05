@@ -42,7 +42,13 @@ function checkInfo(form) {
         } else {
             if (response.data === -1)
                 isStudent = false;
-            else {
+            else if (response.data === 0) {
+                $("#password").val("");
+                $("#modalNotificationTitle").text("Cảnh báo");
+                $("#modalNotificationMessage").text(response.message);
+                $("#modalNotification").modal("show");
+                return false;
+            } else if (response.data === 2) {
                 $("#password").val("");
                 $("#modalNotificationTitle").text("Cảnh báo");
                 $("#modalNotificationMessage").text(response.message);
@@ -50,8 +56,6 @@ function checkInfo(form) {
                 return false;
             }
         }
-    }).fail(function () {
-        console.log("Toang");
     });
 
     $.post(urlTeacher, {username: username, password: password}, function (response) {
@@ -61,7 +65,13 @@ function checkInfo(form) {
         } else {
             if (response.data === -1)
                 isTeacher = false;
-            else {
+            else if (response.data === 0) {
+                $("#password").val("");
+                $("#modalNotificationTitle").text("Cảnh báo");
+                $("#modalNotificationMessage").text(response.message);
+                $("#modalNotification").modal("show");
+                return false;
+            } else if (response.data === 2) {
                 $("#password").val("");
                 $("#modalNotificationTitle").text("Cảnh báo");
                 $("#modalNotificationMessage").text(response.message);

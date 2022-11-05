@@ -4,11 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ptithcm.onlinejudge.dto.ProblemDTO;
 import ptithcm.onlinejudge.dto.ProblemShowDTO;
+import ptithcm.onlinejudge.dto.ProblemSolvedDTO;
 import ptithcm.onlinejudge.helper.TimeHelper;
 import ptithcm.onlinejudge.model.entity.Problem;
+import ptithcm.onlinejudge.model.entity.Submission;
+import ptithcm.onlinejudge.repository.SubmissionRepository;
+
+import java.util.List;
 
 @Component
 public class ProblemMapperImpl implements ProblemMapper {
+    @Autowired
+    private SubmissionRepository submissionRepository;
     @Autowired
     private LevelMapper levelMapper;
     @Autowired
@@ -36,6 +43,25 @@ public class ProblemMapperImpl implements ProblemMapper {
     public ProblemDTO entityToDTO(Problem entity) {
         if (entity == null) return null;
         ProblemDTO dto = new ProblemDTO();
+        dto.setProblemId(entity.getId());
+        dto.setProblemName(entity.getProblemName());
+        dto.setProblemUrl(entity.getProblemUrl());
+        dto.setProblemCloudinaryId(entity.getProblemCloudinaryId());
+        dto.setProblemScore(entity.getProblemScore());
+        dto.setProblemTimeLimit(entity.getProblemTimeLimit());
+        dto.setProblemMemoryLimit(entity.getProblemMemoryLimit());
+        dto.setHide(entity.getHide());
+        if (entity.getCreateAt() != null) dto.setCreateAt(TimeHelper.convertInstantToString(entity.getCreateAt()));
+        if (entity.getUpdateAt() != null) dto.setUpdateAt(TimeHelper.convertInstantToString(entity.getUpdateAt()));
+        if (entity.getLevel() != null) dto.setLevel(levelMapper.entityToDTO(entity.getLevel()));
+        if (entity.getTeacher() != null) dto.setTeacher(teacherMapper.entityToDTO(entity.getTeacher()));
+        return dto;
+    }
+
+    @Override
+    public ProblemSolvedDTO entityToSolvedDTO(Problem entity) {
+        if (entity == null) return null;
+        ProblemSolvedDTO dto = new ProblemSolvedDTO();
         dto.setProblemId(entity.getId());
         dto.setProblemName(entity.getProblemName());
         dto.setProblemUrl(entity.getProblemUrl());

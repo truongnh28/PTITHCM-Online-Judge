@@ -1,0 +1,12 @@
+---
+problem_id: "oddsum"
+problem_name: "Tổng lẻ"
+time_limit: 1
+memory_limit: 512
+scoring_method: "minimum"
+checker: "diff"
+max_score: 100
+subtasks:
+- name: "main"
+  score: 100
+  num_samples: 1

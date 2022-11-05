@@ -11,6 +11,8 @@ public interface StudentManagementService {
 
     ResponseObject editStudent(StudentDTO student);
 
+    ResponseObject updateStudent(String id, StudentDTO student);
+
     ResponseObject resetPassword(String studentId);
 
     ResponseObject lockStudent(String studentId);

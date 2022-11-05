@@ -1,5 +1,6 @@
 package ptithcm.onlinejudge.services;
 
+import ptithcm.onlinejudge.dto.PasswordChangeDTO;
 import ptithcm.onlinejudge.dto.TeacherDTO;
 import ptithcm.onlinejudge.model.response.ResponseObject;
 
@@ -12,6 +13,10 @@ public interface TeacherManagementService {
     ResponseObject addTeacher(TeacherDTO teacherDTO);
 
     ResponseObject editTeacher(TeacherDTO teacherDTO);
+
+    ResponseObject updateTeacher(String id, TeacherDTO teacherDTO);
+
+    ResponseObject changePassword(String id, PasswordChangeDTO passwordChange);
 
     ResponseObject lockTeacher(String teacherId);
 

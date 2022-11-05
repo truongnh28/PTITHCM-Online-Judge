@@ -24,15 +24,15 @@ function checkGetOne(id, name) {
     const url = "/admin/subject/" + id;
     $.get(url, function (response){
         if (response.status === "OK") {
-            $("#confirmModalTitle").text("Cảnh báo");
+            $("#modalConfirmTitle").text("Cảnh báo");
             if (name === 'lock') {
-                $("#confirmModalMessage").text("Bạn có thực sự muốn khóa môn học này?");
+                $("#modalConfirmMessage").text("Bạn có thực sự muốn khóa môn học này?");
                 $("#yes").attr("href", "/admin/subject/" + id + "/lock");
-                $("#confirmModal").modal("show");
+                $("#modalConfirm").modal("show");
             } else {
-                $("#confirmModalMessage").text("Bạn có thực sự muốn mở khóa môn học này?");
+                $("#modalConfirmMessage").text("Bạn có thực sự muốn mở khóa môn học này?");
                 $("#yes").attr("href", "/admin/subject/" + id + "/unlock");
-                $("#confirmModal").modal("show");
+                $("#modalConfirm").modal("show");
             }
         } else if (response.status === "FOUND") {
             $("#modalNotificationTitle").text("Lỗi server");

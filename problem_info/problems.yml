@@ -33,3 +33,6 @@ groups:
   - id: "minnumber"
     name: "Số nhỏ nhất"
     status: "up"
+  - id: "oddsum"
+    name: "Tổng lẻ"
+    status: "up"

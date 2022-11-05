@@ -9,11 +9,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import ptithcm.onlinejudge.dto.ContestDetailDTO;
 import ptithcm.onlinejudge.dto.ProblemDTO;
+import ptithcm.onlinejudge.dto.ProblemSolvedDTO;
 import ptithcm.onlinejudge.mapper.ContestMapper;
 import ptithcm.onlinejudge.mapper.ProblemMapper;
 import ptithcm.onlinejudge.model.entity.Contest;
 import ptithcm.onlinejudge.model.entity.Problem;
+import ptithcm.onlinejudge.model.entity.Submission;
 import ptithcm.onlinejudge.model.response.ResponseObject;
+import ptithcm.onlinejudge.repository.SubmissionRepository;
 import ptithcm.onlinejudge.services.ContestManagementService;
 import ptithcm.onlinejudge.services.ProblemManagementService;
 import ptithcm.onlinejudge.services.SubjectClassGroupManagementService;
@@ -25,6 +28,8 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/student/group/{groupId}/contest/{contestId}/problem")
 public class StudentProblemController {
+    @Autowired
+    private SubmissionRepository submissionRepository;
     @Autowired
     private SubjectClassGroupManagementService subjectClassGroupManagementService;
     @Autowired
@@ -43,12 +48,19 @@ public class StudentProblemController {
         if (!isValid(groupId, contestId))
             return "redirect:/error";
         model.addAttribute("pageTitle", "Bài tập");
+        String studentId = session.getAttribute("user").toString();
         ResponseObject getContestByIdResponse = contestManagementService.getContestById(contestId);
         if (!getContestByIdResponse.getStatus().equals(HttpStatus.OK))
             return "redirect:/error";
         ContestDetailDTO contest = contestMapper.entityToDetailDTO((Contest) getContestByIdResponse.getData());
-        List<ProblemDTO> problems = ((List<Problem>)problemManagementService.getAllProblemsActiveOfContest(contestId).getData())
-                .stream().map(item -> problemMapper.entityToDTO(item)).collect(Collectors.toList());
+        List<ProblemSolvedDTO> problems = ((List<Problem>)problemManagementService.getAllProblemsActiveOfContest(contestId).getData())
+                .stream().map(item -> {
+                    ProblemSolvedDTO problemSolvedDTO = problemMapper.entityToSolvedDTO(item);
+                    List<Submission> submissions = submissionRepository.problemSolvedByStudent(contestId, item.getId(), studentId);
+                    problemSolvedDTO.setSolved(false);
+                    if (!submissions.isEmpty()) problemSolvedDTO.setSolved(true);
+                    return problemSolvedDTO;
+                }).collect(Collectors.toList());
         model.addAttribute("problems", problems);
         model.addAttribute("contest", contest);
         return "/student/problem";

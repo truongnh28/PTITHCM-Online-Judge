@@ -10,7 +10,7 @@
       <a class="nav-link" th:href="@{/admin/teacher}">Giáo viên</a>
       <a class="nav-link" th:href="@{/admin/student}">Sinh viên</a>
       <a class="nav-link" th:href="@{/admin/subject}">Môn học</a>
-      <a class="nav-link ms-auto" href="#" th:text="${session.user}"></a>
+      <a class="nav-link ms-auto" th:href="@{/admin/profile}" id="adminId" th:text="${session.user}"></a>
       <a class="nav-link" th:href="@{/logout}">Đăng xuất</a>
     </nav>
   </div>

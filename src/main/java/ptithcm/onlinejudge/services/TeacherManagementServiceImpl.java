@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import ptithcm.onlinejudge.dto.PasswordChangeDTO;
 import ptithcm.onlinejudge.dto.TeacherDTO;
 import ptithcm.onlinejudge.helper.SHA256Helper;
 import ptithcm.onlinejudge.mapper.TeacherMapper;
@@ -86,6 +87,24 @@ public class TeacherManagementServiceImpl implements TeacherManagementService {
         newTeacher.setUpdateAt(Instant.now());
         newTeacher = teacherRepository.save(newTeacher);
         return new ResponseObject(HttpStatus.OK, "Success", newTeacher);
+    }
+
+    @Override
+    public ResponseObject updateTeacher(String id, TeacherDTO teacherDTO) {
+        Teacher newTeacher = teacherRepository.findById(id).get();
+        newTeacher.setTeacherFirstName(teacherDTO.getTeacherFirstName().trim());
+        newTeacher.setTeacherLastName(teacherDTO.getTeacherLastName().trim());
+        newTeacher.setUpdateAt(Instant.now());
+        newTeacher = teacherRepository.save(newTeacher);
+        return new ResponseObject(HttpStatus.OK, "Success", newTeacher);
+    }
+
+    @Override
+    public ResponseObject changePassword(String id, PasswordChangeDTO passwordChange) {
+        Teacher teacher = teacherRepository.findById(id).get();
+        teacher.setPassword(SHA256Helper.hash(passwordChange.getNewPassword()));
+        teacher.setUpdateAt(Instant.now());
+        return new ResponseObject(HttpStatus.OK, "Success", teacher);
     }
 
     // lock

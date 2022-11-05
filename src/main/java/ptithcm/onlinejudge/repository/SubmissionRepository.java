@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ptithcm.onlinejudge.model.entity.Submission;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface SubmissionRepository extends JpaRepository<Submission, String> {
     @Query(value = "select * from submissions where submissions.contest_id = ?1 order by submissions.submission_time desc",
@@ -42,4 +45,7 @@ public interface SubmissionRepository extends JpaRepository<Submission, String> 
 
     @Query(value = "select count(*) from (select submissions.student_id from submissions where submissions.contest_id = ?1 and submissions.problem_id = ?2 and submissions.verdict = 1 group by submissions.student_id) as temp", nativeQuery = true)
     Long countStudentAcceptedByContestIdAndProblemId(String contestId, String problemId);
+
+    @Query(value = "select * from submissions where submissions.contest_id = ?1 and submissions.problem_id = ?2 and submissions.student_id = ?3 and submissions.verdict = 1", nativeQuery = true)
+    List<Submission> problemSolvedByStudent(String contestId, String problemId, String studentId);
 }

@@ -66,6 +66,17 @@ public class StudentManagementServiceImpl implements StudentManagementService {
     }
 
     @Override
+    public ResponseObject updateStudent(String id, StudentDTO student) {
+        Student updatedStudent = studentRepository.findById(id).get();
+        updatedStudent.setStudentLastName(student.getStudentLastName().trim());
+        updatedStudent.setStudentClass(student.getStudentClass().trim().toUpperCase());
+        updatedStudent.setStudentFirstName(student.getStudentFirstName().trim());
+        updatedStudent.setUpdateAt(Instant.now());
+        updatedStudent = studentRepository.save(updatedStudent);
+        return new ResponseObject(HttpStatus.OK, "Success", updatedStudent);
+    }
+
+    @Override
     public ResponseObject resetPassword(String studentId) {
         Optional<Student> foundStudent = studentRepository.findById(studentId);
         if (foundStudent.isEmpty())
@@ -199,12 +210,10 @@ public class StudentManagementServiceImpl implements StudentManagementService {
 
     @Override
     public ResponseObject changePassword(String studentId, String password) {
-        if(!studentRepository.existsById(studentId)) {
-            return new ResponseObject(HttpStatus.FOUND, "Student is not exist", "");
-        }
-        Optional<Student> student = studentRepository.findById(studentId);
-        student.get().setPassword(password);
-        studentRepository.save(student.get());
+        Student student = studentRepository.findById(studentId).get();
+        student.setPassword(SHA256Helper.hash(password));
+        student.setUpdateAt(Instant.now());
+        student = studentRepository.save(student);
         return new ResponseObject(HttpStatus.OK, "Success", student);
     }
 

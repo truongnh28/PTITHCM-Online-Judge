@@ -2,7 +2,6 @@ package ptithcm.onlinejudge.controller.backend;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ptithcm.onlinejudge.dto.LoginDTO;
@@ -28,9 +27,12 @@ public class LoginBackendController {
         if (!studentRepository.existsById(studentId))
             return new ResponseObject(HttpStatus.FOUND, "Không tồn tại sinh viên", -1);
         Student student = studentRepository.findById(studentId).get();
-        if (student.getPassword().equals(SHA256Helper.hash(studentPassword)))
-            return new ResponseObject(HttpStatus.OK, "Success", 1);
-        return new ResponseObject(HttpStatus.FOUND, "Sai thông tin đăng nhập", 0);
+        if (student.getActive() == (byte) 1) {
+            if (student.getPassword().equals(SHA256Helper.hash(studentPassword)))
+                return new ResponseObject(HttpStatus.OK, "Success", 1);
+            return new ResponseObject(HttpStatus.FOUND, "Sai thông tin đăng nhập", 0);
+        }
+        return new ResponseObject(HttpStatus.FOUND, "Tài khoản bị khóa", 2);
     }
 
     @PostMapping("/check/teacher")
@@ -40,8 +42,11 @@ public class LoginBackendController {
         if (!teacherRepository.existsById(teacherId))
             return new ResponseObject(HttpStatus.FOUND, "Không tồn tại giảng viên", -1);
         Teacher teacher = teacherRepository.findById(teacherId).get();
-        if (teacher.getPassword().equals(SHA256Helper.hash(teacherPassword)))
-            return new ResponseObject(HttpStatus.OK, "Success", 1);
-        return new ResponseObject(HttpStatus.FOUND, "Sai thông tin đăng nhập", 0);
+        if (teacher.getActive() == (byte) 1) {
+            if (teacher.getPassword().equals(SHA256Helper.hash(teacherPassword)))
+                return new ResponseObject(HttpStatus.OK, "Success", 1);
+            return new ResponseObject(HttpStatus.FOUND, "Sai thông tin đăng nhập", 0);
+        }
+        return new ResponseObject(HttpStatus.FOUND, "Tài khoản bị khóa", 2);
     }
 }

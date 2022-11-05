@@ -279,7 +279,7 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
     public ResponseObject searchAllProblemsActiveNotInContest(String contestId, String keyword, int page) {
         if (page <= 0)
             page = 1;
-        Page<Problem> problems = problemRepository.searchProblemsActiveNotInContest(contestId, "%" + keyword + "%", PageRequest.of(page - 1, 10));
+        Page<Problem> problems = problemRepository.searchProblemsActiveNotInContest(contestId, "%" + keyword.trim() + "%", PageRequest.of(page - 1, 10));
         int totalPage = problems.getTotalPages();
         if (page > totalPage)
             page = totalPage;
@@ -309,7 +309,7 @@ public class ProblemManagementServiceImpl implements ProblemManagementService {
     public ResponseObject searchAllProblemsCreateByTeacher(String teacherId, String keyword, int page) {
         if (page <= 0)
             page = 1;
-        Page<Problem> problems = problemRepository.searchAllProblemsByTeacher(teacherId, "%" + keyword + "%", PageRequest.of(page - 1, 10));
+        Page<Problem> problems = problemRepository.searchAllProblemsByTeacher(teacherId, "%" + keyword.trim() + "%", PageRequest.of(page - 1, 10));
         int totalPage = problems.getTotalPages();
         if (page > totalPage)
             page = totalPage;

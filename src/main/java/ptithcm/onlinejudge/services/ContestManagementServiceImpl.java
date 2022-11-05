@@ -87,6 +87,7 @@ public class ContestManagementServiceImpl implements ContestManagementService {
             contestHasProblem.setId(id);
             contestHasProblem.setProblem(problem);
             contestHasProblem.setContest(savedContest);
+            contestHasProblemRepository.save(contestHasProblem);
         }
         return new ResponseObject(HttpStatus.OK, "Success", savedContest);
     }
